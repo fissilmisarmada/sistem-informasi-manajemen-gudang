@@ -2,16 +2,20 @@
 
 @section('content')
     @php
-        $totalBuku = \App\Models\Buku::count();
-        $totalStok = \App\Models\Buku::sum('stok');
-        $bukuDitempatkan = \App\Models\Buku::whereNotNull('rak_id')->count();
-        $bukuTanpaRak = $totalBuku - $bukuDitempatkan;
+        $bukuKategori = \App\Models\Kategori::where('kode_kategori', 'BKU')->first();
+        $bukuKategoriId = $bukuKategori?->id;
+
+        $totalBuku = \App\Models\Barang::where('kategori_id', $bukuKategoriId)->count();
+        $totalBarang = \App\Models\Barang::where('kategori_id', '!=', $bukuKategoriId)->count();
+        $totalItem = $totalBuku + $totalBarang;
         $totalRak = \App\Models\Rak::count();
+        $totalKategori = \App\Models\Kategori::count();
         $totalUser = \App\Models\User::count();
         $totalAdmin = \App\Models\User::where('role', 'admin')->count();
         $totalStaff = \App\Models\User::where('role', 'staff')->count();
         $totalPimpinan = \App\Models\User::where('role', 'pimpinan')->count();
-        $aktivitasTerbaru = \App\Models\StockOpname::with(['rak', 'staff'])->latest('tanggal')->take(4)->get();
+        $barangMenipis = \App\Models\Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->count();
+        $aktivitasTerbaru = \App\Models\MutasiBarang::with(['barang.kategori', 'staff'])->latest('created_at')->take(4)->get();
     @endphp
 
     <style>
@@ -68,16 +72,16 @@
             <div>
                 <div class="admin-eyebrow">Pusat kendali sistem</div>
                 <h1>Dashboard Admin</h1>
-                <p>Kelola inventaris, pengguna, dan aktivitas gudang dari satu tempat.</p>
+                <p>Kelola inventaris gudang, pengguna, dan aktivitas dari satu tempat.</p>
             </div>
-            <a class="scan-link" href="{{ route('buku.cari') }}"><span>|||</span> Scan atau Cari Buku</a>
+            <a class="scan-link" href="{{ route('pencarian.index') }}"><span>🔍</span> Cari Barang</a>
         </div>
 
         <div class="overview">
-            <a class="overview-item primary" href="{{ route('buku.index') }}"><small>Total Buku</small><strong>{{ number_format($totalBuku, 0, ',', '.') }}</strong><em>{{ number_format($totalStok, 0, ',', '.') }} eksemplar tersedia</em></a>
-            <a class="overview-item" href="{{ route('denah-gudang') }}"><small>Rak Gudang</small><strong>{{ number_format($totalRak, 0, ',', '.') }}</strong><em>Lokasi terdaftar</em></a>
+            <a class="overview-item primary" href="{{ route('barang.index') }}"><small>Total Item</small><strong>{{ number_format($totalItem, 0, ',', '.') }}</strong><em>{{ $totalBuku }} buku + {{ $totalBarang }} barang</em></a>
+            <a class="overview-item" href="{{ route('kategori.index') }}"><small>Kategori</small><strong>{{ number_format($totalKategori, 0, ',', '.') }}</strong><em>Jenis barang terdaftar</em></a>
             <a class="overview-item" href="{{ route('users') }}"><small>Total Pengguna</small><strong>{{ number_format($totalUser, 0, ',', '.') }}</strong><em>{{ $totalStaff }} staff, {{ $totalPimpinan }} pimpinan</em></a>
-            <a class="overview-item" href="{{ route('buku.index') }}"><small>Belum Ditempatkan</small><strong>{{ number_format($bukuTanpaRak, 0, ',', '.') }}</strong><em>{{ number_format($bukuDitempatkan, 0, ',', '.') }} buku sudah punya rak</em></a>
+            <a class="overview-item" href="{{ route('denah-gudang') }}"><small>Rak Gudang</small><strong>{{ number_format($totalRak, 0, ',', '.') }}</strong><em>Lokasi penyimpanan</em></a>
         </div>
 
         <div class="admin-section"><h2>Menu Cepat</h2></div>
