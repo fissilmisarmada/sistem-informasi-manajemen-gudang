@@ -43,7 +43,11 @@
     .tipe-tab.active { border-color:#3b82f6; background:#3b82f6; color:#fff; }
 </style>
 
-<h1 class="page-title">Pencarian Barang Gudang</h1>
+<div class="page-header">
+    <div style="display:flex; align-items:center; gap:16px;">
+        <a href="{{ route('dashboard.staff') }}" class="btn btn-secondary" style="padding:8px 14px; font-size:13px;">← Kembali</a>
+        <h1 class="page-title">Pencarian Barang Gudang</h1>
+    </div>
 
 <form method="GET" action="{{ route('pencarian.index') }}" class="search-bar">
     <input type="text" name="q" value="{{ $q }}" placeholder="Cari nama barang, kode, ISBN..." autofocus>

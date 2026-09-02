@@ -2,6 +2,17 @@
 
 @section('content')
 <style>
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:9px; font-weight:700; font-size:14px; cursor:pointer; border:none; text-decoration:none; }
+    .btn-primary { background:#3b82f6; color:#fff; }
+    .btn-primary:hover { background:#2563eb; }
+    .btn-secondary { background:#e2e8f0; color:#0f172a; }
+    .btn-secondary:hover { background:#cbd5e1; }
+    .btn-danger { background:#ef4444; color:#fff; }
+    .btn-danger:hover { background:#dc2626; }
+    .btn-warning { background:#f59e0b; color:#fff; }
+    .btn-warning:hover { background:#d97706; }
+    .btn-success { background:#22c55e; color:#fff; }
+    .btn-success:hover { background:#16a34a; }
     .back-link { display:inline-flex; align-items:center; gap:8px; margin-bottom:20px; padding:9px 14px; background:#e2e8f0; color:#0f172a; border-radius:9px; font-weight:700; font-size:14px; text-decoration:none; }
     .back-link:hover { background:#cbd5e1; }
     .detail-grid { display:grid; grid-template-columns:300px 1fr; gap:24px; align-items:start; }
@@ -34,7 +45,7 @@
     @media(max-width:700px) { .detail-grid { grid-template-columns:1fr; } }
 </style>
 
-<a href="{{ route('barang.index') }}" class="back-link">← Kembali ke Daftar Barang</a>
+<a href="{{ URL::previous() }}" class="btn btn-secondary" style="margin-bottom: 16px;">← Kembali</a>
 
 @if(session('success'))
     <div class="alert-success">{{ session('success') }}</div>
@@ -84,7 +95,7 @@
 
         @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
         <div class="action-bar">
-            <a href="{{ route('mutasi-barang.create') }}?barang_id={{ $barang->id }}" class="btn btn-green">+ Mutasi Stok</a>
+            <a href="{{ route('mutasi-barang.create', ['from' => 'show', 'barang_id' => $barang->id]) }}" class="btn btn-primary">+ Mutasi Stok</a>
             <a href="{{ route('stock-opname-barang.create', $barang) }}" class="btn btn-primary">Opname</a>
             <a href="{{ route('barang.edit', $barang) }}" class="btn btn-warning">Edit</a>
             <form method="POST" action="{{ route('barang.destroy', $barang) }}" onsubmit="return confirm('Hapus barang ini?')">

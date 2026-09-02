@@ -21,7 +21,11 @@
     .alert-error { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:13px; }
 </style>
 
-<h1 class="page-title">Tambah Barang Baru</h1>
+<div class="page-header">
+    <div style="display:flex; align-items:center; gap:16px;">
+        <a href="{{ route('barang.index') }}" class="btn btn-secondary" style="padding:8px 14px; font-size:13px;">← Kembali</a>
+        <h1 class="page-title">Tambah Barang Baru</h1>
+    </div>
 
 <div class="card">
     @if($errors->any())
