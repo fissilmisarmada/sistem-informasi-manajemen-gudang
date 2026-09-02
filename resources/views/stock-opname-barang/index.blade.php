@@ -21,7 +21,11 @@
     .empty-state { text-align:center; padding:40px; color:#94a3b8; }
 </style>
 
-<h1 class="page-title">Stock Opname Barang</h1>
+<div class="page-header">
+    <div style="display:flex; align-items:center; gap:16px;">
+        <a href="{{ route('dashboard.staff') }}" class="btn btn-secondary" style="padding:8px 14px; font-size:13px;">← Kembali</a>
+        <h1 class="page-title">Stock Opname Barang</h1>
+    </div>
 
 @if(session('success'))
     <div class="alert-success">{{ session('success') }}</div>

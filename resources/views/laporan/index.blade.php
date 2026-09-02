@@ -2,7 +2,7 @@
 
 @section('content')
     <div style="padding:24px 0;">
-        <a class="back-dashboard" href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}">&larr; Kembali ke Dashboard</a>
+        <a class="back-dashboard" href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}">&larr; Kembali</a>
         <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:22px;">
             <div>
                 <div style="font-size:12px;letter-spacing:1px;color:#64748b;text-transform:uppercase;font-weight:700;">Monitoring Sistem</div>

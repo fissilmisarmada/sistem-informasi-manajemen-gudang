@@ -21,8 +21,10 @@
     input[type=radio] { display:none; }
 </style>
 
+<!-- JUDUL -->
 <h1 class="page-title">Catat Mutasi Barang</h1>
 
+<!-- CARD DENGAN FORM -->
 <div class="card">
     @if($errors->any())
         <div class="alert-error">
@@ -76,8 +78,13 @@
             <textarea name="keterangan" rows="3" placeholder="Contoh: Pembelian dari supplier, Digunakan untuk kegiatan X...">{{ old('keterangan') }}</textarea>
         </div>
 
+        <!-- SATU-SATUNYA form-actions -->
         <div class="form-actions">
-            <a href="{{ route('mutasi-barang.index') }}" class="btn btn-secondary">Batal</a>
+            @if(request('from') === 'show' && request('barang_id'))
+                <a href="{{ route('barang.show', request('barang_id')) }}" class="btn btn-secondary">Batal</a>
+            @else
+                <a href="{{ route('dashboard.staff') }}" class="btn btn-secondary">Batal</a>
+            @endif
             <button type="submit" class="btn btn-primary">Simpan Mutasi</button>
         </div>
     </form>

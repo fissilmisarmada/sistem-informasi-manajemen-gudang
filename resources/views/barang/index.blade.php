@@ -39,7 +39,10 @@
 </style>
 
 <div class="page-header">
-    <h1 class="page-title">Barang Gudang</h1>
+    <div style="display:flex; align-items:center; gap:16px;">
+        <a href="{{ route('dashboard.staff') }}" class="btn btn-secondary" style="padding:8px 14px; font-size:13px;">← Kembali</a>
+        <h1 class="page-title">Barang Gudang</h1>
+    </div>
     @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
         <a href="{{ route('barang.create') }}" class="btn btn-primary">+ Tambah Barang</a>
     @endif

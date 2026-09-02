@@ -59,6 +59,10 @@ class MutasiBarangController extends Controller
             );
         });
 
+ if ($request->from === 'show' && $request->barang_id) {
+        return redirect()->route('barang.show', $request->barang_id)
+            ->with('success', 'Mutasi barang berhasil dicatat.');
+    }
         return redirect()->route('mutasi-barang.index')->with('success', 'Mutasi barang berhasil dicatat.');
     }
 }
