@@ -45,8 +45,8 @@
     <main class="login-screen">
         <header class="login-brand">
             <div class="university-mark"><img src="{{ asset('images/Logo_Universitas_Terbuka.svg') }}" alt="Logo Universitas Terbuka"></div>
-            <h1>SEEBOOK</h1>
-            <p>Sistem Informasi Manajemen Gudang Buku<br>Universitas Terbuka</p>
+            <h1>MASIH BELUM DPT NAMA</h1>
+            <p>Sistem Informasi Manajemen Gudang<br>Universitas Terbuka</p>
         </header>
 
         <div class="warehouse-scene" aria-hidden="true"><div class="shelf"></div><div class="warehouse-building"></div><div class="boxes"></div></div>

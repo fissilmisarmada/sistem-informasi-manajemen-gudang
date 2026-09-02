@@ -2,13 +2,16 @@
 
 @section('content')
     @php
-        $totalBuku = \App\Models\Buku::count();
-        $totalStok = \App\Models\Buku::sum('stok');
-        $bukuDitempatkan = \App\Models\Buku::whereNotNull('rak_id')->count();
-        $bukuTanpaRak = $totalBuku - $bukuDitempatkan;
+        $bukuKategori = \App\Models\Kategori::where('kode_kategori', 'BKU')->first();
+        $bukuKategoriId = $bukuKategori?->id;
+
+        $totalBuku = \App\Models\Barang::where('kategori_id', $bukuKategoriId)->count();
+        $totalBarang = \App\Models\Barang::where('kategori_id', '!=', $bukuKategoriId)->count();
+        $totalItem = $totalBuku + $totalBarang;
         $totalRak = \App\Models\Rak::count();
-        $totalKategori = \App\Models\Buku::whereNotNull('kategori')->where('kategori', '<>', '')->distinct()->count('kategori');
-        $aktivitasTerbaru = \App\Models\StockOpname::with(['rak', 'staff'])->latest('tanggal')->take(4)->get();
+        $totalKategori = \App\Models\Kategori::count();
+        $barangMenipis = \App\Models\Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->count();
+        $aktivitasTerbaru = \App\Models\MutasiBarang::with(['barang.kategori', 'staff'])->latest('created_at')->take(4)->get();
     @endphp
 
     <style>
@@ -59,36 +62,35 @@
             <div>
                 <div class="leader-eyebrow">Ringkasan pengelolaan</div>
                 <h1>Dashboard Pimpinan</h1>
-                <p>Pantau kondisi inventaris dan aktivitas gudang.</p>
+                <p>Pantau kondisi inventaris dan aktivitas gudang secara keseluruhan.</p>
             </div>
-            <a class="scan-link" href="{{ route('buku.cari') }}"><span>|||</span> Scan atau Cari Buku</a>
+            <a class="scan-link" href="{{ route('pencarian.index') }}"><span>🔍</span> Cari Barang</a>
         </div>
 
         <div class="overview">
-            <a class="overview-item primary" href="{{ route('buku.index') }}"><small>Total Buku</small><strong>{{ number_format($totalBuku, 0, ',', '.') }}</strong><em>{{ number_format($totalStok, 0, ',', '.') }} eksemplar tersedia</em></a>
-            <a class="overview-item" href="{{ route('denah-gudang') }}"><small>Rak Gudang</small><strong>{{ number_format($totalRak, 0, ',', '.') }}</strong><em>Lokasi terdaftar</em></a>
-            <a class="overview-item" href="{{ route('buku.index') }}"><small>Sudah Ditempatkan</small><strong>{{ number_format($bukuDitempatkan, 0, ',', '.') }}</strong><em>{{ number_format($bukuTanpaRak, 0, ',', '.') }} buku belum punya rak</em></a>
-            <a class="overview-item" href="{{ route('buku.index') }}"><small>Kategori Buku</small><strong>{{ number_format($totalKategori, 0, ',', '.') }}</strong><em>{{ \App\Models\StockOpname::count() }} catatan opname</em></a>
+            <a class="overview-item primary" href="{{ route('barang.index') }}"><small>Total Item</small><strong>{{ number_format($totalItem, 0, ',', '.') }}</strong><em>{{ $totalBuku }} buku + {{ $totalBarang }} barang lain</em></a>
+            <a class="overview-item" href="{{ route('kategori.index') }}"><small>Kategori</small><strong>{{ number_format($totalKategori, 0, ',', '.') }}</strong><em>Jenis barang di gudang</em></a>
+            <a class="overview-item" href="{{ route('denah-gudang') }}"><small>Rak Gudang</small><strong>{{ number_format($totalRak, 0, ',', '.') }}</strong><em>Lokasi penyimpanan</em></a>
+            <a class="overview-item" href="{{ route('barang.index') }}"><small>⚠ Stok Menipis</small><strong>{{ number_format($barangMenipis, 0, ',', '.') }}</strong><em>Butuh perhatian</em></a>
         </div>
 
         <div class="leader-grid">
             <section class="leader-panel">
-                <div class="panel-head"><h2>Kondisi Inventaris</h2><a href="{{ route('laporan.index') }}">Lihat laporan &rsaquo;</a></div>
+                <div class="panel-head"><h2>Kondisi Inventaris Gudang</h2><a href="{{ route('laporan.index') }}">Lihat laporan &rsaquo;</a></div>
                 <div class="inventory-list">
-                    <div class="inventory-row"><span>Jumlah judul buku</span><strong>{{ number_format($totalBuku, 0, ',', '.') }} judul</strong></div>
-                    <div class="inventory-row"><span>Total eksemplar</span><strong>{{ number_format($totalStok, 0, ',', '.') }} buku</strong></div>
-                    <div class="inventory-row"><span>Buku dengan lokasi rak</span><strong>{{ number_format($bukuDitempatkan, 0, ',', '.') }} buku</strong></div>
-                    <div class="inventory-row"><span>Buku belum ditempatkan</span><strong>{{ number_format($bukuTanpaRak, 0, ',', '.') }} buku</strong></div>
-                    <div class="inventory-row"><span>Kategori terdata</span><strong>{{ number_format($totalKategori, 0, ',', '.') }} kategori</strong></div>
+                    <div class="inventory-row"><span>Total barang</span><strong>{{ number_format($totalItem, 0, ',', '.') }} item</strong></div>
+                    <div class="inventory-row"><span>Kategori</span><strong>{{ number_format($totalKategori, 0, ',', '.') }} kategori</strong></div>
+                    <div class="inventory-row"><span>Rak gudang</span><strong>{{ number_format($totalRak, 0, ',', '.') }} rak</strong></div>
+                    <div class="inventory-row"><span>Stok menipis</span><strong>{{ number_format($barangMenipis, 0, ',', '.') }} item</strong></div>
                 </div>
             </section>
 
             <section class="leader-panel">
-                <div class="panel-head"><h2>Opname Terbaru</h2><a href="{{ route('riwayat.index') }}">Semua &rsaquo;</a></div>
+                <div class="panel-head"><h2>Mutasi Barang Terbaru</h2><a href="{{ route('mutasi-barang.index') }}">Semua &rsaquo;</a></div>
                 @forelse($aktivitasTerbaru as $aktivitas)
-                    <div class="activity-row"><span class="activity-icon">OK</span><span class="activity-copy"><strong>{{ $aktivitas->rak?->nama_lokasi ?? $aktivitas->rak?->kode_rak ?? 'Rak' }}</strong><small>Oleh {{ $aktivitas->staff?->name ?? 'Staff' }}</small></span><span class="activity-time">{{ $aktivitas->tanggal?->diffForHumans() }}</span></div>
+                    <div class="activity-row"><span class="activity-icon">{{ $aktivitas->jenis === 'masuk' ? '↑' : '↓' }}</span><span class="activity-copy"><strong>{{ $aktivitas->barang->nama }}</strong><small>{{ $aktivitas->jenis === 'masuk' ? 'Masuk' : 'Keluar' }} · Oleh {{ $aktivitas->staff?->name ?? 'Staff' }}</small></span><span class="activity-time">{{ \Carbon\Carbon::parse($aktivitas->created_at)->diffForHumans() }}</span></div>
                 @empty
-                    <div class="empty-state">Belum ada aktivitas stock opname.</div>
+                    <div class="empty-state">Belum ada aktivitas mutasi barang.</div>
                 @endforelse
             </section>
         </div>

@@ -1,9 +1,14 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\MutasiBarangController;
+use App\Http\Controllers\PencarianController;
 use App\Http\Controllers\RakController;
 use App\Http\Controllers\RiwayatPenempatanController;
+use App\Http\Controllers\StockOpnameBarangController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LaporanController;
@@ -89,6 +94,53 @@ Route::middleware('auth')->group(function () {
         Route::get('/{rak}/create', [StockOpnameController::class, 'create'])->name('create');
         Route::post('/{rak}', [StockOpnameController::class, 'store'])->name('store');
         Route::get('/{rak}/riwayat', [StockOpnameController::class, 'riwayat'])->name('riwayat');
+    });
+
+    // Pencarian global (semua barang gudang)
+    Route::get('/cari', [PencarianController::class, 'index'])
+        ->middleware('role:admin,staff,pimpinan')
+        ->name('pencarian.index');
+
+    // Kategori barang
+    Route::prefix('kategori')->name('kategori.')->middleware('role:admin,staff')->group(function () {
+        Route::get('/', [KategoriController::class, 'index'])->name('index');
+        Route::post('/', [KategoriController::class, 'store'])->name('store');
+        Route::middleware('role:admin')->group(function () {
+            Route::put('/{kategori}', [KategoriController::class, 'update'])->name('update');
+            Route::delete('/{kategori}', [KategoriController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+    // Barang gudang
+    Route::prefix('barang')->name('barang.')->middleware('role:admin,staff,pimpinan')->group(function () {
+        Route::get('/', [BarangController::class, 'index'])->name('index');
+        Route::get('/{barang}', [BarangController::class, 'show'])->name('show');
+
+        Route::middleware('role:admin,staff')->group(function () {
+            Route::get('/tambah/baru', [BarangController::class, 'create'])->name('create');
+            Route::post('/', [BarangController::class, 'store'])->name('store');
+            Route::get('/{barang}/edit', [BarangController::class, 'edit'])->name('edit');
+            Route::put('/{barang}', [BarangController::class, 'update'])->name('update');
+        });
+
+        Route::middleware('role:admin')->group(function () {
+            Route::delete('/{barang}', [BarangController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+    // Mutasi barang (masuk/keluar)
+    Route::prefix('mutasi-barang')->name('mutasi-barang.')->middleware('role:admin,staff')->group(function () {
+        Route::get('/', [MutasiBarangController::class, 'index'])->name('index');
+        Route::get('/tambah', [MutasiBarangController::class, 'create'])->name('create');
+        Route::post('/', [MutasiBarangController::class, 'store'])->name('store');
+    });
+
+    // Stock opname barang
+    Route::prefix('stock-opname-barang')->name('stock-opname-barang.')->middleware('role:admin,staff')->group(function () {
+        Route::get('/', [StockOpnameBarangController::class, 'index'])->name('index');
+        Route::get('/{barang}/create', [StockOpnameBarangController::class, 'create'])->name('create');
+        Route::post('/{barang}', [StockOpnameBarangController::class, 'store'])->name('store');
+        Route::get('/{barang}/riwayat', [StockOpnameBarangController::class, 'riwayat'])->name('riwayat');
     });
 });
 

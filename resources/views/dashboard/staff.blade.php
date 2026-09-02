@@ -2,13 +2,20 @@
 
 @section('content')
     @php
-        $totalBuku = \App\Models\Buku::count();
-        $totalStok = \App\Models\Buku::sum('stok');
-        $bukuDitempatkan = \App\Models\Buku::whereNotNull('rak_id')->count();
-        $bukuTanpaRak = $totalBuku - $bukuDitempatkan;
+        $bukuKategori = \App\Models\Kategori::where('kode_kategori', 'BKU')->first();
+        $bukuKategoriId = $bukuKategori?->id;
+
+        $totalBuku = \App\Models\Barang::where('kategori_id', $bukuKategoriId)->count();
+        $totalBarang = \App\Models\Barang::where('kategori_id', '!=', $bukuKategoriId)->count();
+        $totalItem = $totalBuku + $totalBarang;
+        $barangMenipis = \App\Models\Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')
+            ->where('kategori_id', '!=', $bukuKategoriId)->count();
+        $bukuMenipis = \App\Models\Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')
+            ->where('kategori_id', $bukuKategoriId)->count();
         $totalRak = \App\Models\Rak::count();
-        $bukuBelumDitempatkan = \App\Models\Buku::whereNull('rak_id')->orderBy('judul')->take(3)->get();
-        $aktivitasTerbaru = \App\Models\StockOpname::with(['rak', 'staff'])->latest('tanggal')->take(4)->get();
+        $totalKategori = \App\Models\Kategori::count();
+        $barangMenipis3 = \App\Models\Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->orderBy('nama')->take(3)->get();
+        $aktivitasTerbaru = \App\Models\MutasiBarang::with(['barang.kategori', 'staff'])->latest('created_at')->take(4)->get();
     @endphp
 
     <style>
@@ -36,12 +43,13 @@
         .overview-item:hover, .overview-item:focus-visible { border-color:#93c5fd; box-shadow:0 14px 26px rgba(15,74,165,.15); transform:translateY(-5px); outline:0; }
         .overview-item:hover::after, .overview-item:focus-visible::after { opacity:1; transform:translate(4px, -3px); }
         .overview-item.primary { background:#123b82; border-color:#123b82; }
+        .overview-item.danger { background:#991b1b; border-color:#991b1b; }
         .overview-item small { display:block; color:#64748b; font-size:11px; font-weight:700; }
-        .overview-item.primary small { color:#bfdbfe; }
+        .overview-item.primary small, .overview-item.danger small { color:#bfdbfe; }
         .overview-item strong { display:block; margin-top:10px; color:#0f172a; font-size:29px; line-height:1; }
-        .overview-item.primary strong { color:#fff; }
+        .overview-item.primary strong, .overview-item.danger strong { color:#fff; }
         .overview-item em { display:block; margin-top:8px; color:#64748b; font-size:11px; font-style:normal; }
-        .overview-item.primary em { color:#dbeafe; }
+        .overview-item.primary em, .overview-item.danger em { color:#dbeafe; }
         .quick-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:9px; }
         .quick-action { min-height:84px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:#fff; border:1px solid #e2e8f0; border-radius:11px; color:#1e3a6f; font-size:10px; font-weight:800; text-align:center; box-shadow:0 4px 12px rgba(15,23,42,.04); transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
         .quick-action:hover, .quick-action:focus-visible { border-color:#93c5fd; box-shadow:0 10px 18px rgba(15,74,165,.13); transform:translateY(-4px); outline:0; }
@@ -49,7 +57,7 @@
         .dashboard-panel { background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; }
         .dashboard-row { display:flex; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid #f1f5f9; }
         .dashboard-row:last-child { border-bottom:0; }
-        .row-icon { width:34px; height:40px; display:grid; place-items:center; border-radius:7px; background:#dbeafe; color:#2563eb; font-weight:900; }
+        .row-icon { width:34px; height:40px; display:grid; place-items:center; border-radius:7px; background:#fee2e2; color:#991b1b; font-weight:900; font-size:12px; }
         .row-copy { flex:1; min-width:0; }
         .row-copy strong { display:block; color:#1e3a6f; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .row-copy small { color:#64748b; font-size:11px; }
@@ -64,38 +72,38 @@
         <section class="staff-welcome">
             <small>Ruang kerja operasional</small>
             <h1>Dashboard Staff</h1>
-            <p>SEEBOOK Universitas Terbuka</p>
+            <p>"NAMA SISTEM" Universitas Terbuka</p>
         </section>
 
-        <a href="{{ route('buku.create-data', ['auto_scan' => 1]) }}" class="barcode-action">
-            <span class="barcode-icon">|||</span>
-            <span style="flex:1;"><h2>Scan Barcode</h2><p>Cari buku yang tersedia atau tambahkan buku baru dari hasil scan</p></span>
+        <a href="{{ route('pencarian.index') }}" class="barcode-action">
+            <span class="barcode-icon">🔍</span>
+            <span style="flex:1;"><h2>Cari Barang</h2><p>Cari buku, ATK, komputer, atau barang lainnya di gudang</p></span>
             <span class="barcode-arrow">&rsaquo;</span>
         </a>
 
-        <div class="section-label"><h2>Ringkasan Inventaris</h2><a href="{{ route('laporan.index') }}">Lihat semua</a></div>
+        <div class="section-label"><h2>Ringkasan Inventaris Gudang</h2><a href="{{ route('laporan.index') }}">Lihat semua</a></div>
         <div class="overview">
-            <a class="overview-item primary" href="{{ route('buku.index') }}"><small>Total Buku</small><strong>{{ number_format($totalBuku, 0, ',', '.') }}</strong><em>{{ number_format($totalStok, 0, ',', '.') }} eksemplar tersedia</em></a>
-            <a class="overview-item" href="{{ route('denah-gudang') }}"><small>Rak Gudang</small><strong>{{ number_format($totalRak, 0, ',', '.') }}</strong><em>Lokasi terdaftar</em></a>
-            <a class="overview-item" href="{{ route('stock-opname.index') }}"><small>Stock Opname</small><strong>{{ \App\Models\StockOpname::count() }}</strong><em>Catatan pemeriksaan</em></a>
-            <a class="overview-item" href="{{ route('buku.index') }}"><small>Belum Ditempatkan</small><strong>{{ number_format($bukuTanpaRak, 0, ',', '.') }}</strong><em>{{ number_format($bukuDitempatkan, 0, ',', '.') }} buku sudah punya rak</em></a>
+            <a class="overview-item primary" href="{{ route('barang.index') }}"><small>Total Item</small><strong>{{ number_format($totalItem, 0, ',', '.') }}</strong><em>{{ $totalBuku }} buku + {{ $totalBarang }} barang</em></a>
+            <a class="overview-item" href="{{ route('kategori.index') }}"><small>Kategori</small><strong>{{ number_format($totalKategori, 0, ',', '.') }}</strong><em>Tipe barang terdaftar</em></a>
+            <a class="overview-item {{ $barangMenipis > 0 || $bukuMenipis > 0 ? 'danger' : '' }}" href="{{ route('barang.index') }}?stok=menipis"><small>⚠ Stok Menipis</small><strong>{{ $barangMenipis + $bukuMenipis }}</strong><em>Perlu restock segera</em></a>
+            <a class="overview-item" href="{{ route('denah-gudang') }}"><small>Rak Gudang</small><strong>{{ number_format($totalRak, 0, ',', '.') }}</strong><em>Lokasi penyimpanan</em></a>
         </div>
 
         <div class="section-label"><h2>Menu Cepat</h2></div>
         <div class="quick-grid">
-            <a class="quick-action" href="{{ route('buku.cari') }}"><span>⌕</span>Cari Buku</a>
+            <a class="quick-action" href="{{ route('pencarian.index') }}"><span>🔍</span>Cari Barang</a>
+            <a class="quick-action" href="{{ route('mutasi-barang.create') }}"><span>↔</span>Mutasi</a>
+            <a class="quick-action" href="{{ route('stock-opname-barang.index') }}"><span>✓</span>Opname Barang</a>
             <a class="quick-action" href="{{ route('denah-gudang') }}"><span>⌂</span>Denah Gudang</a>
-            <a class="quick-action" href="{{ route('stock-opname.index') }}"><span>✓</span>Stock Opname</a>
-            <a class="quick-action" href="{{ route('riwayat.index') }}"><span>≡</span>Riwayat Penempatan</a>
             <a class="quick-action" href="{{ route('laporan.index') }}"><span>▥</span>Laporan</a>
         </div>
 
-        <div class="section-label"><h2>Buku Belum Ditempatkan</h2><a href="{{ route('buku.index') }}">Lihat semua &rsaquo;</a></div>
+        <div class="section-label"><h2>⚠ Barang dengan Stok Menipis</h2><a href="{{ route('barang.index') }}">Lihat semua &rsaquo;</a></div>
         <div class="dashboard-panel">
-            @forelse($bukuBelumDitempatkan as $buku)
-                <a class="dashboard-row" href="{{ route('buku.create') }}"><span class="row-icon">BK</span><span class="row-copy"><strong>{{ $buku->judul }}</strong><small>Kode: {{ $buku->kode_buku }}</small></span><span class="row-meta">Perlu rak &rsaquo;</span></a>
+            @forelse($barangMenipis3 as $brg)
+                <a class="dashboard-row" href="{{ route('barang.show', $brg) }}"><span class="row-icon">!</span><span class="row-copy"><strong>{{ $brg->nama }}</strong><small>{{ $brg->kategori->nama }} · Stok: {{ $brg->stok }} / min {{ $brg->stok_minimum }} {{ $brg->satuan }}</small></span><span class="row-meta">Restock &rsaquo;</span></a>
             @empty
-                <div class="empty-state">Semua buku sudah memiliki lokasi rak.</div>
+                <div class="empty-state">✓ Semua barang memiliki stok yang mencukupi.</div>
             @endforelse
         </div>
 
