@@ -94,8 +94,8 @@
         </div>
 
         <div class="form-actions">
-            <a href="{{ route('barang.show', $barang) }}" class="btn btn-secondary">Batal</a>
-            <button type="submit" class="btn btn-primary">Perbarui</button>
+    <a href="{{ route('barang.show', $barang) }}" class="btn btn-secondary">Batal</a>
+    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </div>
     </form>
 </div>

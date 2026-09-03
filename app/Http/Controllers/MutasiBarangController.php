@@ -35,34 +35,37 @@ class MutasiBarangController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'barang_id'  => 'required|exists:barang,id',
-            'jenis'      => 'required|in:masuk,keluar',
-            'jumlah'     => 'required|integer|min:1',
-            'keterangan' => 'nullable|string|max:255',
-        ]);
+{
+    $request->validate([
+        'barang_id'  => 'required|exists:barang,id',
+        'jenis'      => 'required|in:masuk,keluar',
+        'jumlah'     => 'required|integer|min:1',
+        'keterangan' => 'nullable|string|max:255',
+    ]);
 
-        $barang = Barang::findOrFail($request->barang_id);
+    $barang = Barang::findOrFail($request->barang_id);
 
-        if ($request->jenis === 'keluar' && $barang->stok < $request->jumlah) {
-            return back()->withErrors(['jumlah' => 'Stok tidak mencukupi. Stok saat ini: ' . $barang->stok])->withInput();
-        }
+    if ($request->jenis === 'keluar' && $barang->stok < $request->jumlah) {
+        return back()->withErrors(['jumlah' => 'Stok tidak mencukupi. Stok saat ini: ' . $barang->stok])->withInput();
+    }
 
-        DB::transaction(function () use ($request, $barang) {
-            MutasiBarang::catat(
-                $barang,
-                Auth::user(),
-                $request->jenis,
-                $request->jumlah,
-                $request->keterangan
-            );
-        });
+    DB::transaction(function () use ($request, $barang) {
+        MutasiBarang::catat(
+            $barang,
+            Auth::user(),
+            $request->jenis,
+            $request->jumlah,
+            $request->keterangan
+        );
+    });
 
- if ($request->from === 'show' && $request->barang_id) {
+    // REDIRECT BERDASARKAN BARANG_ID (SIMPLIFY)
+    if ($request->filled('barang_id')) {
         return redirect()->route('barang.show', $request->barang_id)
             ->with('success', 'Mutasi barang berhasil dicatat.');
     }
-        return redirect()->route('mutasi-barang.index')->with('success', 'Mutasi barang berhasil dicatat.');
+
+    return redirect()->route('mutasi-barang.index')
+        ->with('success', 'Mutasi barang berhasil dicatat.');
     }
 }

@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-    .btn { display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border-radius:9px; font-weight:700; font-size:14px; cursor:pointer; border:none; text-decoration:none; }
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:9px; font-weight:700; font-size:13px; cursor:pointer; border:none; text-decoration:none; }
     .btn-primary { background:#3b82f6; color:#fff; }
     .btn-primary:hover { background:#2563eb; }
     .btn-secondary { background:#e2e8f0; color:#0f172a; }
@@ -13,8 +13,6 @@
     .btn-warning:hover { background:#d97706; }
     .btn-success { background:#22c55e; color:#fff; }
     .btn-success:hover { background:#16a34a; }
-    .back-link { display:inline-flex; align-items:center; gap:8px; margin-bottom:20px; padding:9px 14px; background:#e2e8f0; color:#0f172a; border-radius:9px; font-weight:700; font-size:14px; text-decoration:none; }
-    .back-link:hover { background:#cbd5e1; }
     .detail-grid { display:grid; grid-template-columns:300px 1fr; gap:24px; align-items:start; }
     .detail-img { width:100%; border-radius:14px; object-fit:cover; background:#f1f5f9; min-height:200px; display:flex; align-items:center; justify-content:center; font-size:60px; }
     .detail-img img { width:100%; border-radius:14px; object-fit:cover; }
@@ -29,11 +27,6 @@
     .badge-red { background:#fee2e2; color:#991b1b; }
     .badge-yellow { background:#fef9c3; color:#854d0e; }
     .badge-gray { background:#f1f5f9; color:#475569; }
-    .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:9px; font-weight:700; font-size:13px; cursor:pointer; border:none; text-decoration:none; }
-    .btn-primary { background:#3b82f6; color:#fff; }
-    .btn-warning { background:#f59e0b; color:#fff; }
-    .btn-danger { background:#ef4444; color:#fff; }
-    .btn-green { background:#22c55e; color:#fff; }
     .action-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
     table { width:100%; border-collapse:collapse; }
     th { background:#f1f5f9; padding:10px 12px; text-align:left; font-size:12px; font-weight:700; color:#475569; }
@@ -45,13 +38,18 @@
     @media(max-width:700px) { .detail-grid { grid-template-columns:1fr; } }
 </style>
 
-<a href="{{ URL::previous() }}" class="btn btn-secondary" style="margin-bottom: 16px;">← Kembali</a>
-
 @if(session('success'))
     <div class="alert-success">{{ session('success') }}</div>
 @endif
 
+<!-- TOMBOL KEMBALI -->
+<a href="{{ URL::previous() }}" class="btn btn-secondary" style="margin-bottom: 16px;">
+    ← Kembali
+</a>
+
+<!-- DETAIL GRID -->
 <div class="detail-grid">
+    <!-- GAMBAR -->
     <div>
         <div class="detail-img">
             @if($barang->gambar)
@@ -62,13 +60,14 @@
         </div>
     </div>
 
+    <!-- INFO & ACTION -->
     <div>
         <div class="card">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;">
                 <div>
-                    <div style="font-size:12px;color:#64748b;font-weight:700;text-transform:uppercase;margin-bottom:4px;">{{ $barang->kode_barang }}</div>
-                    <h1 style="font-size:24px;font-weight:900;color:#0f172a;margin:0 0 10px;">{{ $barang->nama }}</h1>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <div style="font-size:12px; color:#64748b; font-weight:700; text-transform:uppercase; margin-bottom:4px;">{{ $barang->kode_barang }}</div>
+                    <h1 style="font-size:24px; font-weight:900; color:#0f172a; margin:0 0 10px;">{{ $barang->nama }}</h1>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
                         <span class="badge badge-blue">{{ $barang->kategori->nama }}</span>
                         @if($barang->rak)
                             <span class="badge badge-gray">Rak: {{ $barang->rak->kode_rak }}</span>
@@ -83,22 +82,23 @@
                 <div style="text-align:right;">
                     <div class="stok-big">{{ $barang->stok }}<span class="stok-unit">{{ $barang->satuan }}</span></div>
                     @if($barang->stok_minimum > 0)
-                        <div style="font-size:12px;color:#94a3b8;">min. {{ $barang->stok_minimum }}</div>
+                        <div style="font-size:12px; color:#94a3b8;">min. {{ $barang->stok_minimum }}</div>
                     @endif
                 </div>
             </div>
 
             @if($barang->keterangan)
-                <p style="margin:14px 0 0;font-size:14px;color:#475569;">{{ $barang->keterangan }}</p>
+                <p style="margin:14px 0 0; font-size:14px; color:#475569;">{{ $barang->keterangan }}</p>
             @endif
         </div>
 
+        <!-- ACTION BAR -->
         @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
         <div class="action-bar">
-            <a href="{{ route('mutasi-barang.create', ['from' => 'show', 'barang_id' => $barang->id]) }}" class="btn btn-primary">+ Mutasi Stok</a>
-            <a href="{{ route('stock-opname-barang.create', $barang) }}" class="btn btn-primary">Opname</a>
+            <a href="{{ route('mutasi-barang.create', ['barang_id' => $barang->id]) }}" class="btn btn-primary">+ Mutasi Stok</a>
             <a href="{{ route('barang.edit', $barang) }}" class="btn btn-warning">Edit</a>
-            <form method="POST" action="{{ route('barang.destroy', $barang) }}" onsubmit="return confirm('Hapus barang ini?')">
+           <a href="{{ route('stock-opname-barang.create', ['barang' => $barang]) }}" class="btn btn-success">Opname</a>
+            <form method="POST" action="{{ route('barang.destroy', $barang) }}" onsubmit="return confirm('Hapus barang ini?')" style="display:inline;">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-danger">Hapus</button>
             </form>
@@ -107,11 +107,11 @@
     </div>
 </div>
 
-{{-- Riwayat Mutasi --}}
+<!-- RIWAYAT MUTASI -->
 <div class="card">
     <div class="card-title">Riwayat Mutasi Stok</div>
     @if($barang->mutasi->isEmpty())
-        <p style="color:#94a3b8;font-size:14px;">Belum ada mutasi.</p>
+        <p style="color:#94a3b8; font-size:14px;">Belum ada mutasi.</p>
     @else
         <table>
             <thead>
@@ -124,9 +124,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($barang->mutasi->sortByDesc('created_at')->take(10) as $m)
+                @foreach($barang->mutasi->sortByDesc('tanggal')->take(10) as $m)
                 <tr>
-                    <td>{{ $m->tanggal->format('d/m/Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($m->tanggal)->format('d/m/Y') }}</td>
                     <td>
                         @if($m->jenis === 'masuk')
                             <span class="badge badge-green">Masuk</span>
@@ -144,11 +144,11 @@
     @endif
 </div>
 
-{{-- Riwayat Opname --}}
+<!-- RIWAYAT OPNAME -->
 <div class="card">
     <div class="card-title">Riwayat Stock Opname</div>
     @if($barang->stockOpname->isEmpty())
-        <p style="color:#94a3b8;font-size:14px;">Belum ada opname.</p>
+        <p style="color:#94a3b8; font-size:14px;">Belum ada opname.</p>
     @else
         <table>
             <thead>
@@ -182,4 +182,5 @@
         </table>
     @endif
 </div>
+
 @endsection
