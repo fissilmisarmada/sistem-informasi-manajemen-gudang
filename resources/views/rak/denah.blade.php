@@ -78,7 +78,7 @@
         @endif
         <div class="warehouse-header">
             <div>
-                <div class="warehouse-eyebrow">Monitoring lokasi buku</div>
+                <div class="warehouse-eyebrow">Monitoring lokasi barang</div>
                 <h1>Denah Gudang</h1>
                 <p>Pantau kondisi stok dan temukan lokasi rak secara cepat.</p>
             </div>

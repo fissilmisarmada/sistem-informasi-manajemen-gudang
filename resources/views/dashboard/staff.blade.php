@@ -92,7 +92,7 @@
         <div class="section-label"><h2>Menu Cepat</h2></div>
         <div class="quick-grid">
             <a class="quick-action" href="{{ route('pencarian.index') }}"><span>🔍</span>Cari Barang</a>
-            <a class="quick-action" href="{{ route('mutasi-barang.create') }}"><span>↔</span>Mutasi</a>
+            <a class="quick-action" href="{{ route('mutasi-barang.create', ['from' => 'dashboard']) }}"><span>↔</span>Mutasi</a>
             <a class="quick-action" href="{{ route('stock-opname-barang.index') }}"><span>✓</span>Opname Barang</a>
             <a class="quick-action" href="{{ route('denah-gudang') }}"><span>⌂</span>Denah Gudang</a>
             <a class="quick-action" href="{{ route('laporan.index') }}"><span>▥</span>Laporan</a>

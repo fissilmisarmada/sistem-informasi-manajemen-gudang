@@ -42,8 +42,17 @@
     <div class="alert-success">{{ session('success') }}</div>
 @endif
 
+@php
+    $prev = url()->previous();
+    // Simpan url sebelumnya jika BUKAN dari form aksi (mutasi/edit/opname) untuk mencegah loop
+    if (!str_contains($prev, 'mutasi-barang') && !str_contains($prev, 'edit') && !str_contains($prev, 'stock-opname') && $prev !== url()->current()) {
+        session(['valid_back_url' => $prev]);
+    }
+    $backUrl = session('valid_back_url', route('barang.index'));
+@endphp
+
 <!-- TOMBOL KEMBALI -->
-<a href="{{ URL::previous() }}" class="btn btn-secondary" style="margin-bottom: 16px;">
+<a href="{{ $backUrl }}" class="btn btn-secondary" style="margin-bottom: 16px;">
     ← Kembali
 </a>
 

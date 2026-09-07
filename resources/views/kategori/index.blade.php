@@ -33,7 +33,7 @@
     .form-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
 </style>
 
-<a href="{{ route('dashboard.staff') }}" class="btn btn-secondary" style="margin-bottom:16px; padding:8px 14px; font-size:13px;">← Kembali</a>
+<a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="btn btn-secondary" style="margin-bottom:16px; padding:8px 14px; font-size:13px;">← Kembali</a>
 
 <div class="page-header">
     <h1 class="page-title">Kategori Barang</h1>
