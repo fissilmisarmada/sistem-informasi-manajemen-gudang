@@ -13,7 +13,8 @@
     .btn-warning:hover { background:#d97706; }
     .btn-success { background:#22c55e; color:#fff; }
     .btn-success:hover { background:#16a34a; }
-    .detail-grid { display:grid; grid-template-columns:300px 1fr; gap:24px; align-items:start; }
+    .detail-page { max-width:1040px; margin:0 auto; }
+    .detail-grid { display:grid; grid-template-columns:280px minmax(0,1fr); gap:20px; align-items:start; }
     .detail-img { width:100%; border-radius:14px; object-fit:cover; background:#f1f5f9; min-height:200px; display:flex; align-items:center; justify-content:center; font-size:60px; }
     .detail-img img { width:100%; border-radius:14px; object-fit:cover; }
     .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:24px; margin-bottom:20px; }
@@ -44,14 +45,25 @@
 
 @php
     $prev = url()->previous();
-    // Simpan url sebelumnya jika BUKAN dari form aksi (mutasi/edit/opname) untuk mencegah loop
-    if (!str_contains($prev, 'mutasi-barang') && !str_contains($prev, 'edit') && !str_contains($prev, 'stock-opname') && $prev !== url()->current()) {
-        session(['valid_back_url' => $prev]);
+    $dashboardUrl = auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan'));
+
+    if (request('from') === 'cari') {
+        $backUrl = route('pencarian.index', ['q' => request('q')]);
+        session(['valid_back_url' => $backUrl]);
+    } elseif (request('from') === 'dashboard') {
+        $backUrl = $dashboardUrl;
+        session(['valid_back_url' => $backUrl]);
+    } else {
+        // Simpan url sebelumnya jika BUKAN dari form aksi untuk mencegah loop
+        if (!str_contains($prev, 'mutasi-barang') && !str_contains($prev, 'edit') && !str_contains($prev, 'stock-opname') && $prev !== url()->current()) {
+            session(['valid_back_url' => $prev]);
+        }
+        $backUrl = session('valid_back_url', route('barang.index'));
     }
-    $backUrl = session('valid_back_url', route('barang.index'));
 @endphp
 
 <!-- TOMBOL KEMBALI -->
+<div class="detail-page">
 <a href="{{ $backUrl }}" class="btn btn-secondary" style="margin-bottom: 16px;">
     ← Kembali
 </a>
@@ -106,7 +118,7 @@
         <div class="action-bar">
             <a href="{{ route('mutasi-barang.create', ['barang_id' => $barang->id]) }}" class="btn btn-primary">+ Mutasi Stok</a>
             <a href="{{ route('barang.edit', $barang) }}" class="btn btn-warning">Edit</a>
-           <a href="{{ route('stock-opname-barang.create', ['barang' => $barang]) }}" class="btn btn-success">Opname</a>
+           <a href="{{ route('stock-opname-barang.create', ['barang' => $barang, 'from' => 'detail-barang']) }}" class="btn btn-success">Opname</a>
             <form method="POST" action="{{ route('barang.destroy', $barang) }}" onsubmit="return confirm('Hapus barang ini?')" style="display:inline;">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-danger">Hapus</button>
@@ -190,6 +202,8 @@
             </tbody>
         </table>
     @endif
+</div>
+
 </div>
 
 @endsection

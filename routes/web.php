@@ -34,6 +34,10 @@ Route::middleware('auth')->group(function () {
         ->middleware('role:admin,staff,pimpinan')
         ->name('denah-gudang');
 
+    Route::post('/denah-gudang/assign', [RakController::class, 'assignBarang'])
+        ->middleware('role:admin,staff')
+        ->name('denah-gudang.assign');
+
     Route::middleware('role:admin')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
@@ -97,14 +101,23 @@ Route::middleware('auth')->group(function () {
     });
 
     // Pencarian global (semua barang gudang)
+    Route::middleware('role:admin,staff')->group(function () {
+        Route::get('/input-barang', [PencarianController::class, 'input'])->name('pencarian.input');
+        Route::get('/input-barang/lookup', [PencarianController::class, 'lookupInput'])->name('pencarian.input.lookup');
+        Route::post('/input-barang/proses', [PencarianController::class, 'prosesInput'])->name('pencarian.input.proses');
+        Route::post('/input-barang/manual', [PencarianController::class, 'simpanInputManual'])->name('pencarian.input.manual');
+    });
+
     Route::get('/cari', [PencarianController::class, 'index'])
         ->middleware('role:admin,staff,pimpinan')
         ->name('pencarian.index');
 
     // Kategori barang
-    Route::prefix('kategori')->name('kategori.')->middleware('role:admin,staff')->group(function () {
+    Route::prefix('kategori')->name('kategori.')->middleware('role:admin,staff,pimpinan')->group(function () {
         Route::get('/', [KategoriController::class, 'index'])->name('index');
-        Route::post('/', [KategoriController::class, 'store'])->name('store');
+        Route::middleware('role:admin,staff')->group(function () {
+            Route::post('/', [KategoriController::class, 'store'])->name('store');
+        });
         Route::middleware('role:admin')->group(function () {
             Route::put('/{kategori}', [KategoriController::class, 'update'])->name('update');
             Route::delete('/{kategori}', [KategoriController::class, 'destroy'])->name('destroy');
@@ -114,6 +127,7 @@ Route::middleware('auth')->group(function () {
     // Barang gudang
     Route::prefix('barang')->name('barang.')->middleware('role:admin,staff,pimpinan')->group(function () {
         Route::get('/', [BarangController::class, 'index'])->name('index');
+        Route::get('/stok-menipis', [BarangController::class, 'stokMenipis'])->name('stok-menipis');
         Route::get('/{barang}', [BarangController::class, 'show'])->name('show');
 
         Route::middleware('role:admin,staff')->group(function () {
@@ -129,10 +143,12 @@ Route::middleware('auth')->group(function () {
     });
 
     // Mutasi barang (masuk/keluar)
-    Route::prefix('mutasi-barang')->name('mutasi-barang.')->middleware('role:admin,staff')->group(function () {
+    Route::prefix('mutasi-barang')->name('mutasi-barang.')->middleware('role:admin,staff,pimpinan')->group(function () {
         Route::get('/', [MutasiBarangController::class, 'index'])->name('index');
-        Route::get('/tambah', [MutasiBarangController::class, 'create'])->name('create');
-        Route::post('/', [MutasiBarangController::class, 'store'])->name('store');
+        Route::middleware('role:admin,staff')->group(function () {
+            Route::get('/tambah', [MutasiBarangController::class, 'create'])->name('create');
+            Route::post('/', [MutasiBarangController::class, 'store'])->name('store');
+        });
     });
 
     // Stock opname barang

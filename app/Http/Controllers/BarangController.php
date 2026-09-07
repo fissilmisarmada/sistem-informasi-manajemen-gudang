@@ -37,6 +37,16 @@ class BarangController extends Controller
         return view('barang.index', compact('barangs', 'kategoris', 'raks'));
     }
 
+    public function stokMenipis()
+    {
+        $barangs = Barang::with(['kategori', 'rak'])
+            ->whereRaw('stok <= stok_minimum AND stok_minimum > 0')
+            ->orderBy('nama')
+            ->paginate(15);
+
+        return view('barang.stok-menipis', compact('barangs'));
+    }
+
     public function create()
     {
         $kategoris = Kategori::orderBy('nama')->get();

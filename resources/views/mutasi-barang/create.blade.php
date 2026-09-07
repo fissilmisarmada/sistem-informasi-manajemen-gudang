@@ -3,7 +3,8 @@
 @section('content')
 <style>
     .page-title { font-size:22px; font-weight:800; color:#0f172a; margin-bottom:24px; }
-    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:28px; max-width:560px; }
+    .mutation-page { max-width:720px; margin:0 auto; }
+    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:28px; max-width:560px; margin:0 auto; }
     .form-group { margin-bottom:18px; }
     label { display:block; font-size:13px; font-weight:700; color:#475569; margin-bottom:6px; }
     select, input[type=number], textarea { width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; }
@@ -21,6 +22,7 @@
     input[type=radio] { display:none; }
 </style>
 
+<div class="mutation-page">
 <!-- JUDUL -->
 <h1 class="page-title">Catat Mutasi Barang</h1>
 
@@ -80,16 +82,18 @@
 
         <!-- SATU-SATUNYA form-actions -->
         <div class="form-actions">
-    @if(request('barang_id'))
-        <a href="{{ route('barang.show', request('barang_id')) }}" class="btn btn-secondary">Batal</a>
-    @elseif(request('from') === 'dashboard')
-        <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="btn btn-secondary">Batal</a>
-    @else
-        <a href="{{ route('mutasi-barang.index') }}" class="btn btn-secondary">Batal</a>
-    @endif
+    @php
+        $cancelUrl = request('barang_id')
+            ? route('barang.show', request('barang_id'))
+            : (request('from') === 'dashboard'
+                ? (auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')))
+                : route('mutasi-barang.index'));
+    @endphp
+    <a href="{{ $cancelUrl }}" class="btn btn-secondary">Batal</a>
     <button type="submit" class="btn btn-primary">Simpan Mutasi</button>
 </div>
     </form>
+</div>
 </div>
 
 <script>

@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rak;
+use App\Models\Barang;
 use Illuminate\Http\Request;
 
 class RakController extends Controller
 {
-    
+
     public function index()
     {
-        $dataRak = Rak::all();
+        $dataRak = Rak::withCount('barang')->withSum('barang', 'stok')->orderBy('kode_rak')->get();
 
         return view('rak.index', [
             'dataRak' => $dataRak,
         ]);
     }
 
- 
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -25,7 +26,7 @@ class RakController extends Controller
             'nama_lokasi' => 'required|string|max:100',
             'kapasitas'   => 'nullable|integer|min:0',
         ]);
-        
+
 
         Rak::create($validated);
 
@@ -34,7 +35,7 @@ class RakController extends Controller
             ->with('sukses', 'Data rak berhasil ditambahkan.');
     }
 
-    
+
     public function update(Request $request, Rak $rak)
     {
         $validated = $request->validate([
@@ -51,7 +52,7 @@ class RakController extends Controller
             ->with('sukses', 'Data rak berhasil diperbarui.');
     }
 
-  
+
     public function destroy(Rak $rak)
     {
         $rak->delete();
@@ -61,28 +62,42 @@ class RakController extends Controller
             ->with('sukses', 'Data rak berhasil dihapus.');
     }
 
-   
+
     public function show(Rak $rak)
     {
-        $bukuDiRakIni = $rak->buku()->get();
+        $barangDiRakIni = $rak->barang()->with('kategori')->orderBy('nama')->get();
 
         return view('rak.show', [
             'rak'  => $rak,
-            'buku' => $bukuDiRakIni,
+            'barang' => $barangDiRakIni,
         ]);
+    }
+
+    public function assignBarang(Request $request)
+    {
+        $validated = $request->validate([
+            'barang_id' => 'required|exists:barang,id',
+            'rak_id' => 'required|exists:rak,id',
+        ]);
+
+        Barang::whereKey($validated['barang_id'])->update(['rak_id' => $validated['rak_id']]);
+
+        return redirect()
+            ->route('denah-gudang', ['rak' => $validated['rak_id']])
+            ->with('sukses', 'Lokasi barang berhasil diperbarui.');
     }
 
     public function denahGudang(Request $request)
     {
         $search = trim((string) $request->input('q', ''));
         $statusFilter = $request->input('status', 'semua');
-        $dataRak = Rak::withSum('buku', 'stok')
-            ->withCount('buku')
+        $dataRak = Rak::withSum('barang', 'stok')
+            ->withCount('barang')
             ->orderBy('kode_rak')
             ->get();
 
         $getStatus = static function (Rak $rak): string {
-            $stok = (int) ($rak->buku_sum_stok ?? 0);
+            $stok = (int) ($rak->barang_sum_stok ?? 0);
 
             return $stok === 0 ? 'kosong' : ($stok <= 5 ? 'menipis' : 'aman');
         };
@@ -98,8 +113,18 @@ class RakController extends Controller
 
         $selectedRak = $dataRak->firstWhere('id', (int) $request->input('rak')) ?? $rakTampil->first();
         if ($selectedRak) {
-            $selectedRak->load('buku');
+            $selectedRak->load('barang.kategori');
         }
+
+        $barangTersedia = Barang::with('kategori')
+            ->where(function ($query) use ($selectedRak) {
+                $query->whereNull('rak_id');
+                if ($selectedRak) {
+                    $query->orWhere('rak_id', '!=', $selectedRak->id);
+                }
+            })
+            ->orderBy('nama')
+            ->get();
 
         $ringkasan = [
             'total' => $dataRak->count(),
@@ -115,6 +140,7 @@ class RakController extends Controller
             'search' => $search,
             'statusFilter' => $statusFilter,
             'getStatus' => $getStatus,
+            'barangTersedia' => $barangTersedia,
         ]);
     }
 }

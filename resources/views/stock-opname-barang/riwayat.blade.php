@@ -17,7 +17,7 @@
     .empty-state { text-align:center; padding:40px; color:#94a3b8; }
 </style>
 
-<a href="{{ route('stock-opname-barang.index') }}" class="back-link">← Kembali</a>
+<a href="{{ request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('stock-opname-barang.index') }}" class="back-link">← Kembali</a>
 
 <h1 class="page-title">Riwayat Opname: {{ $barang->nama }}</h1>
 <p class="page-sub">{{ $barang->kode_barang }} · {{ $barang->kategori->nama }}</p>

@@ -30,7 +30,7 @@
     @media(max-width:700px) { .grid { grid-template-columns:1fr; } }
 </style>
 
-<a href="{{ route('stock-opname-barang.index') }}" class="back-link">← Kembali</a>
+<a href="{{ request('from') === 'detail-barang' ? route('barang.show', $barang) : (request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('stock-opname-barang.index')) }}" class="back-link">← Kembali</a>
 
 <h1 class="page-title">Opname: {{ $barang->nama }}</h1>
 <p class="page-sub">{{ $barang->kode_barang }} · {{ $barang->kategori->nama }}</p>
@@ -87,7 +87,7 @@
                 <textarea name="keterangan" rows="3" placeholder="Catatan opname...">{{ old('keterangan') }}</textarea>
             </div>
             <div class="form-actions">
-                <a href="{{ route('stock-opname-barang.index') }}" class="btn btn-secondary">Batal</a>
+                <a href="{{ request('from') === 'detail-barang' ? route('barang.show', $barang) : (request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('stock-opname-barang.index')) }}" class="btn btn-secondary">Batal</a>
                 <button type="submit" class="btn btn-primary">Simpan Opname</button>
             </div>
         </form>

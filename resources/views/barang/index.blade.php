@@ -36,6 +36,14 @@
     .empty-state { text-align:center; padding:60px 20px; color:#94a3b8; }
     .empty-state .icon { font-size:48px; margin-bottom:12px; }
     .pagination-wrap { margin-top:24px; }
+    .pagination-wrap nav { display:flex; justify-content:center; }
+    .pagination-wrap nav > div:first-child { display:none; }
+    .pagination-wrap nav > div:last-child { display:flex; align-items:center; gap:5px; }
+    .pagination-wrap nav a, .pagination-wrap nav span { display:inline-flex; align-items:center; justify-content:center; min-width:34px; height:34px; padding:0 10px; border:1px solid #e2e8f0; border-radius:8px; background:#fff; color:#475569; font-size:13px; line-height:1; text-decoration:none; }
+    .pagination-wrap nav a:hover { background:#eff6ff; border-color:#93c5fd; color:#1d4ed8; }
+    .pagination-wrap nav span[aria-current="page"] { border-color:#2563eb; background:#2563eb; color:#fff; font-weight:800; }
+    .pagination-wrap nav svg { display:block; width:16px; height:16px; }
+    .pagination-wrap nav a[rel="prev"], .pagination-wrap nav a[rel="next"] { min-width:34px; padding:0; }
 </style>
 
 <div class="page-header">
@@ -80,7 +88,7 @@
 @else
     <div class="grid">
         @foreach($barangs as $barang)
-        <div class="barang-card" data-url="{{ route('barang.show', $barang) }}">>
+        <div class="barang-card" data-url="{{ route('barang.show', ['barang' => $barang, 'from' => request('from')]) }}">
             <div class="barang-img">
                 @if($barang->gambar)
                     <img src="{{ Storage::url($barang->gambar) }}" alt="{{ $barang->nama }}">

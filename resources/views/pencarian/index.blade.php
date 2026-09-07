@@ -91,7 +91,7 @@
             <div class="section-title">📚 Buku ({{ $buku->count() }} hasil)</div>
             <div class="grid">
                 @foreach($buku as $b)
-                <div class="result-card" data-url="{{ route('barang.show', $b) }}">
+                <div class="result-card" data-url="{{ route('barang.show', ['barang' => $b, 'from' => 'cari', 'q' => $q]) }}">
                     <div class="type-tag type-buku">Buku</div>
                     <div class="nama">{{ $b->nama }}</div>
                     <div class="kode">{{ $b->kode_barang }}</div>
@@ -114,7 +114,7 @@
             <div class="section-title">📦 Barang ({{ $barangLain->count() }} hasil)</div>
             <div class="grid">
                 @foreach($barangLain as $br)
-                <div class="result-card" data-url="{{ route('barang.show', $br) }}">
+                <div class="result-card" data-url="{{ route('barang.show', ['barang' => $br, 'from' => 'cari', 'q' => $q]) }}">
                     <div class="type-tag type-barang">{{ $br->kategori->nama }}</div>
                     <div class="nama">{{ $br->nama }}</div>
                     <div class="kode">{{ $br->kode_barang }}</div>

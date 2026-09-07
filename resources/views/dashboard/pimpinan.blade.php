@@ -28,7 +28,7 @@
         .overview-item::after { content:'->'; position:absolute; top:17px; right:18px; color:#2563eb; font-size:17px; font-weight:800; opacity:.65; transition:transform .2s ease, opacity .2s ease; }
         .overview-item:hover, .overview-item:focus-visible { border-color:#93c5fd; box-shadow:0 14px 26px rgba(15,74,165,.15); transform:translateY(-5px); outline:0; }
         .overview-item:hover::after, .overview-item:focus-visible::after { opacity:1; transform:translate(4px, -3px); }
-        .overview-item.primary { background:#123b82; border-color:#123b82; color:#fff; }
+        .overview-item.primary { background:linear-gradient(135deg,#1C396A 0%,#1651A4 52%,#357A38 86%,#F7D60A 125%); border-color:#1C396A; color:#fff; }
         .overview-item.danger { background:#991b1b; border-color:#991b1b; color:#fff; }
         .overview-item.primary::after { color:#dbeafe; }
         .overview-item.danger::after { color:#fecaca; }
@@ -73,7 +73,7 @@
             <a class="overview-item primary" href="{{ route('barang.index') }}"><small>Total Item Gudang</small><strong>{{ number_format($totalItem, 0, ',', '.') }}</strong><em>{{ $totalBuku }} buku + {{ $totalBarang }} barang lain</em></a>
             <a class="overview-item" href="{{ route('kategori.index') }}"><small>Kategori</small><strong>{{ number_format($totalKategori, 0, ',', '.') }}</strong><em>Jenis barang di gudang</em></a>
             <a class="overview-item" href="{{ route('denah-gudang') }}"><small>Rak Gudang</small><strong>{{ number_format($totalRak, 0, ',', '.') }}</strong><em>Lokasi penyimpanan</em></a>
-            <a class="overview-item {{ $barangMenipis > 0 ? 'danger' : '' }}" href="{{ route('barang.index') }}?stok=menipis"><small>⚠ Stok Menipis</small><strong>{{ number_format($barangMenipis, 0, ',', '.') }}</strong><em>Butuh perhatian</em></a>
+            <a class="overview-item {{ $barangMenipis > 0 ? 'danger' : '' }}" href="{{ route('barang.stok-menipis', ['from' => 'dashboard']) }}"><small>⚠ Stok Menipis</small><strong>{{ number_format($barangMenipis, 0, ',', '.') }}</strong><em>Butuh perhatian</em></a>
         </div>
 
         <div class="leader-grid">
