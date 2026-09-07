@@ -82,8 +82,10 @@
         <div class="form-actions">
     @if(request('barang_id'))
         <a href="{{ route('barang.show', request('barang_id')) }}" class="btn btn-secondary">Batal</a>
+    @elseif(request('from') === 'dashboard')
+        <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="btn btn-secondary">Batal</a>
     @else
-        <a href="{{ URL::previous() }}" class="btn btn-secondary">Batal</a>
+        <a href="{{ route('mutasi-barang.index') }}" class="btn btn-secondary">Batal</a>
     @endif
     <button type="submit" class="btn btn-primary">Simpan Mutasi</button>
 </div>

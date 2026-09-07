@@ -2,7 +2,7 @@
 
 @section('content')
     <div style="padding:24px 0;">
-    <a class="back-dashboard" href="{{ route('dashboard.staff') }}">&larr; Kembali ke Dashboard</a>
+    <a class="back-dashboard" href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}">&larr; Kembali ke Dashboard</a>
     <div style="margin-bottom:22px;">
         <div style="font-size:12px;letter-spacing:1px;color:#64748b;text-transform:uppercase;font-weight:700;">Kontrol Inventaris</div>
         <h1 style="margin:8px 0 0;font-size:32px;color:#0f172a;">Stock Opname</h1>

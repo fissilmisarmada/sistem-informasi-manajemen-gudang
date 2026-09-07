@@ -23,7 +23,7 @@
 
 <div class="page-header">
     <div style="display:flex; align-items:center; gap:16px;">
-        <a href="{{ route('dashboard.staff') }}" class="btn btn-secondary" style="padding:8px 14px; font-size:13px;">← Kembali</a>
+        <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="btn btn-secondary" style="padding:8px 14px; font-size:13px;">← Kembali</a>
         <h1 class="page-title">Stock Opname Barang</h1>
     </div>
 

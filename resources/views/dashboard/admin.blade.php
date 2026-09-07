@@ -7,6 +7,8 @@
 
         $totalBuku = \App\Models\Barang::where('kategori_id', $bukuKategoriId)->count();
         $totalBarang = \App\Models\Barang::where('kategori_id', '!=', $bukuKategoriId)->count();
+        $totalStok = \App\Models\Barang::where('kategori_id', $bukuKategoriId)->sum('stok');
+        $bukuDitempatkan = \App\Models\Barang::where('kategori_id', $bukuKategoriId)->whereNotNull('rak_id')->count();
         $totalItem = $totalBuku + $totalBarang;
         $totalRak = \App\Models\Rak::count();
         $totalKategori = \App\Models\Kategori::count();
@@ -15,6 +17,7 @@
         $totalStaff = \App\Models\User::where('role', 'staff')->count();
         $totalPimpinan = \App\Models\User::where('role', 'pimpinan')->count();
         $barangMenipis = \App\Models\Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->count();
+        $barangMenipis3 = \App\Models\Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->orderBy('nama')->take(3)->get();
         $aktivitasTerbaru = \App\Models\MutasiBarang::with(['barang.kategori', 'staff'])->latest('created_at')->take(4)->get();
     @endphp
 
@@ -43,7 +46,7 @@
         .admin-section { margin:22px 0 12px; display:flex; justify-content:space-between; align-items:center; }
         .admin-section h2 { margin:0; color:#1e3a6f; font-size:15px; }
         .admin-section a { color:#2563eb; font-size:11px; font-weight:800; }
-        .quick-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:9px; }
+        .quick-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:9px; }
         .quick-action { min-height:84px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:#fff; border:1px solid #e2e8f0; border-radius:11px; color:#1e3a6f; font-size:10px; font-weight:800; text-align:center; box-shadow:0 4px 12px rgba(15,23,42,.04); transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
         .quick-action:hover, .quick-action:focus-visible { border-color:#93c5fd; box-shadow:0 10px 18px rgba(15,74,165,.13); transform:translateY(-4px); outline:0; }
         .quick-action span { color:#2563eb; font-size:20px; line-height:1; }
@@ -86,11 +89,12 @@
 
         <div class="admin-section"><h2>Menu Cepat</h2></div>
         <div class="quick-grid">
-            <a class="quick-action" href="{{ route('buku.cari') }}"><span>⌕</span>Cari Buku</a>
-            <a class="quick-action" href="{{ route('buku.index') }}"><span>BK</span>Data Buku</a>
+            <a class="quick-action" href="{{ route('users') }}"><span>👤</span>Pengguna</a>
+            <a class="quick-action" href="{{ route('barang.index') }}"><span>📦</span>Data Barang</a>
+            <a class="quick-action" href="{{ route('mutasi-barang.create', ['from' => 'dashboard']) }}"><span>↔</span>Mutasi</a>
+            <a class="quick-action" href="{{ route('stock-opname-barang.index') }}"><span>✓</span>Opname</a>
             <a class="quick-action" href="{{ route('denah-gudang') }}"><span>⌂</span>Denah Gudang</a>
             <a class="quick-action" href="{{ route('rak.index') }}"><span>▦</span>Kelola Rak</a>
-            <a class="quick-action" href="{{ route('users') }}"><span>US</span>Pengguna</a>
             <a class="quick-action" href="{{ route('laporan.index') }}"><span>▥</span>Laporan</a>
             <a class="quick-action" href="{{ route('riwayat.index') }}"><span>≡</span>Riwayat</a>
         </div>
@@ -98,18 +102,18 @@
         <div class="admin-section"><h2>Informasi Sistem</h2><a href="{{ route('laporan.index') }}">Lihat laporan &rsaquo;</a></div>
         <div class="admin-grid">
             <section class="admin-panel">
-                <div class="panel-head"><h2>Ringkasan Inventaris</h2><a href="{{ route('buku.index') }}">Data buku &rsaquo;</a></div>
-                <div class="data-row"><span>Jumlah judul buku</span><strong>{{ number_format($totalBuku, 0, ',', '.') }} judul</strong></div>
-                <div class="data-row"><span>Total eksemplar</span><strong>{{ number_format($totalStok, 0, ',', '.') }} buku</strong></div>
-                <div class="data-row"><span>Buku dengan lokasi rak</span><strong>{{ number_format($bukuDitempatkan, 0, ',', '.') }} buku</strong></div>
-                <div class="data-row"><span>Kategori pengguna</span><strong>{{ $totalAdmin }} admin, {{ $totalStaff }} staff, {{ $totalPimpinan }} pimpinan</strong></div>
+                <div class="panel-head"><h2>Ringkasan Inventaris Gudang</h2><a href="{{ route('barang.index') }}">Data barang &rsaquo;</a></div>
+                <div class="data-row"><span>Total item gudang</span><strong>{{ number_format($totalItem, 0, ',', '.') }} item ({{ $totalBuku }} buku + {{ $totalBarang }} barang)</strong></div>
+                <div class="data-row"><span>Kategori barang</span><strong>{{ number_format($totalKategori, 0, ',', '.') }} kategori</strong></div>
+                <div class="data-row"><span>Stok menipis</span><strong>{{ number_format($barangMenipis, 0, ',', '.') }} item perlu restock</strong></div>
+                <div class="data-row"><span>Pengguna sistem</span><strong>{{ $totalAdmin }} admin, {{ $totalStaff }} staff, {{ $totalPimpinan }} pimpinan</strong></div>
             </section>
             <section class="admin-panel">
-                <div class="panel-head"><h2>Aktivitas Opname</h2><a href="{{ route('laporan.index') }}">Semua &rsaquo;</a></div>
+                <div class="panel-head"><h2>Mutasi Barang Terbaru</h2><a href="{{ route('mutasi-barang.index') }}">Semua &rsaquo;</a></div>
                 @forelse($aktivitasTerbaru as $aktivitas)
-                    <div class="activity-row"><span class="activity-icon">OK</span><span class="activity-copy"><strong>{{ $aktivitas->rak?->nama_lokasi ?? $aktivitas->rak?->kode_rak ?? 'Rak' }}</strong><small>Oleh {{ $aktivitas->staff?->name ?? 'Staff' }}</small></span><span class="activity-time">{{ $aktivitas->tanggal?->diffForHumans() }}</span></div>
+                    <div class="activity-row"><span class="activity-icon">{{ $aktivitas->jenis === 'masuk' ? '↑' : '↓' }}</span><span class="activity-copy"><strong>{{ $aktivitas->barang->nama }}</strong><small>{{ $aktivitas->jenis === 'masuk' ? 'Masuk' : 'Keluar' }} · Oleh {{ $aktivitas->staff?->name ?? 'Staff' }}</small></span><span class="activity-time">{{ \Carbon\Carbon::parse($aktivitas->created_at)->diffForHumans() }}</span></div>
                 @empty
-                    <div class="empty-state">Belum ada aktivitas stock opname.</div>
+                    <div class="empty-state">Belum ada aktivitas mutasi barang.</div>
                 @endforelse
             </section>
         </div>
