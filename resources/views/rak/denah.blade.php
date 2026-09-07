@@ -5,7 +5,7 @@
         $statusLabels = ['aman' => 'Stok Aman', 'menipis' => 'Stok Menipis', 'kosong' => 'Rak Kosong'];
         $selectedStatus = $selectedRak ? $getStatus($selectedRak) : null;
         $kategoriRak = $selectedRak
-            ? $selectedRak->buku->groupBy(fn ($buku) => $buku->kategori ?: 'Umum')->map(fn ($buku) => $buku->sum('stok'))->sortDesc()->take(3)
+            ? $selectedRak->barang->groupBy(fn ($barang) => $barang->kategori?->nama ?: 'Tanpa kategori')->map(fn ($barang) => $barang->sum('stok'))->sortDesc()->take(3)
             : collect();
     @endphp
 
@@ -62,6 +62,12 @@
         .category-title { margin:16px 0 8px; color:#1e3a6f; font-size:12px; }
         .category-row { display:flex; justify-content:space-between; gap:10px; padding:7px 0; color:#64748b; font-size:11px; }
         .category-row strong { color:#1e3a6f; }
+        .assign-form { margin-top:16px; padding-top:16px; border-top:1px solid #eef2f7; }
+        .assign-form label { display:block; margin-bottom:7px; color:#1e3a6f; font-size:11px; font-weight:800; }
+        .assign-row { display:flex; gap:7px; }
+        .assign-row select { min-width:0; flex:1; padding:9px 8px; border:1px solid #dbe4f0; border-radius:8px; color:#334e70; font-size:11px; }
+        .assign-row button { padding:9px 11px; border:0; border-radius:8px; background:#164194; color:#fff; font-size:11px; font-weight:800; cursor:pointer; }
+        .assign-row select:focus { outline:0; border-color:#2563eb; }
         .empty-map { padding:34px 12px; color:#64748b; text-align:center; font-size:12px; }
         .warehouse-footer-link { display:inline-block; margin-top:14px; color:#2563eb; font-size:11px; font-weight:800; }
         @media (max-width:800px) { .warehouse-header { display:block; } .warehouse-search { margin-top:16px; } .warehouse-layout { grid-template-columns:1fr; } .detail-panel { position:static; } }
@@ -112,8 +118,8 @@
                             @php $rakStatus = $getStatus($rak); @endphp
                             <a class="rack-tile {{ $rakStatus }} {{ $selectedRak?->id === $rak->id ? 'selected' : '' }}" href="{{ route('denah-gudang', ['q' => $search, 'status' => $statusFilter, 'rak' => $rak->id]) }}" aria-label="Lihat detail {{ $rak->kode_rak }}">
                                 <small>{{ $rak->kode_rak }}</small>
-                                <strong>{{ number_format((int) ($rak->buku_sum_stok ?? 0), 0, ',', '.') }}</strong>
-                                <em>Buku</em>
+                                <strong>{{ number_format((int) ($rak->barang_sum_stok ?? 0), 0, ',', '.') }}</strong>
+                                <em>Total stok</em>
                             </a>
                         @endforeach
                     </div>
@@ -124,7 +130,7 @@
                     @endforeach
                 </div>
                 @if(!auth()->user()->isPimpinan())
-                    <a class="warehouse-footer-link" href="{{ route('rak.index') }}">Kelola data rak &rsaquo;</a>
+                    <a class="warehouse-footer-link" href="{{ route('rak.index', ['from' => 'denah']) }}">Kelola data rak &rsaquo;</a>
                 @endif
             </section>
 
@@ -134,16 +140,25 @@
                     <div class="detail-title"><h2>{{ $selectedRak->kode_rak }}</h2><span class="status-pill {{ $selectedStatus }}">{{ $statusLabels[$selectedStatus] }}</span></div>
                     <div class="detail-list">
                         <div class="detail-row"><span>Lokasi</span><strong>{{ $selectedRak->nama_lokasi }}</strong></div>
-                        <div class="detail-row"><span>Jumlah Buku</span><strong>{{ number_format((int) ($selectedRak->buku_sum_stok ?? 0), 0, ',', '.') }} Buku</strong></div>
-                        <div class="detail-row"><span>Kapasitas</span><strong>{{ $selectedRak->kapasitas ? number_format($selectedRak->kapasitas, 0, ',', '.') . ' Buku' : 'Belum ditentukan' }}</strong></div>
+                        <div class="detail-row"><span>Jumlah Barang</span><strong>{{ number_format((int) ($selectedRak->barang_sum_stok ?? 0), 0, ',', '.') }} unit</strong></div>
+                        <div class="detail-row"><span>Jenis Barang</span><strong>{{ $selectedRak->barang->count() }}</strong></div>
+                        <div class="detail-row"><span>Kapasitas</span><strong>{{ $selectedRak->kapasitas ? number_format($selectedRak->kapasitas, 0, ',', '.') . ' unit' : 'Belum ditentukan' }}</strong></div>
                     </div>
-                    <h3 class="category-title">Kategori Buku</h3>
+                    @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
+                        <form method="POST" action="{{ route('denah-gudang.assign') }}" class="assign-form">
+                            @csrf
+                            <input type="hidden" name="rak_id" value="{{ $selectedRak->id }}">
+                            <label for="barang_id">Tempatkan barang ke rak ini</label>
+                            <div class="assign-row"><select id="barang_id" name="barang_id" required><option value="">Pilih barang</option>@foreach($barangTersedia as $barang)<option value="{{ $barang->id }}">{{ $barang->kode_barang }} - {{ $barang->nama }}</option>@endforeach</select><button type="submit">Simpan</button></div>
+                        </form>
+                    @endif
+                    <h3 class="category-title">Kategori Barang</h3>
                     @forelse($kategoriRak as $kategori => $jumlah)
-                        <div class="category-row"><span>{{ $kategori }}</span><strong>{{ number_format($jumlah, 0, ',', '.') }} Buku</strong></div>
+                        <div class="category-row"><span>{{ $kategori }}</span><strong>{{ number_format($jumlah, 0, ',', '.') }} unit</strong></div>
                     @empty
-                        <div class="category-row"><span>Belum ada buku di rak ini.</span></div>
+                        <div class="category-row"><span>Belum ada barang di rak ini.</span></div>
                     @endforelse
-                    <a class="warehouse-footer-link" href="{{ route('rak.show', $selectedRak) }}">Lihat isi rak &rsaquo;</a>
+                    <a class="warehouse-footer-link" href="{{ route('rak.show', ['rak' => $selectedRak, 'from' => 'denah']) }}">Lihat isi rak &rsaquo;</a>
                 @else
                     <div class="detail-kicker">Informasi Rak</div>
                     <h2 style="margin:8px 0;color:#123b82;font-size:20px;">Belum ada rak</h2>

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Buku;
+use App\Models\Barang;
+use App\Models\Kategori;
+use App\Models\MutasiBarang;
 use App\Models\Rak;
-use App\Models\RiwayatPenempatan;
-use App\Models\StockOpname;
+use App\Models\StockOpnameBarang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,36 +14,42 @@ class LaporanController extends Controller
 {
     public function index()
     {
-        $bukus = Buku::with('rak')->orderBy('judul')->get();
+        $barangs = Barang::with(['kategori', 'rak'])->orderBy('nama')->get();
+        $mutasiTerbaru = MutasiBarang::with(['barang', 'staff'])->latest('created_at')->take(8)->get();
         $ringkasan = [
-            'buku' => $bukus->count(),
-            'buku_ditempatkan' => $bukus->whereNotNull('rak_id')->count(),
+            'total_item' => $barangs->count(),
+            'total_stok' => $barangs->sum('stok'),
+            'stok_menipis' => $barangs->filter->isStokMenipis()->count(),
+            'ditempatkan' => $barangs->whereNotNull('rak_id')->count(),
+            'kategori' => Kategori::count(),
             'rak' => Rak::count(),
-            'penempatan' => RiwayatPenempatan::count(),
-            'opname' => StockOpname::count(),
+            'mutasi' => MutasiBarang::count(),
+            'opname' => StockOpnameBarang::count(),
         ];
 
-        return view('laporan.index', compact('bukus', 'ringkasan'));
+        return view('laporan.index', compact('barangs', 'mutasiTerbaru', 'ringkasan'));
     }
 
     public function export()
     {
         $fileName = 'laporan' . now()->format('Y-m-d-His') . '.csv';
-        $bukus = Buku::with('rak')->orderBy('judul')->cursor();
+        $barangs = Barang::with(['kategori', 'rak'])->orderBy('nama')->cursor();
 
-        return response()->streamDownload(function () use ($bukus) {
+        return response()->streamDownload(function () use ($barangs) {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['kode_buku', 'judul', 'isbn', 'eisbn', 'jumlah_halaman', 'kode_rak', 'nama_lokasi']);
+            fputcsv($handle, ['kode_barang', 'nama', 'kode_kategori', 'kategori', 'satuan', 'stok', 'stok_minimum', 'kode_rak', 'keterangan']);
 
-            foreach ($bukus as $buku) {
+            foreach ($barangs as $barang) {
                 fputcsv($handle, [
-                    $buku->kode_buku,
-                    $buku->judul,
-                    $buku->isbn,
-                    $buku->eisbn,
-                    $buku->jumlah_halaman,
-                    $buku->rak?->kode_rak,
-                    $buku->rak?->nama_lokasi,
+                    $barang->kode_barang,
+                    $barang->nama,
+                    $barang->kategori?->kode_kategori,
+                    $barang->kategori?->nama,
+                    $barang->satuan,
+                    $barang->stok,
+                    $barang->stok_minimum,
+                    $barang->rak?->kode_rak,
+                    $barang->keterangan,
                 ]);
             }
 
@@ -58,7 +65,7 @@ class LaporanController extends Controller
 
         $handle = fopen($request->file('file')->getRealPath(), 'r');
         $headers = fgetcsv($handle);
-        $expectedHeaders = ['kode_buku', 'judul', 'isbn', 'eisbn', 'jumlah_halaman', 'kode_rak', 'nama_lokasi'];
+        $expectedHeaders = ['kode_barang', 'nama', 'kode_kategori', 'kategori', 'satuan', 'stok', 'stok_minimum', 'kode_rak', 'keterangan'];
 
         if ($headers !== $expectedHeaders) {
             fclose($handle);
@@ -71,22 +78,29 @@ class LaporanController extends Controller
         $imported = 0;
         DB::transaction(function () use ($handle, &$imported) {
             while (($row = fgetcsv($handle)) !== false) {
-                if (count($row) < 7 || trim((string) $row[0]) === '') {
+                if (count($row) < 9 || trim((string) $row[0]) === '') {
                     continue;
                 }
 
-                $rak = trim((string) $row[5]) !== ''
-                    ? Rak::where('kode_rak', trim($row[5]))->first()
+                $rak = trim((string) $row[7]) !== ''
+                    ? Rak::where('kode_rak', trim($row[7]))->first()
                     : null;
+                $kategori = Kategori::where('kode_kategori', trim($row[2]))->first();
 
-                Buku::updateOrCreate(
-                    ['kode_buku' => trim($row[0])],
+                if (!$kategori) {
+                    continue;
+                }
+
+                Barang::updateOrCreate(
+                    ['kode_barang' => trim($row[0])],
                     [
-                        'judul' => trim($row[1]),
-                        'isbn' => trim($row[2]) !== '' ? trim($row[2]) : null,
-                        'eisbn' => trim($row[3]) !== '' ? trim($row[3]) : null,
-                        'jumlah_halaman' => is_numeric($row[4]) ? (int) $row[4] : null,
+                        'nama' => trim($row[1]),
+                        'kategori_id' => $kategori->id,
+                        'satuan' => trim($row[4]) !== '' ? trim($row[4]) : 'pcs',
+                        'stok' => is_numeric($row[5]) ? max(0, (int) $row[5]) : 0,
+                        'stok_minimum' => is_numeric($row[6]) ? max(0, (int) $row[6]) : 0,
                         'rak_id' => $rak?->id,
+                        'keterangan' => trim($row[8]) !== '' ? trim($row[8]) : null,
                     ]
                 );
                 $imported++;
@@ -95,6 +109,6 @@ class LaporanController extends Controller
 
         fclose($handle);
 
-        return redirect()->route('laporan.index')->with('sukses', "Import selesai. {$imported} data buku diproses.");
+        return redirect()->route('laporan.index')->with('sukses', "Import selesai. {$imported} data barang diproses.");
     }
 }

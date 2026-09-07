@@ -3,7 +3,8 @@
 @section('content')
 <style>
     .page-title { font-size:22px; font-weight:800; color:#0f172a; margin-bottom:24px; }
-    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:28px; max-width:680px; }
+    .edit-page { max-width:760px; margin:0 auto; }
+    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:28px; max-width:680px; margin:0 auto; }
     .form-group { margin-bottom:18px; }
     label { display:block; font-size:13px; font-weight:700; color:#475569; margin-bottom:6px; }
     input[type=text], input[type=number], input[type=file], select, textarea {
@@ -22,6 +23,7 @@
     .current-img { width:120px; height:90px; object-fit:cover; border-radius:8px; margin-bottom:8px; display:block; }
 </style>
 
+<div class="edit-page">
 <h1 class="page-title">Edit Barang</h1>
 
 <div class="card">
@@ -98,5 +100,6 @@
     <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </div>
     </form>
+</div>
 </div>
 @endsection

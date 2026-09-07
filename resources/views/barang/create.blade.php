@@ -3,7 +3,9 @@
 @section('content')
 <style>
     .page-title { font-size:22px; font-weight:800; color:#0f172a; margin-bottom:24px; }
-    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:28px; max-width:680px; }
+    .create-page { max-width:760px; margin:0 auto; }
+    .page-header { max-width:680px; margin:0 auto 24px; }
+    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:28px; max-width:680px; margin:0 auto; }
     .form-group { margin-bottom:18px; }
     label { display:block; font-size:13px; font-weight:700; color:#475569; margin-bottom:6px; }
     input[type=text], input[type=number], input[type=file], select, textarea {
@@ -21,11 +23,13 @@
     .alert-error { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:13px; }
 </style>
 
+<div class="create-page">
 <div class="page-header">
     <div style="display:flex; align-items:center; gap:16px;">
         <a href="{{ route('barang.index') }}" class="btn btn-secondary" style="padding:8px 14px; font-size:13px;">← Kembali</a>
         <h1 class="page-title">Tambah Barang Baru</h1>
     </div>
+</div>
 
 <div class="card">
     @if($errors->any())
@@ -104,5 +108,6 @@
             <button type="submit" class="btn btn-primary">Simpan Barang</button>
         </div>
     </form>
+</div>
 </div>
 @endsection

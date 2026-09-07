@@ -17,6 +17,8 @@
     .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; border:none; text-decoration:none; }
     .btn-primary { background:#3b82f6; color:#fff; }
     .btn-secondary { background:#e2e8f0; color:#0f172a; }
+    .action-group { display:flex; flex-direction:column; align-items:stretch; gap:7px; min-width:92px; }
+    .action-group .btn { justify-content:center; width:100%; }
     .alert-success { background:#dcfce7; color:#166534; border:1px solid #bbf7d0; padding:12px 16px; border-radius:9px; margin-bottom:18px; font-weight:600; }
     .empty-state { text-align:center; padding:40px; color:#94a3b8; }
 </style>
@@ -74,8 +76,10 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('stock-opname-barang.create', $barang) }}" class="btn btn-primary">Opname</a>
-                        <a href="{{ route('stock-opname-barang.riwayat', $barang) }}" class="btn btn-secondary">Riwayat</a>
+                        <div class="action-group">
+                            <a href="{{ route('stock-opname-barang.create', ['barang' => $barang, 'from' => 'stock-opname-barang']) }}" class="btn btn-primary">Opname</a>
+                            <a href="{{ route('stock-opname-barang.riwayat', ['barang' => $barang, 'from' => 'stock-opname-barang']) }}" class="btn btn-secondary">Riwayat</a>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
