@@ -1,100 +1,245 @@
 @extends('layouts.app')
 
 @section('content')
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body { background:#1C396A !important; }
-        .navbar { display:none !important; }
-        .container { max-width:none !important; padding:0 !important; }
-        .login-screen { min-height:100vh; position:relative; display:flex; flex-direction:column; align-items:center; padding:30px 20px 18px; color:#fff; overflow:hidden; background:url('/images/UT1.jpg') center/cover no-repeat; }
-        .login-screen::before { content:''; position:absolute; inset:0; background:rgba(28,57,106,.58); }
-        .login-screen > * { position:relative; z-index:1; }
-        .login-brand { width:min(430px,100%); position:relative; padding:8px 20px 10px; text-align:center; text-shadow:0 2px 5px rgba(0,0,0,.7); }
-        .login-brand > * { position:relative; z-index:1; }
-        .university-mark { width:min(118px,30vw); height:auto; margin:0 auto 12px; display:block; }
-        .university-mark img { display:block; width:100%; height:auto; }
-        .login-brand strong { display:block; color:#1651A4; font-size:9px; letter-spacing:.1px; }
-        .login-brand h1 { margin:15px 0 3px; color:#fff; font-size:24px; letter-spacing:.4px; }
-        .login-brand p { margin:0; color:#fff; font-size:11px; line-height:1.45; }
-        .warehouse-scene { display:none; width:min(430px,90vw); height:130px; position:relative; margin:13px auto -1px; }
-        .warehouse-building { position:absolute; right:40px; bottom:0; width:170px; height:92px; background:#dbe7f5; opacity:.85; clip-path:polygon(50% 0,100% 27%,100% 100%,0 100%,0 27%); }
-        .warehouse-building:after { content:''; position:absolute; left:61px; bottom:0; width:48px; height:53px; background:#b9cbe3; border-radius:24px 24px 0 0; }
-        .boxes { position:absolute; right:70px; bottom:0; width:85px; height:54px; background:linear-gradient(90deg,#F7D60A 0 32%,transparent 32% 36%,#e8c933 36% 68%,transparent 68% 72%,#d4b20a 72%); border:2px solid #b79500; opacity:.9; }
-        .shelf { position:absolute; left:27px; bottom:0; width:105px; height:105px; border-left:7px solid #1C396A; border-right:7px solid #1C396A; background:repeating-linear-gradient(to bottom,transparent 0 26px,#1C396A 26px 32px); }
-        .shelf:before { content:''; position:absolute; left:12px; top:7px; width:20px; height:88px; background:repeating-linear-gradient(to bottom,#F7D60A 0 18px,#f9e77a 18px 22px); box-shadow:30px 0 #1651A4,58px 0 #e8c933; opacity:.85; }
-        .login-card { width:min(430px,100%); margin-top:22px; padding:25px 17px 18px; background:rgba(255,255,255,.92); border:1px solid rgba(255,255,255,.82); border-top:3px solid #F7D60A; border-radius:18px; box-shadow:0 16px 36px rgba(15,35,70,.28); backdrop-filter:blur(10px); }
-        .login-card h2 { margin:0; text-align:center; color:#1C396A; font-size:18px; }
-        .login-card .intro { margin:6px 0 20px; text-align:center; color:#66758b; font-size:11px; }
-        .login-error { background:#fde4e4; border:1px solid #efb2b2; color:#D32F2F; padding:10px 12px; border-radius:8px; margin-bottom:14px; font-size:12px; }
-        .login-error ul { margin:0; padding-left:17px; }
-        .login-field { margin-bottom:14px; }
-        .login-field label { display:block; margin-bottom:6px; color:#1C396A; font-size:11px; font-weight:800; }
-        .field-shell { display:flex; align-items:center; gap:9px; height:43px; padding:0 12px; border:1px solid #d5dee9; border-radius:9px; background:rgba(255,255,255,.76); transition:border-color .2s ease, box-shadow .2s ease, background .2s ease; }
-        .field-shell:focus-within { border-color:#0096FF; background:#fff; box-shadow:0 0 0 3px rgba(0,150,255,.13); }
-        .field-icon { color:#8da1ba; font-size:17px; }
-        .field-shell select, .field-shell input { width:100%; height:100%; border:0; outline:0; background:transparent; color:#212529; font-size:12px; }
-        .password-toggle { border:0; background:transparent; color:#8494a8; cursor:pointer; padding:2px; font-size:16px; }
-        .forgot { display:block; margin:-3px 0 14px; text-align:right; color:#1651A4; font-size:11px; font-weight:800; }
-        .login-submit, .pimpinan-button { width:100%; height:42px; border-radius:8px; font-size:12px; font-weight:800; cursor:pointer; transition:transform .2s ease, box-shadow .2s ease, background .2s ease; }
-        .login-submit { border:0; background:#1651A4; color:#fff; box-shadow:0 6px 12px rgba(22,81,164,.2); }
-        .login-submit:hover { background:#1C396A; transform:translateY(-2px); box-shadow:0 12px 20px rgba(22,81,164,.28); }
-        .divider { display:flex; align-items:center; gap:12px; margin:15px 0; color:#8190a3; font-size:11px; }
-        .divider:before, .divider:after { content:''; flex:1; height:1px; background:#e2e8f0; }
-        .pimpinan-button { border:1px solid #8eb5df; background:rgba(255,255,255,.55); color:#1651A4; }
-        .pimpinan-button:hover { background:#fff8cf; border-color:#F7D60A; transform:translateY(-1px); box-shadow:0 6px 12px rgba(247,214,10,.18); }
-        .login-footer { margin-top:14px; color:#8494a8; text-align:center; font-size:10px; }
-        @media (max-height:760px) { .login-screen { padding-top:15px; } .warehouse-scene { height:105px; transform:scale(.82); margin:-6px auto -12px; } .login-card { padding-top:20px; } }
+        :root {
+            --primary-blue: #1C396A;
+            --primary-hover: #152b52;
+            --accent-yellow: #F7D60A;
+            --text-main: #0f172a;
+            --text-muted: #d5dde9;
+            --border-color: #cbd5e1;
+            --bg-input: rgba(248, 250, 252, 0.8);
+        }
+
+        body {
+            background: var(--primary-blue);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Mencegah scroll di halaman */
+        }
+
+        .navbar { display: none !important; }
+        .container { max-width: none !important; padding: 0 !important; }
+
+        .login-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            background: url('/images/UT1.jpg') center/cover no-repeat fixed;
+            position: relative;
+        }
+
+        .login-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(28, 57, 106, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+            backdrop-filter: blur(6px);
+        }
+
+        .login-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.50); /* Opasitas diturunkan agar tembus pandang */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-top: 4px solid var(--accent-yellow);
+            border-radius: 20px;
+            padding: 24px 28px; /* Padding dikecilkan */
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+        }
+
+        .brand-header { text-align: center; margin-bottom: 20px; }
+        .brand-header img { height: 50px; margin-bottom: 10px; drop-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .brand-header h1 { font-size: 20px; font-weight: 700; color: var(--primary-blue); margin: 0 0 4px; letter-spacing: -0.5px; }
+        .brand-header p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.4; }
+
+        .alert { padding: 10px 14px; border-radius: 10px; font-size: 12px; margin-bottom: 16px; font-weight: 500; }
+        .alert-success { background: rgba(236, 253, 245, 0.9); border: 1px solid #a7f3d0; color: #065f46; }
+        .alert-error { background: rgba(254, 242, 242, 0.9); border: 1px solid #fecaca; color: #991b1b; }
+        .alert-error ul { margin: 0; padding-left: 20px; }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--primary-blue); margin-bottom: 6px; }
+
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-icon { position: absolute; left: 12px; color: #64748b; width: 16px; height: 16px; pointer-events: none; }
+
+        .input-control {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            font-size: 13px;
+            color: var(--text-main);
+            background: var(--bg-input);
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            appearance: none;
+            font-family: inherit;
+        }
+        .input-control:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .select-wrapper::after {
+            content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-size: cover;
+        }
+
+        .password-toggle {
+            position: absolute; right: 10px; background: none; border: none; color: #64748b;
+            cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s;
+        }
+        .password-toggle:hover { color: var(--primary-blue); }
+        .password-toggle svg { width: 16px; height: 16px; }
+
+        .forgot-link {
+            display: block; text-align: right; font-size: 11px; font-weight: 600;
+            color: var(--primary-blue); text-decoration: none; margin: -4px 0 16px; transition: color 0.2s;
+        }
+        .forgot-link:hover { color: #3b82f6; text-decoration: underline; }
+
+        .btn {
+            width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 600; border-radius: 10px;
+            cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit;
+        }
+        .btn-primary {
+            background: var(--primary-blue); color: white; border: none;
+            box-shadow: 0 4px 10px rgba(28, 57, 106, 0.2);
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover); transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(28, 57, 106, 0.3);
+        }
+
+        .divider { display: flex; align-items: center; margin: 16px 0; color: #64748b; font-size: 11px; font-weight: 500; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(203, 213, 225, 0.6); }
+        .divider::before { margin-right: 10px; } .divider::after { margin-left: 10px; }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.6); color: var(--primary-blue); border: 1px solid rgba(203, 213, 225, 0.8);
+        }
+        .btn-secondary:hover {
+            background: rgba(248, 250, 252, 0.9); border-color: var(--primary-blue); transform: translateY(-1px);
+        }
+        .btn-secondary svg { width: 16px; height: 16px; }
+
+        .footer-text { text-align: center; margin-top: 18px; font-size: 10px; color: var(--primary-blue); font-weight: 500; }
     </style>
 
-    <main class="login-screen">
-        <header class="login-brand">
-            <div class="university-mark"><img src="{{ asset('images/Logo_Universitas_Terbuka.svg') }}" alt="Logo Universitas Terbuka"></div>
-            <h1>MAGS-UT</h1>
-            <p>Manajemen Gudang & Stok<br>Universitas Terbuka</p>
-        </header>
-
-        <div class="warehouse-scene" aria-hidden="true"><div class="shelf"></div><div class="warehouse-building"></div><div class="boxes"></div></div>
-
+    <main class="login-wrapper">
         <section class="login-card">
-            <h2>Masuk ke Akun Anda</h2>
-            <p class="intro">Silakan masuk menggunakan akun yang terdaftar</p>
+            <header class="brand-header">
+                <img src="{{ asset('images/Logo_Universitas_Terbuka.svg') }}" alt="Logo Universitas Terbuka">
+                <h1>MAGS-UT</h1>
+                <p>Manajemen Gudang & Stok<br>Universitas Terbuka</p>
+            </header>
 
             @if(session('status'))
-                <div style="background:#e2f0e3;border:1px solid #9bc99e;color:#357A38;padding:10px 12px;border-radius:8px;margin-bottom:14px;font-size:12px;">{{ session('status') }}</div>
+                <div class="alert alert-success">{{ session('status') }}</div>
             @endif
             @if($errors->any())
-                <div class="login-error"><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+                <div class="alert alert-error">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
 
             <form method="POST" action="{{ route('login.perform') }}">
                 @csrf
-                <div class="login-field">
-                    <label for="email">Email</label>
-                    <div class="field-shell"><span class="field-icon">&#9993;</span><select id="email" name="email" required><option value="">Masukkan email Anda</option>@foreach($users as $user)<option value="{{ $user->email }}" @selected(old('email') === $user->email)>{{ $user->email }}</option>@endforeach</select></div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper select-wrapper">
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <select id="email" name="email" class="input-control" required>
+                            <option value="" disabled selected hidden>Pilih email Anda</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->email }}" @selected(old('email') === $user->email)>{{ $user->email }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                <div class="login-field">
+
+                <div class="form-group">
                     <label for="password">Password</label>
-                    <div class="field-shell"><span class="field-icon">&#128274;</span><input type="password" id="password" name="password" placeholder="Masukkan password Anda" required><button type="button" class="password-toggle" id="togglePassword" aria-label="Tampilkan password">&#128065;</button></div>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <input type="password" id="password" name="password" class="input-control" placeholder="Masukkan password" required>
+                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Tampilkan password">
+                            <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <svg id="eye-slash-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <a class="forgot" href="{{ route('password.request') }}">Lupa password?</a>
-                <button class="login-submit" type="submit">Masuk</button>
+
+                <a class="forgot-link" href="{{ route('password.request') }}">Lupa password?</a>
+                <button class="btn btn-primary" type="submit">Masuk</button>
             </form>
 
             <div class="divider">atau</div>
-            <button class="pimpinan-button" type="button" id="pimpinanLogin">&#9822; &nbsp; Masuk sebagai Pimpinan</button>
+
+            <button class="btn btn-secondary" type="button" id="pimpinanLogin">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Masuk sebagai Pimpinan
+            </button>
+
+            <footer class="footer-text">&copy; 2026 Fissilmi & Ismail. All rights reserved.</footer>
         </section>
-        <footer class="login-footer">&copy; 2026 Fissilmi & Ismail. All rights reserved.</footer>
     </main>
 
     <script>
         document.getElementById('togglePassword').addEventListener('click', function () {
             const password = document.getElementById('password');
-            password.type = password.type === 'password' ? 'text' : 'password';
+            const eyeIcon = document.getElementById('eye-icon');
+            const eyeSlashIcon = document.getElementById('eye-slash-icon');
+
+            if (password.type === 'password') {
+                password.type = 'text';
+                eyeIcon.style.display = 'none';
+                eyeSlashIcon.style.display = 'block';
+            } else {
+                password.type = 'password';
+                eyeIcon.style.display = 'block';
+                eyeSlashIcon.style.display = 'none';
+            }
         });
+
         document.getElementById('pimpinanLogin').addEventListener('click', function () {
             const email = document.getElementById('email');
-            const option = Array.from(email.options).find((item) => item.value.includes('pimpinan'));
-            if (option) email.value = option.value;
-            document.getElementById('password').focus();
+            const option = Array.from(email.options).find((item) => item.value.toLowerCase().includes('pimpinan'));
+
+            if (option) {
+                email.value = option.value;
+                document.getElementById('password').focus();
+            } else {
+                alert('Akun pimpinan tidak ditemukan di daftar.');
+            }
         });
     </script>
 @endsection
