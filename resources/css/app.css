@@ -6,6 +6,141 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Andon Modern — warehouse tokens */
+:root {
+    --andon-bg: #F6F1E8;
+    --andon-ink: #0F172A;
+    --andon-muted: #475569;
+    --andon-faint: #94A3B8;
+    --andon-line: #E2E8F0;
+    --andon-line-strong: #CBD5E1;
+    --andon-amber: #F7D60A;
+    --andon-amber-ink: #0F172A;
+    --andon-navy: #0F2540;
+    --andon-navy-2: #162E52;
+    --andon-red: #DC2626;
+    --andon-green: #16A34A;
+    --andon-panel: #FFFFFF;
+    --andon-radius: 18px;
+    --andon-radius-sm: 12px;
+    --andon-shadow: 0 8px 28px rgba(15, 23, 42, .08);
+    --andon-shadow-strong: 0 14px 36px rgba(15, 23, 42, .14);
+}
+
+* { box-sizing: border-box; }
+html { overflow-x: hidden; scrollbar-color: var(--andon-line-strong) var(--andon-bg); }
+body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--andon-bg);
+    color: var(--andon-ink);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--andon-amber); color: var(--andon-ink); }
+:focus-visible { outline: 2px solid var(--andon-navy); outline-offset: 2px; }
+a { color: var(--andon-navy); text-decoration: none; }
+a:hover { color: var(--andon-navy-2); }
+img, svg { max-width: 100%; }
+button, input, select, textarea { font: inherit; }
+
+/* Header — hazard bar + panel */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--andon-panel);
+    border-bottom: 1px solid var(--andon-line);
+    box-shadow: 0 1px 0 rgba(15,23,42,.04);
+}
+.site-header__bar {
+    height: 4px;
+    background: repeating-linear-gradient(90deg, var(--andon-amber) 0 18px, var(--andon-ink) 18px 36px);
+}
+.site-header__inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+.site-header__profile { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.site-header__avatar {
+    width: 40px; height: 40px; flex: 0 0 auto;
+    display: grid; place-items: center;
+    border-radius: 10px;
+    background: var(--andon-ink);
+    color: var(--andon-amber);
+    font-size: 14px; font-weight: 800; letter-spacing: .04em;
+}
+.site-header__copy { min-width: 0; line-height: 1.1; }
+.site-header__name {
+    display: block; font-size: 14px; font-weight: 700; letter-spacing: -.02em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 42vw;
+}
+.site-header__meta {
+    display: block; margin-top: 2px;
+    font-size: 10px; font-weight: 700; letter-spacing: .14em; color: var(--andon-faint);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.site-header__actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.site-header__shift {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--andon-muted);
+}
+.andon-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--andon-green); box-shadow: 0 0 0 4px rgba(22,163,74,.14); }
+.site-main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 48px; }
+
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 40px; padding: 0 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 700; letter-spacing: -.01em;
+    border: 1px solid transparent; cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+}
+.btn--primary { background: var(--andon-ink); color: #fff; border-color: var(--andon-ink); }
+.btn--primary:hover { background: var(--andon-navy-2); transform: translateY(-1px); box-shadow: var(--andon-shadow); color: #fff; }
+.btn--ghost { background: #fff; color: var(--andon-ink); border-color: var(--andon-line-strong); }
+.btn--ghost:hover { border-color: var(--andon-ink); transform: translateY(-1px); }
+.btn--amber { background: var(--andon-amber); color: var(--andon-amber-ink); border-color: #E6C200; box-shadow: 0 6px 18px rgba(247,214,10,.28); }
+.btn--amber:hover { filter: brightness(.98); transform: translateY(-1px); }
+
+/* Soft modern — card halus simpel (dipakai form & panel umum) */
+.andon-card {
+    background: var(--andon-panel);
+    border: 1px solid #EDEEF2;
+    border-radius: 20px;
+    box-shadow: 0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+    transition: box-shadow .22s cubic-bezier(.16,1,.3,1), transform .22s cubic-bezier(.16,1,.3,1), border-color .22s ease;
+}
+.andon-card:hover { box-shadow: 0 10px 28px rgba(15,23,42,.08), 0 2px 6px rgba(15,23,42,.05); }
+.andon-input, .andon-textarea, .andon-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #E8EAF0;
+    border-radius: 14px;
+    font-size: 14px;
+    background: #FBFBFD;
+    color: var(--andon-ink);
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.andon-input:focus, .andon-textarea:focus, .andon-select:focus {
+    outline: none; background: #fff; border-color: var(--andon-ink);
+    box-shadow: 0 0 0 3px rgba(15,23,42,.06);
+}
+.andon-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--andon-muted); margin-bottom: 8px; }
+.andon-page-title { font-size: 22px; font-weight: 800; letter-spacing: -.03em; color: var(--andon-ink); margin: 0 0 18px; }
+
+/* Shared motion — one authored moment per page (halus, ease-out, visible by default) */
+@keyframes andon-page-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes andon-scan-line { 0% { transform: translateX(-100%); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateX(220%); opacity: 0; } }
+.site-main > * { animation: andon-page-in .42s cubic-bezier(.16,1,.3,1) both; }
+@media (prefers-reduced-motion: reduce) {
+    .site-main > *, .andon-dashboard, .andon-hero, .andon-tiles .andon-tile, .andon-quick .andon-q, .andon-grid .andon-panel { animation: none !important; }
+    .andon-scan::before { display: none !important; }
 }

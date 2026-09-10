@@ -1,154 +1,104 @@
 @extends('layouts.app')
 
 @section('content')
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    .site-header { display: none !important; }
+    .site-main { max-width: none !important; padding: 0 !important; }
+    .andon-auth {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px 16px;
+        background:
+            radial-gradient(900px 420px at 18% 12%, rgba(247,214,10,.18) 0%, transparent 62%),
+            linear-gradient(180deg, #FDFBF6 0%, var(--andon-bg) 100%);
+        position: relative;
+    }
+    .andon-auth::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+        background: repeating-linear-gradient(90deg, var(--andon-amber) 0 18px, var(--andon-ink) 18px 36px);
+    }
+    .andon-auth__card {
+        width: 100%; max-width: 400px;
+        background: var(--andon-panel);
+        border: 1px solid #EDEEF2;
+        border-radius: 20px;
+        box-shadow: 0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+        overflow: hidden;
+        position: relative;
+    }
+    .andon-auth__card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--andon-amber); }
+    .andon-auth__inner { padding: 26px 26px 20px; }
+    .andon-auth__brand { text-align: center; margin-bottom: 18px; }
+    .andon-auth__brand img { height: 64px; width: auto; object-fit: contain; display: block; margin: 0 auto 10px; }
+    .andon-auth__brand h1 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.03em; color: var(--andon-ink); }
+    .andon-auth__brand p { margin: 4px 0 0; font-size: 12px; color: var(--andon-muted); line-height: 1.5; }
+    .andon-kicker--auth { justify-content: center; margin-bottom: 10px; }
+    .andon-alert { padding: 10px 14px; border-radius: 12px; font-size: 12px; margin-bottom: 14px; font-weight: 600; line-height: 1.4; }
+    .andon-alert--ok { background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46; }
+    .andon-alert--err { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
+    .andon-field { margin-bottom: 14px; }
+    .andon-field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--andon-muted); margin-bottom: 8px; }
+    .andon-input { position: relative; display: flex; align-items: center; }
+    .andon-input__icon { position: absolute; left: 12px; width: 16px; height: 16px; color: var(--andon-faint); pointer-events: none; }
+    .andon-control {
+        width: 100%; padding: 12px 14px 12px 36px;
+        font-size: 13px; font-weight: 600; color: var(--andon-ink);
+        background: #FBFBFD; border: 1px solid #E8EAF0; border-radius: 14px;
+        transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+        font-family: inherit; outline: none; box-sizing: border-box;
+    }
+    .andon-control:focus { background: #fff; border-color: var(--andon-ink); box-shadow: 0 0 0 3px rgba(15,23,42,.06); }
+    .andon-btn {
+        width: 100%; min-height: 42px; padding: 0 16px; border-radius: 999px; border: 1px solid transparent;
+        font-size: 13px; font-weight: 800; letter-spacing: -.01em;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+        font-family: inherit;
+    }
+    .andon-btn--primary { background: var(--andon-ink); color: #fff; border-color: var(--andon-ink); box-shadow: 0 8px 20px rgba(15,23,42,.18); }
+    .andon-btn--primary:hover { background: var(--andon-navy-2); transform: translateY(-1px); }
+    .andon-back { display: block; text-align: center; font-size: 11px; font-weight: 700; color: var(--andon-navy); margin-top: 14px; }
+    .andon-back:hover { text-decoration: underline; }
+    .andon-foot { text-align: center; margin-top: 14px; font-size: 10px; font-weight: 600; letter-spacing: .06em; color: var(--andon-faint); }
+</style>
 
-    <style>
-        :root {
-            --primary-blue: #1C396A;
-            --primary-hover: #152b52;
-            --accent-yellow: #F7D60A;
-            --text-main: #0f172a;
-            --text-muted: #d5dde9;
-            --border-color: #cbd5e1;
-            --bg-input: rgba(248, 250, 252, 0.8);
-        }
-
-        body {
-            background: var(--primary-blue);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            overflow: hidden; /* Mencegah scroll di halaman */
-        }
-
-        .navbar { display: none !important; }
-        .container { max-width: none !important; padding: 0 !important; }
-
-        .auth-wrapper {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            background: url('/images/UT1.jpg') center/cover no-repeat fixed;
-            position: relative;
-        }
-
-        .auth-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(28, 57, 106, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
-            backdrop-filter: blur(6px);
-        }
-
-        .auth-card {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 380px;
-            background: rgba(255, 255, 255, 0.50); /* Opasitas 50% agar tembus pandang */
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-top: 4px solid var(--accent-yellow);
-            border-radius: 20px;
-            padding: 24px 28px;
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
-        }
-
-        .brand-header { text-align: center; margin-bottom: 20px; }
-        .brand-header img { height: 45px; margin-bottom: 12px; drop-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .brand-header h1 { font-size: 20px; font-weight: 700; color: var(--primary-blue); margin: 0 0 6px; letter-spacing: -0.5px; }
-        .brand-header p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.4; }
-
-        .alert { padding: 10px 14px; border-radius: 10px; font-size: 12px; margin-bottom: 16px; font-weight: 500; }
-        .alert-success { background: rgba(236, 253, 245, 0.9); border: 1px solid #a7f3d0; color: #065f46; }
-        .alert-error { background: rgba(254, 242, 242, 0.9); border: 1px solid #fecaca; color: #991b1b; }
-
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--primary-blue); margin-bottom: 6px; }
-
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-icon { position: absolute; left: 12px; color: #64748b; width: 16px; height: 16px; pointer-events: none; }
-
-        .input-control {
-            width: 100%;
-            padding: 10px 12px 10px 36px;
-            font-size: 13px;
-            color: var(--text-main);
-            background: var(--bg-input);
-            border: 1px solid rgba(203, 213, 225, 0.8);
-            border-radius: 10px;
-            transition: all 0.2s ease;
-            font-family: inherit;
-        }
-        .input-control:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.95);
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-        }
-
-        .btn {
-            width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 600; border-radius: 10px;
-            cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit;
-        }
-        .btn-primary {
-            background: var(--primary-blue); color: white; border: none;
-            box-shadow: 0 4px 10px rgba(28, 57, 106, 0.2);
-        }
-        .btn-primary:hover {
-            background: var(--primary-hover); transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(28, 57, 106, 0.3);
-        }
-
-        .back-link {
-            display: block; text-align: center; font-size: 12px; font-weight: 600;
-            color: var(--text-muted); text-decoration: none; margin-top: 16px; transition: color 0.2s;
-        }
-        .back-link:hover { color: var(--primary-blue); }
-    </style>
-
-    <main class="auth-wrapper">
-        <section class="auth-card">
-            <!-- Header disamakan dengan login -->
-            <header class="brand-header">
+<div class="andon-auth">
+    <section class="andon-auth__card">
+        <div class="andon-auth__inner">
+            <header class="andon-auth__brand">
+                <span class="andon-kicker andon-kicker--auth" style="color:var(--andon-faint);font-size:10px;font-weight:800;letter-spacing:.14em;display:inline-flex;align-items:center;gap:8px;"><i style="width:18px;height:2px;background:var(--andon-amber);display:inline-block;border-radius:999px;"></i> PEMULIHAN AKSES</span>
                 <img src="{{ asset('images/Logo_Universitas_Terbuka.svg') }}" alt="Logo Universitas Terbuka">
                 <h1>Lupa Password?</h1>
                 <p>Masukkan email Anda. Kami akan mengirimkan tautan untuk membuat password baru.</p>
             </header>
 
-            <!-- Menampilkan Alert Pesan -->
             @if(session('status'))
-                <div class="alert alert-success">{{ session('status') }}</div>
+                <div class="andon-alert andon-alert--ok">{{ session('status') }}</div>
             @endif
             @if($errors->any())
-                <div class="alert alert-error">{{ $errors->first('email') }}</div>
+                <div class="andon-alert andon-alert--err">{{ $errors->first('email') }}</div>
             @endif
 
             <form method="POST" action="{{ route('password.email') }}">
                 @csrf
-                <div class="form-group">
-                    <label for="email">Email Akun</label>
-                    <div class="input-wrapper">
-                        <!-- Icon Amplop / Envelope -->
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        <input id="email" name="email" type="email" class="input-control" value="{{ old('email') }}" placeholder="Masukkan email Anda" required autofocus>
+                <div class="andon-field">
+                    <label for="email">EMAIL AKUN</label>
+                    <div class="andon-input">
+                        <svg class="andon-input__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8l8 5 8-5"/><rect x="3" y="7" width="18" height="12" rx="2"/></svg>
+                        <input id="email" name="email" type="email" class="andon-control" value="{{ old('email') }}" placeholder="Masukkan email Anda" required autofocus>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:16px; height:16px;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                    </svg>
+                <button type="submit" class="andon-btn andon-btn--primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:16px; height:16px;" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
                     Kirim Tautan Reset
                 </button>
             </form>
 
-            <a class="back-link" href="{{ route('login') }}">Batal</a>
-        </section>
-    </main>
+            <a class="andon-back" href="{{ route('login') }}">← Kembali ke Login</a>
+            <div class="andon-foot">© 2026 Fissilmi & Ismail · Sistem Gudang UT</div>
+        </div>
+    </section>
+</div>
 @endsection

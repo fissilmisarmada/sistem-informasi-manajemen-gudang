@@ -12,7 +12,7 @@ class Barang extends Model
     protected $table = 'barang';
     protected $fillable = [
         'kode_barang', 'nama', 'kategori_id', 'satuan',
-        'stok', 'stok_minimum', 'rak_id', 'gambar', 'keterangan',
+        'stok', 'stok_minimum', 'rak_id', 'denah_area_id', 'gambar', 'keterangan',
     ];
 
     public function kategori()
@@ -23,6 +23,11 @@ class Barang extends Model
     public function rak()
     {
         return $this->belongsTo(Rak::class, 'rak_id');
+    }
+
+    public function denahArea()
+    {
+        return $this->belongsTo(DenahArea::class, 'denah_area_id');
     }
 
     public function mutasi()

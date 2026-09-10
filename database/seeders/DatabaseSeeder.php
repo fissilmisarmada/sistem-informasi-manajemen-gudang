@@ -3,12 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Barang;
-use App\Models\Buku;
 use App\Models\Kategori;
 use App\Models\MutasiBarang;
 use App\Models\Rak;
-use App\Models\RiwayatPenempatan;
-use App\Models\StockOpname;
 use App\Models\StockOpnameBarang;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -20,6 +17,8 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+        $this->call(UserSeeder::class);
+
         $rakData = [
             ['kode_rak' => 'A1', 'nama_lokasi' => 'Ruang Modul', 'kapasitas' => 25],
             ['kode_rak' => 'A2', 'nama_lokasi' => 'Ruang Sains', 'kapasitas' => 30],
@@ -64,7 +63,15 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($bukuData as $data) {
-            Buku::updateOrCreate(['kode_buku' => $data['kode_buku']], $data);
+            Barang::updateOrCreate(['kode_barang' => $data['kode_buku']], [
+                'nama' => $data['judul'],
+                'kategori_id' => $kategori['BKU']->id,
+                'satuan' => 'eksemplar',
+                'stok' => $data['stok'],
+                'stok_minimum' => 5,
+                'rak_id' => $data['rak_id'],
+                'keterangan' => json_encode(['isbn' => $data['isbn'], 'kategori_asli' => $data['kategori'], 'jumlah_halaman' => $data['jumlah_halaman']]),
+            ]);
         }
 
         // Seed Barang (umum - bukan buku)
@@ -96,42 +103,8 @@ class DatabaseSeeder extends Seeder
             $barang[$data['kode_barang']] = Barang::updateOrCreate(['kode_barang' => $data['kode_barang']], $data);
         }
 
-        // Get staff user
         $staff = User::where('role', 'staff')->first();
-        if (!$staff) {
-            return;
-        }
-
-        // Seed Riwayat Penempatan Buku
-        foreach ([
-            ['kode_buku' => 'SI001', 'kode_rak' => 'A1', 'tanggal' => '2026-08-20 09:00:00'],
-            ['kode_buku' => 'MN001', 'kode_rak' => 'A2', 'tanggal' => '2026-08-21 10:30:00'],
-            ['kode_buku' => 'SS001', 'kode_rak' => 'A3', 'tanggal' => '2026-08-22 13:15:00'],
-        ] as $data) {
-            RiwayatPenempatan::firstOrCreate([
-                'buku_id' => Buku::where('kode_buku', $data['kode_buku'])->value('id'),
-                'rak_id' => $rak[$data['kode_rak']]->id,
-                'staff_id' => $staff->id,
-                'tanggal' => $data['tanggal'],
-            ]);
-        }
-
-        // Seed Stock Opname Buku
-        foreach ([
-            ['kode_rak' => 'A1', 'tanggal' => '2026-08-23', 'jumlah_tercatat' => 2, 'jumlah_fisik' => 2, 'selisih' => 0],
-            ['kode_rak' => 'A2', 'tanggal' => '2026-08-24', 'jumlah_tercatat' => 2, 'jumlah_fisik' => 1, 'selisih' => 1],
-            ['kode_rak' => 'A3', 'tanggal' => '2026-08-25', 'jumlah_tercatat' => 2, 'jumlah_fisik' => 2, 'selisih' => 0],
-        ] as $data) {
-            StockOpname::firstOrCreate([
-                'rak_id' => $rak[$data['kode_rak']]->id,
-                'staff_id' => $staff->id,
-                'tanggal' => $data['tanggal'],
-            ], [
-                'jumlah_tercatat' => $data['jumlah_tercatat'],
-                'jumlah_fisik' => $data['jumlah_fisik'],
-                'selisih' => $data['selisih'],
-            ]);
-        }
+        if (!$staff) return;
 
         // Seed Mutasi Barang
         foreach ([

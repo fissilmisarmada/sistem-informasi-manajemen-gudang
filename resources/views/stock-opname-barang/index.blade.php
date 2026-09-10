@@ -2,8 +2,7 @@
 
 @section('content')
 <style>
-    .page-title { font-size:22px; font-weight:800; color:#0f172a; margin-bottom:24px; }
-    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:24px; margin-bottom:20px; }
+    .card { background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); padding:24px; margin-bottom:20px; }
     table { width:100%; border-collapse:collapse; }
     th { background:#f1f5f9; padding:12px 14px; text-align:left; font-size:13px; font-weight:700; color:#475569; }
     td { padding:12px 14px; border-bottom:1px solid #f1f5f9; font-size:14px; }
@@ -26,7 +25,7 @@
 <div class="page-header">
     <div style="display:flex; align-items:center; gap:16px;">
         <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="btn btn-secondary" style="padding:8px 14px; font-size:13px;">← Kembali</a>
-        <h1 class="page-title">Stock Opname Barang</h1>
+        <h1 class="andon-page-title" style="margin:0">Stock Opname Barang</h1>
     </div>
 
 @if(session('success'))

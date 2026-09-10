@@ -2,29 +2,27 @@
 
 @section('content')
 <style>
-    .page-title { font-size:22px; font-weight:800; color:#0f172a; margin-bottom:24px; }
     .mutation-page { max-width:720px; margin:0 auto; }
-    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:28px; max-width:560px; margin:0 auto; }
+    .card { background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); padding:28px; max-width:560px; margin:0 auto; transition: box-shadow .22s cubic-bezier(.16,1,.3,1); }
+    .card:hover { box-shadow:0 10px 28px rgba(15,23,42,.08), 0 2px 6px rgba(15,23,42,.05); }
     .form-group { margin-bottom:18px; }
-    label { display:block; font-size:13px; font-weight:700; color:#475569; margin-bottom:6px; }
-    select, input[type=number], textarea { width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; }
-    select:focus, input:focus, textarea:focus { outline:none; border-color:#3b82f6; }
-    .btn { display:inline-flex; align-items:center; gap:6px; padding:10px 20px; border-radius:9px; font-weight:700; font-size:14px; cursor:pointer; border:none; text-decoration:none; }
-    .btn-primary { background:#3b82f6; color:#fff; }
-    .btn-secondary { background:#e2e8f0; color:#0f172a; }
+    label { display:block; font-size:11px; font-weight:700; color:var(--andon-muted); margin-bottom:8px; letter-spacing:.06em; }
+    select, input[type=number], textarea { width:100%; padding:12px 14px; border:1px solid #E8EAF0; border-radius:14px; font-size:14px; background:#FBFBFD; color:var(--andon-ink); box-sizing:border-box; transition: border-color .18s ease, box-shadow .18s ease, background .18s ease; }
+    select:focus, input:focus, textarea:focus { outline:none; border-color:var(--andon-ink); box-shadow:0 0 0 3px rgba(15,23,42,.06); background:#fff; }
     .form-actions { display:flex; gap:10px; margin-top:24px; }
-    .alert-error { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:13px; }
-    .stok-info { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px; font-size:14px; margin-top:8px; display:none; }
+    .alert-error { background:#FEF2F2; color:#7F1D1D; border:1px solid #FECACA; padding:10px 14px; border-radius:14px; margin-bottom:16px; font-size:13px; }
+    .stok-info { background:#FBFBFD; border:1px solid #EDEEF2; border-radius:14px; padding:11px 14px; font-size:13px; margin-top:10px; display:none; color:var(--andon-muted); }
     .jenis-toggle { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .jenis-btn { padding:12px; border:2px solid #e2e8f0; border-radius:9px; text-align:center; cursor:pointer; font-weight:700; font-size:14px; transition:all .15s; }
-    .jenis-btn.masuk.active { border-color:#22c55e; background:#dcfce7; color:#166534; }
-    .jenis-btn.keluar.active { border-color:#ef4444; background:#fee2e2; color:#991b1b; }
+    .jenis-btn { padding:13px; border:1px solid #E8EAF0; border-radius:14px; text-align:center; cursor:pointer; font-weight:800; font-size:13px; transition: all .2s cubic-bezier(.16,1,.3,1); background:#FBFBFD; color:var(--andon-muted); }
+    .jenis-btn:hover { border-color: var(--andon-line-strong); transform: translateY(-1px); }
+    .jenis-btn.masuk.active { border-color: var(--andon-green); background: #F0FDF4; color: #14532D; box-shadow: 0 4px 12px rgba(22,163,74,.12); }
+    .jenis-btn.keluar.active { border-color: var(--andon-red); background: #FEF2F2; color: #7F1D1D; box-shadow: 0 4px 12px rgba(220,38,38,.1); }
     input[type=radio] { display:none; }
 </style>
 
 <div class="mutation-page">
 <!-- JUDUL -->
-<h1 class="page-title">Catat Mutasi Barang</h1>
+<h1 class="andon-page-title">Catat Mutasi Barang</h1>
 
 <!-- CARD DENGAN FORM -->
 <div class="card">
@@ -40,7 +38,7 @@
         @csrf
 
         <div class="form-group">
-            <label>Barang <span style="color:#ef4444">*</span></label>
+            <label>Barang <span style="color:var(--andon-red)">*</span></label>
             <select name="barang_id" id="barang-select" required onchange="updateStokInfo()">
                 <option value="">-- Pilih Barang --</option>
                 @foreach($barangs as $b)
@@ -57,7 +55,7 @@
         </div>
 
         <div class="form-group">
-            <label>Jenis Mutasi <span style="color:#ef4444">*</span></label>
+            <label>Jenis Mutasi <span style="color:var(--andon-red)">*</span></label>
             <div class="jenis-toggle">
                 <label class="jenis-btn masuk {{ old('jenis') === 'masuk' ? 'active' : '' }}" onclick="setJenis('masuk')">
                     <input type="radio" name="jenis" value="masuk" {{ old('jenis') === 'masuk' ? 'checked' : '' }}>
@@ -71,7 +69,7 @@
         </div>
 
         <div class="form-group">
-            <label>Jumlah <span style="color:#ef4444">*</span></label>
+            <label>Jumlah <span style="color:var(--andon-red)">*</span></label>
             <input type="number" name="jumlah" value="{{ old('jumlah', 1) }}" min="1" required>
         </div>
 
@@ -89,8 +87,8 @@
                 ? (auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')))
                 : route('mutasi-barang.index'));
     @endphp
-    <a href="{{ $cancelUrl }}" class="btn btn-secondary">Batal</a>
-    <button type="submit" class="btn btn-primary">Simpan Mutasi</button>
+    <a href="{{ $cancelUrl }}" class="btn btn--ghost">Batal</a>
+    <button type="submit" class="btn btn--primary">Simpan Mutasi</button>
 </div>
     </form>
 </div>
@@ -103,7 +101,7 @@ function updateStokInfo() {
     const info = document.getElementById('stok-info');
     if (sel.value) {
         info.style.display = 'block';
-        info.innerHTML = `Stok saat ini: <strong>${opt.dataset.stok} ${opt.dataset.satuan}</strong>`;
+        info.innerHTML = `Stok saat ini: <strong style="color:var(--andon-ink)">${opt.dataset.stok} ${opt.dataset.satuan}</strong>`;
     } else {
         info.style.display = 'none';
     }
