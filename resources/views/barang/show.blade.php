@@ -2,41 +2,35 @@
 
 @section('content')
 <style>
-    .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:9px; font-weight:700; font-size:13px; cursor:pointer; border:none; text-decoration:none; }
-    .btn-primary { background:#3b82f6; color:#fff; }
-    .btn-primary:hover { background:#2563eb; }
-    .btn-secondary { background:#e2e8f0; color:#0f172a; }
-    .btn-secondary:hover { background:#cbd5e1; }
-    .btn-danger { background:#ef4444; color:#fff; }
-    .btn-danger:hover { background:#dc2626; }
-    .btn-warning { background:#f59e0b; color:#fff; }
-    .btn-warning:hover { background:#d97706; }
-    .btn-success { background:#22c55e; color:#fff; }
-    .btn-success:hover { background:#16a34a; }
-    .detail-page { max-width:1040px; margin:0 auto; }
-    .detail-grid { display:grid; grid-template-columns:280px minmax(0,1fr); gap:20px; align-items:start; }
-    .detail-img { width:100%; border-radius:14px; object-fit:cover; background:#f1f5f9; min-height:200px; display:flex; align-items:center; justify-content:center; font-size:60px; }
-    .detail-img img { width:100%; border-radius:14px; object-fit:cover; }
-    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:24px; margin-bottom:20px; }
-    .card-title { font-size:16px; font-weight:800; color:#0f172a; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #f1f5f9; }
-    .info-row { display:flex; gap:12px; margin-bottom:10px; font-size:14px; }
-    .info-label { color:#64748b; font-weight:700; min-width:140px; }
-    .info-value { color:#0f172a; }
-    .badge { display:inline-block; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:700; }
-    .badge-blue { background:#dbeafe; color:#1d4ed8; }
-    .badge-green { background:#dcfce7; color:#166534; }
-    .badge-red { background:#fee2e2; color:#991b1b; }
-    .badge-yellow { background:#fef9c3; color:#854d0e; }
-    .badge-gray { background:#f1f5f9; color:#475569; }
-    .action-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
-    table { width:100%; border-collapse:collapse; }
-    th { background:#f1f5f9; padding:10px 12px; text-align:left; font-size:12px; font-weight:700; color:#475569; }
-    td { padding:10px 12px; border-bottom:1px solid #f1f5f9; font-size:13px; }
-    tr:last-child td { border-bottom:none; }
-    .stok-big { font-size:32px; font-weight:900; color:#0f172a; }
-    .stok-unit { font-size:14px; color:#64748b; margin-left:4px; }
-    .alert-success { background:#dcfce7; color:#166534; border:1px solid #bbf7d0; padding:12px 16px; border-radius:9px; margin-bottom:18px; font-weight:600; }
-    @media(max-width:700px) { .detail-grid { grid-template-columns:1fr; } }
+    .detail-page{max-width:1120px;margin:0 auto}
+    .alert-success{background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0;padding:12px 14px;border-radius:12px;margin-bottom:16px;font-weight:600;font-size:13px}
+    .detail-grid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px;align-items:start;margin-bottom:16px}
+    .detail-img{width:100%;border-radius:20px;background:var(--andon-panel);border:1px solid #EDEEF2;overflow:hidden;min-height:200px;display:flex;align-items:center;justify-content:center;font-size:52px;color:var(--andon-faint);box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);transition:box-shadow .22s cubic-bezier(.16,1,.3,1)}
+    .detail-img:hover{box-shadow:0 10px 28px rgba(15,23,42,.08),0 2px 6px rgba(15,23,42,.05)}
+    .detail-img img{width:100%;height:100%;object-fit:cover;display:block}
+    .card{background:var(--andon-panel);border:1px solid #EDEEF2;border-radius:20px;box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);padding:20px;margin-bottom:16px;overflow:hidden;position:relative;transition:box-shadow .22s cubic-bezier(.16,1,.3,1),border-color .22s ease}
+    .card:hover{box-shadow:0 10px 28px rgba(15,23,42,.08),0 2px 6px rgba(15,23,42,.05)}
+    .card::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:var(--andon-navy)}
+    .card--amber::before{background:var(--andon-amber)}
+    .card--red::before{background:var(--andon-red)}
+    .card-title{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--andon-ink);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--andon-line)}
+    .info-row{display:flex;gap:12px;margin-bottom:8px;font-size:13px}
+    .info-label{color:var(--andon-muted);font-weight:700;min-width:132px}
+    .info-value{color:var(--andon-ink);font-weight:600}
+    .badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid transparent}
+    .badge-blue{background:#EFF6FF;color:#1E3A5F;border-color:#DBEAFE}
+    .badge-green{background:#ECFDF5;color:#065F46;border-color:#A7F3D0}
+    .badge-red{background:#FEF2F2;color:#991B1B;border-color:#FECACA}
+    .badge-yellow{background:#FEFCE8;color:#854D0E;border-color:#FDE68A}
+    .badge-gray{background:#F8FAFC;color:var(--andon-muted);border-color:var(--andon-line)}
+    .action-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    table{width:100%;border-collapse:collapse}
+    th{background:#F8FAFC;padding:10px 12px;text-align:left;font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--andon-muted);border-bottom:1px solid var(--andon-line)}
+    td{padding:10px 12px;border-bottom:1px solid #F1F5F9;font-size:13px;color:var(--andon-ink)}
+    tr:last-child td{border-bottom:none}
+    .stok-big{font-size:30px;font-weight:800;letter-spacing:-.04em;color:var(--andon-ink);line-height:1}
+    .stok-unit{font-size:13px;color:var(--andon-muted);margin-left:4px;font-weight:700}
+    @media(max-width:700px){.detail-grid{grid-template-columns:1fr}}
 </style>
 
 @if(session('success'))
@@ -46,7 +40,6 @@
 @php
     $prev = url()->previous();
     $dashboardUrl = auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan'));
-
     if (request('from') === 'cari') {
         $backUrl = route('pencarian.index', ['q' => request('q')]);
         session(['valid_back_url' => $backUrl]);
@@ -54,7 +47,6 @@
         $backUrl = $dashboardUrl;
         session(['valid_back_url' => $backUrl]);
     } else {
-        // Simpan url sebelumnya jika BUKAN dari form aksi untuk mencegah loop
         if (!str_contains($prev, 'mutasi-barang') && !str_contains($prev, 'edit') && !str_contains($prev, 'stock-opname') && $prev !== url()->current()) {
             session(['valid_back_url' => $prev]);
         }
@@ -62,15 +54,12 @@
     }
 @endphp
 
-<!-- TOMBOL KEMBALI -->
 <div class="detail-page">
-<a href="{{ $backUrl }}" class="btn btn-secondary" style="margin-bottom: 16px;">
+<a href="{{ $backUrl }}" class="btn btn--ghost" style="margin-bottom:14px;min-height:36px;padding:0 14px;font-size:12px">
     ← Kembali
 </a>
 
-<!-- DETAIL GRID -->
 <div class="detail-grid">
-    <!-- GAMBAR -->
     <div>
         <div class="detail-img">
             @if($barang->gambar)
@@ -81,14 +70,13 @@
         </div>
     </div>
 
-    <!-- INFO & ACTION -->
     <div>
         <div class="card">
-            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-                <div>
-                    <div style="font-size:12px; color:#64748b; font-weight:700; text-transform:uppercase; margin-bottom:4px;">{{ $barang->kode_barang }}</div>
-                    <h1 style="font-size:24px; font-weight:900; color:#0f172a; margin:0 0 10px;">{{ $barang->nama }}</h1>
-                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <div style="min-width:0">
+                    <div style="font-size:10px;color:var(--andon-faint);font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">{{ $barang->kode_barang }}</div>
+                    <h1 style="font-size:23px;font-weight:800;letter-spacing:-.03em;color:var(--andon-ink);margin:0 0 10px;line-height:1">{{ $barang->nama }}</h1>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
                         <span class="badge badge-blue">{{ $barang->kategori->nama }}</span>
                         @if($barang->rak)
                             <span class="badge badge-gray">Rak: {{ $barang->rak->kode_rak }}</span>
@@ -96,44 +84,42 @@
                             <span class="badge badge-yellow">Belum ada rak</span>
                         @endif
                         @if($barang->isStokMenipis())
-                            <span class="badge badge-red">⚠ Stok Menipis</span>
+                            <span class="badge badge-red">Stok Menipis</span>
                         @endif
                     </div>
                 </div>
-                <div style="text-align:right;">
+                <div style="text-align:right;flex:0 0 auto">
                     <div class="stok-big">{{ $barang->stok }}<span class="stok-unit">{{ $barang->satuan }}</span></div>
                     @if($barang->stok_minimum > 0)
-                        <div style="font-size:12px; color:#94a3b8;">min. {{ $barang->stok_minimum }}</div>
+                        <div style="font-size:11px;color:var(--andon-faint);font-weight:700;margin-top:4px">min. {{ $barang->stok_minimum }}</div>
                     @endif
                 </div>
             </div>
-
             @if($barang->keterangan)
-                <p style="margin:14px 0 0; font-size:14px; color:#475569;">{{ $barang->keterangan }}</p>
+                <p style="margin:14px 0 0;font-size:13px;color:var(--andon-muted);line-height:1.5">{{ $barang->keterangan }}</p>
             @endif
         </div>
 
-        <!-- ACTION BAR -->
         @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
         <div class="action-bar">
-            <a href="{{ route('mutasi-barang.create', ['barang_id' => $barang->id]) }}" class="btn btn-primary">+ Mutasi Stok</a>
-            <a href="{{ route('barang.edit', $barang) }}" class="btn btn-warning">Edit</a>
-           <a href="{{ route('stock-opname-barang.create', ['barang' => $barang, 'from' => 'detail-barang']) }}" class="btn btn-success">Opname</a>
-            <form method="POST" action="{{ route('barang.destroy', $barang) }}" onsubmit="return confirm('Hapus barang ini?')" style="display:inline;">
+            <a href="{{ route('mutasi-barang.create', ['barang_id' => $barang->id]) }}" class="btn btn--primary">Mutasi Stok</a>
+            <a href="{{ route('barang.edit', $barang) }}" class="btn btn--amber">Edit</a>
+            <a href="{{ route('stock-opname-barang.create', ['barang' => $barang, 'from' => 'detail-barang']) }}" class="btn btn--ghost">Opname</a>
+            <form method="POST" action="{{ route('barang.destroy', $barang) }}" onsubmit="return confirm('Hapus barang ini?')" style="display:inline">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn btn-danger">Hapus</button>
+                <button type="submit" class="btn btn--ghost" style="color:var(--andon-red);border-color:#FECACA">Hapus</button>
             </form>
         </div>
         @endif
     </div>
 </div>
 
-<!-- RIWAYAT MUTASI -->
 <div class="card">
     <div class="card-title">Riwayat Mutasi Stok</div>
     @if($barang->mutasi->isEmpty())
-        <p style="color:#94a3b8; font-size:14px;">Belum ada mutasi.</p>
+        <p style="color:var(--andon-faint);font-size:13px;font-weight:600;margin:0">Belum ada mutasi.</p>
     @else
+        <div style="overflow-x:auto">
         <table>
             <thead>
                 <tr>
@@ -162,15 +148,16 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     @endif
 </div>
 
-<!-- RIWAYAT OPNAME -->
 <div class="card">
     <div class="card-title">Riwayat Stock Opname</div>
     @if($barang->stockOpname->isEmpty())
-        <p style="color:#94a3b8; font-size:14px;">Belum ada opname.</p>
+        <p style="color:var(--andon-faint);font-size:13px;font-weight:600;margin:0">Belum ada opname.</p>
     @else
+        <div style="overflow-x:auto">
         <table>
             <thead>
                 <tr>
@@ -201,6 +188,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     @endif
 </div>
 

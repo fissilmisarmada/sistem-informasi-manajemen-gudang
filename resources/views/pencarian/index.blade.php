@@ -2,52 +2,46 @@
 
 @section('content')
 <style>
-    .page-title { font-size:22px; font-weight:800; color:#0f172a; margin-bottom:20px; }
-    .search-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
-    .search-bar input[type=text] { flex:1; min-width:200px; padding:12px 16px; border:2px solid #e2e8f0; border-radius:10px; font-size:15px; }
-    .search-bar input:focus { outline:none; border-color:#3b82f6; }
-    .search-bar select { padding:12px 14px; border:2px solid #e2e8f0; border-radius:10px; font-size:14px; }
-    .search-bar select:focus { outline:none; border-color:#3b82f6; }
-    .btn { display:inline-flex; align-items:center; gap:6px; padding:12px 20px; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; border:none; text-decoration:none; }
-    .btn-primary { background:#3b82f6; color:#fff; }
-    .btn-primary:hover { background:#2563eb; }
-    .btn-secondary { background:#e2e8f0; color:#0f172a; }
-    .btn-secondary:hover { background:#cbd5e1; }
+    .search-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; padding:14px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); }
+    .search-bar input[type=text] { flex:1; min-width:200px; padding:12px 14px; border:1px solid #E8EAF0; border-radius:14px; font-size:14px; background:#FBFBFD; color:var(--andon-ink); transition:border-color .18s ease,box-shadow .18s ease,background .18s ease; }
+    .search-bar input[type=text]:focus { outline:none; border-color:var(--andon-ink); box-shadow:0 0 0 3px rgba(15,23,42,.06); background:#fff; }
+    .search-bar select { padding:12px 14px; border:1px solid #E8EAF0; border-radius:14px; font-size:14px; background:#FBFBFD; color:var(--andon-ink); transition:border-color .18s ease,box-shadow .18s ease,background .18s ease; }
+    .search-bar select:focus { outline:none; border-color:var(--andon-ink); box-shadow:0 0 0 3px rgba(15,23,42,.06); background:#fff; }
     .result-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
-    .result-count { font-size:14px; color:#64748b; font-weight:600; }
-    .section-title { font-size:16px; font-weight:800; color:#0f172a; margin:24px 0 12px; padding-bottom:8px; border-bottom:2px solid #f1f5f9; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
-    .result-card { background:#fff; border-radius:12px; box-shadow:0 2px 10px rgba(15,23,42,.07); padding:16px; cursor:pointer; transition:transform .15s,box-shadow .15s; border:2px solid transparent; }
-    .result-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(15,23,42,.12); border-color:#3b82f6; }
-    .result-card .type-tag { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
-    .type-buku { color:#7c3aed; }
-    .type-barang { color:#0891b2; }
-    .result-card .nama { font-size:15px; font-weight:800; color:#0f172a; margin-bottom:6px; }
-    .result-card .kode { font-size:11px; color:#94a3b8; margin-bottom:8px; }
-    .result-card .meta { display:flex; flex-wrap:wrap; gap:5px; }
-    .badge { display:inline-block; padding:3px 9px; border-radius:999px; font-size:11px; font-weight:700; }
-    .badge-purple { background:#ede9fe; color:#6d28d9; }
-    .badge-cyan { background:#cffafe; color:#0e7490; }
-    .badge-green { background:#dcfce7; color:#166534; }
-    .badge-red { background:#fee2e2; color:#991b1b; }
-    .badge-gray { background:#f1f5f9; color:#475569; }
-    .badge-yellow { background:#fef9c3; color:#854d0e; }
-    .empty-state { text-align:center; padding:60px 20px; color:#94a3b8; }
-    .empty-state .icon { font-size:48px; margin-bottom:12px; }
-    .welcome-state { text-align:center; padding:60px 20px; }
-    .welcome-state .icon { font-size:56px; margin-bottom:16px; }
-    .welcome-state h2 { font-size:20px; font-weight:800; color:#0f172a; margin-bottom:8px; }
-    .welcome-state p { color:#64748b; font-size:14px; }
-    .tipe-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
-    .tipe-tab { padding:8px 16px; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; border:2px solid #e2e8f0; background:#fff; color:#475569; text-decoration:none; }
-    .tipe-tab.active { border-color:#3b82f6; background:#3b82f6; color:#fff; }
+    .result-count { font-size:13px; color:var(--andon-muted); font-weight:600; }
+    .section-title { font-size:14px; font-weight:800; color:var(--andon-ink); margin:22px 0 12px; padding-bottom:10px; border-bottom:1px solid var(--andon-line); letter-spacing:-.01em; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+    .result-card { background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); padding:16px; cursor:pointer; transition:transform .20s cubic-bezier(.16,1,.3,1),box-shadow .22s cubic-bezier(.16,1,.3,1),border-color .22s ease; }
+    .result-card:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(15,23,42,.08), 0 2px 6px rgba(15,23,42,.05); border-color:#E8EAF0; }
+    .result-card .type-tag { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; color:var(--andon-muted); }
+    .type-buku { color:var(--andon-navy); }
+    .type-barang { color:var(--andon-muted); }
+    .result-card .nama { font-size:14px; font-weight:800; color:var(--andon-ink); margin-bottom:4px; letter-spacing:-.01em; }
+    .result-card .kode { font-size:11px; color:var(--andon-faint); margin-bottom:10px; font-weight:600; }
+    .result-card .meta { display:flex; flex-wrap:wrap; gap:6px; }
+    .badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; border:1px solid transparent; }
+    .badge-purple { background:var(--andon-navy); color:#fff; }
+    .badge-cyan { background:#F8FAFC; color:var(--andon-navy); border-color:var(--andon-line); }
+    .badge-green { background:var(--andon-green); color:#fff; }
+    .badge-red { background:var(--andon-red); color:#fff; }
+    .badge-gray { background:#F8FAFC; color:var(--andon-muted); border-color:var(--andon-line); }
+    .badge-yellow { background:var(--andon-amber); color:var(--andon-amber-ink); border-color:#E6C200; }
+    .empty-state { text-align:center; padding:48px 20px; color:var(--andon-faint); background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); }
+    .empty-state .icon { font-size:40px; margin-bottom:10px; }
+    .welcome-state { text-align:center; padding:48px 20px; background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); }
+    .welcome-state .icon { font-size:44px; margin-bottom:14px; }
+    .welcome-state h2 { font-size:18px; font-weight:800; color:var(--andon-ink); margin:0 0 8px; letter-spacing:-.02em; }
+    .welcome-state p { color:var(--andon-muted); font-size:13px; line-height:1.6; margin:0; }
+    .tipe-tabs { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+    .tipe-tab { padding:8px 14px; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; border:1px solid var(--andon-line-strong); background:var(--andon-panel); color:var(--andon-muted); text-decoration:none; }
+    .tipe-tab.active { border-color:var(--andon-ink); background:var(--andon-ink); color:#fff; }
+    .page-header-row { display:flex; align-items:center; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
 </style>
 
-<div class="page-header">
-    <div style="display:flex; align-items:center; gap:16px;">
-        <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="btn btn-secondary" style="padding:8px 14px; font-size:13px;">← Kembali</a>
-        <h1 class="page-title">Pencarian Barang Gudang</h1>
-    </div>
+<div class="page-header-row">
+    <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="btn btn--ghost" style="padding:8px 14px; font-size:13px;">← Kembali</a>
+    <h1 class="andon-page-title" style="margin:0">Pencarian Barang Gudang</h1>
+</div>
 
 <form method="GET" action="{{ route('pencarian.index') }}" class="search-bar">
     <input type="text" name="q" value="{{ $q }}" placeholder="Cari nama barang, kode, ISBN..." autofocus>
@@ -57,9 +51,9 @@
             <option value="{{ $kat->id }}" {{ $kategori_id == $kat->id ? 'selected' : '' }}>{{ $kat->nama }}</option>
         @endforeach
     </select>
-    <button type="submit" class="btn btn-primary">🔍 Cari</button>
+    <button type="submit" class="btn btn--primary">🔍 Cari</button>
     @if($q)
-        <a href="{{ route('pencarian.index') }}" class="btn btn-secondary">Reset</a>
+        <a href="{{ route('pencarian.index') }}" class="btn btn--ghost">Reset</a>
     @endif
 </form>
 
@@ -83,7 +77,7 @@
     @if($totalHasil === 0)
         <div class="empty-state">
             <div class="icon">🔍</div>
-            <p>Tidak ada hasil untuk "<strong>{{ $q }}</strong>"</p>
+            <p>Tidak ada hasil untuk "<strong style="color:var(--andon-ink)">{{ $q }}</strong>"</p>
         </div>
     @else
         {{-- Hasil Buku --}}

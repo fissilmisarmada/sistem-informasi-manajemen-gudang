@@ -31,17 +31,6 @@ class User extends Authenticatable implements CanResetPasswordContract
     ];
 
     
-    public function riwayatPenempatan()
-    {
-        return $this->hasMany(RiwayatPenempatan::class, 'staff_id');
-    }
-
-    
-    public function stockOpname()
-    {
-        return $this->hasMany(StockOpname::class, 'staff_id');
-    }
-
     
     public function isAdmin(): bool
     {

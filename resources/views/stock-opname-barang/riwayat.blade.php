@@ -4,9 +4,8 @@
 <style>
     .back-link { display:inline-flex; align-items:center; gap:8px; margin-bottom:20px; padding:9px 14px; background:#e2e8f0; color:#0f172a; border-radius:9px; font-weight:700; font-size:14px; text-decoration:none; }
     .back-link:hover { background:#cbd5e1; }
-    .page-title { font-size:22px; font-weight:800; color:#0f172a; margin-bottom:6px; }
-    .page-sub { font-size:14px; color:#64748b; margin-bottom:24px; }
-    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:24px; }
+    .page-sub { font-size:14px; color:var(--andon-muted); margin-bottom:24px; }
+    .card { background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); padding:24px; }
     table { width:100%; border-collapse:collapse; }
     th { background:#f1f5f9; padding:12px 14px; text-align:left; font-size:13px; font-weight:700; color:#475569; }
     td { padding:12px 14px; border-bottom:1px solid #f1f5f9; font-size:14px; }
@@ -19,7 +18,7 @@
 
 <a href="{{ request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('stock-opname-barang.index') }}" class="back-link">← Kembali</a>
 
-<h1 class="page-title">Riwayat Opname: {{ $barang->nama }}</h1>
+<h1 class="andon-page-title" style="margin-bottom:6px">Riwayat Opname: {{ $barang->nama }}</h1>
 <p class="page-sub">{{ $barang->kode_barang }} · {{ $barang->kategori->nama }}</p>
 
 <div class="card">

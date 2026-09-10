@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Rak;
 use App\Models\Barang;
+use App\Models\DenahArea;
 use Illuminate\Http\Request;
 
 class RakController extends Controller
@@ -80,7 +81,7 @@ class RakController extends Controller
             'rak_id' => 'required|exists:rak,id',
         ]);
 
-        Barang::whereKey($validated['barang_id'])->update(['rak_id' => $validated['rak_id']]);
+        Barang::whereKey($validated['barang_id'])->update(['rak_id' => $validated['rak_id'], 'denah_area_id' => null]);
 
         return redirect()
             ->route('denah-gudang', ['rak' => $validated['rak_id']])
@@ -133,6 +134,8 @@ class RakController extends Controller
             'kosong' => $dataRak->filter(fn (Rak $rak): bool => $getStatus($rak) === 'kosong')->count(),
         ];
 
+        $denahAreas = DenahArea::withCount('barang')->orderBy('kode_area')->get();
+
         return view('rak.denah', [
             'dataRak' => $rakTampil,
             'selectedRak' => $selectedRak,
@@ -141,6 +144,7 @@ class RakController extends Controller
             'statusFilter' => $statusFilter,
             'getStatus' => $getStatus,
             'barangTersedia' => $barangTersedia,
+            'denahAreas' => $denahAreas,
         ]);
     }
 }

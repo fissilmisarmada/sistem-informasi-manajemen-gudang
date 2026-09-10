@@ -4,19 +4,18 @@
 <style>
     .back-link { display:inline-flex; align-items:center; gap:8px; margin-bottom:20px; padding:9px 14px; background:#e2e8f0; color:#0f172a; border-radius:9px; font-weight:700; font-size:14px; text-decoration:none; }
     .back-link:hover { background:#cbd5e1; }
-    .page-title { font-size:22px; font-weight:800; color:#0f172a; margin-bottom:6px; }
-    .page-sub { font-size:14px; color:#64748b; margin-bottom:24px; }
+    .page-sub { font-size:14px; color:var(--andon-muted); margin-bottom:24px; }
     .grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
-    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(15,23,42,.08); padding:24px; }
+    .card { background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); padding:24px; }
     .card-title { font-size:15px; font-weight:800; color:#0f172a; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid #f1f5f9; }
     .info-row { display:flex; gap:12px; margin-bottom:10px; font-size:14px; }
     .info-label { color:#64748b; font-weight:700; min-width:120px; }
     .stok-big { font-size:36px; font-weight:900; color:#0f172a; text-align:center; padding:20px; }
     .stok-unit { font-size:16px; color:#64748b; }
     .form-group { margin-bottom:18px; }
-    label { display:block; font-size:13px; font-weight:700; color:#475569; margin-bottom:6px; }
-    input[type=number], textarea { width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; }
-    input:focus, textarea:focus { outline:none; border-color:#3b82f6; }
+    label { display:block; font-size:11px; font-weight:700; color:var(--andon-muted); margin-bottom:8px; letter-spacing:.06em; }
+    input[type=number], textarea { width:100%; padding:12px 14px; border:1px solid #E8EAF0; border-radius:14px; font-size:14px; background:#FBFBFD; color:var(--andon-ink); transition:border-color .18s ease,box-shadow .18s ease,background .18s ease; }
+    input:focus, textarea:focus { outline:none; border-color:var(--andon-ink); box-shadow:0 0 0 3px rgba(15,23,42,.06); background:#fff; }
     .btn { display:inline-flex; align-items:center; gap:6px; padding:10px 20px; border-radius:9px; font-weight:700; font-size:14px; cursor:pointer; border:none; text-decoration:none; }
     .btn-primary { background:#3b82f6; color:#fff; }
     .btn-secondary { background:#e2e8f0; color:#0f172a; }
@@ -32,7 +31,7 @@
 
 <a href="{{ request('from') === 'detail-barang' ? route('barang.show', $barang) : (request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('stock-opname-barang.index')) }}" class="back-link">← Kembali</a>
 
-<h1 class="page-title">Opname: {{ $barang->nama }}</h1>
+<h1 class="andon-page-title" style="margin-bottom:6px">Opname: {{ $barang->nama }}</h1>
 <p class="page-sub">{{ $barang->kode_barang }} · {{ $barang->kategori->nama }}</p>
 
 <div class="grid">
