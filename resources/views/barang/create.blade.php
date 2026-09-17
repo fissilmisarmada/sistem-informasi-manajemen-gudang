@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 <style>
@@ -24,7 +24,7 @@
 
 <div class="create-page">
 <div class="page-head">
-    <a href="{{ route('barang.index') }}" class="btn btn--ghost" style="min-height:36px;padding:0 14px;font-size:12px">← Kembali</a>
+    <a href="{{ route('barang.index') }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <h1>Tambah Barang Baru</h1>
 </div>
 

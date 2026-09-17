@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 <style>
@@ -21,7 +21,7 @@
 .empty{padding:32px 16px;text-align:center;color:var(--andon-muted);font-size:13px;font-weight:600}
 </style>
 <div class="detail-page">
-    <a href="{{ route('denah-gudang') }}" class="btn btn--ghost" style="margin-bottom:14px;min-height:36px;padding:0 14px;font-size:12px">&larr; Kembali ke denah</a>
+    <a href="{{ route('denah-gudang') }}" class="back-link"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <div class="head">
         <div><div class="kicker">Area gudang</div><h1>{{ $area->kode_area }} — {{ $area->nama }}</h1><div class="meta">{{ $area->keterangan ?? 'Area gudang' }} · {{ $area->barang->count() }} barang</div></div>
     </div>

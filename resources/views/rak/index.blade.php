@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 <style>
@@ -38,9 +38,9 @@
 </style>
 
 <div class="rack-page">
-    <a class="btn btn--ghost" href="{{ request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('denah-gudang') }}" style="margin-bottom:14px;min-height:36px;padding:0 14px;font-size:12px">&larr; Kembali</a>
+    <a class="back-link" href="{{ request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('denah-gudang') }}" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <div class="page-head">
-        <div><div class="eyebrow">Administrasi lokasi inventaris</div><h1>Kelola Lokasi Rak</h1><p>Atur area penyimpanan dan pantau isi setiap rak gudang.</p></div>
+        <div><h1>Kelola Lokasi Rak</h1></div>
     </div>
 
     @if(session('sukses'))<div class="alert alert-success">{{ session('sukses') }}</div>@endif

@@ -1,44 +1,49 @@
 @extends('layouts.app')
 @section('content')
 <div class="andon-dashboard">
-    <section class="andon-hero">
-        <div class="andon-hero__copy">
-            <span class="andon-kicker"><i></i> RINGKASAN PENGELOLAAN</span>
-            <h1>Dashboard Pimpinan</h1>
-            <p>Pantau kondisi inventaris dan aktivitas gudang. Butuh detail? Masuk ke laporan atau cari barang langsung.</p>
-            <div class="andon-hero__actions">
-                <a class="btn btn--primary" href="{{ route('laporan.index') }}">Lihat Laporan</a>
-                <a class="btn btn--ghost" href="{{ route('pencarian.index') }}">Cari Barang</a>
-            </div>
-        </div>
-        <a class="andon-scan" href="{{ route('pencarian.index') }}" style="background: var(--andon-panel); color: var(--andon-ink); border: 1px solid var(--andon-line);">
-            <span class="andon-scan__label" style="color: var(--andon-ink);">AKSES CEPAT</span>
+    <section class="andon-hero andon-hero--single">
+        <a class="andon-scan andon-scan--light" href="{{ route('laporan.index') }}">
+            <span class="andon-scan__label">LAPORAN</span>
             <div>
-                <h2 style="color: var(--andon-ink);">Cari & audit stok</h2>
-                <p style="color: var(--andon-muted);">Telusuri barang, cek rak, dan tinjau mutasi terbaru tanpa mengubah data.</p>
+                <h2>Lihat laporan</h2>
+                <p>Ringkasan inventaris & aktivitas — siap untuk keputusan.</p>
             </div>
-            <span class="andon-scan__cta" style="color: var(--andon-navy);">Cari barang ›</span>
+            @php
+                $bl = ['Buku' => $totalBuku ?? 0, 'Barang' => $totalBarang ?? 0, 'Kategori' => $totalKategori ?? 0, 'Rak' => $totalRak ?? 0];
+                $mx = max(1, max($bl));
+            @endphp
+            <div class="andon-bar-chart andon-bar-chart--vertical" aria-label="Ringkasan: Buku, Barang, Kategori, Rak">
+                <svg viewBox="0 0 320 96" width="100%" height="96" role="img" aria-hidden="true" style="display:block;" preserveAspectRatio="xMidYMid meet">
+                    @foreach($bl as $lbl => $val)
+                        @php $i = $loop->index; $x = 14 + $i * 78; $h = $mx > 0 ? max(4, ($val / $mx) * 58) : 4; $y = 72 - $h; @endphp
+                        <rect x="{{ $x }}" y="{{ $y }}" width="44" height="{{ $h }}" rx="6" fill="{{ $lbl === 'Buku' ? '#0F172A' : ($lbl === 'Barang' ? '#334155' : ($lbl === 'Kategori' ? '#4F46E5' : '#0D9488')) }}" />
+                        <text x="{{ $x + 22 }}" y="{{ $y - 6 }}" text-anchor="middle" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="10" font-weight="600" fill="#0F172A">{{ number_format($val, 0, ',', '.') }}</text>
+                        <text x="{{ $x + 22 }}" y="88" text-anchor="middle" font-family="'Instrument Sans',ui-sans-serif,system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="0.06em" fill="#94A3B8">{{ strtoupper($lbl) }}</text>
+                    @endforeach
+                </svg>
+            </div>
+            <span class="andon-scan__cta">Buka laporan ›</span>
         </a>
     </section>
 
     <div class="andon-tiles">
         <a class="andon-tile andon-tile--navy" href="{{ route('barang.index') }}">
-            <span class="andon-tile__label">TOTAL ITEM <span class="andon-tile__arrow">↗</span></span>
+            <span class="andon-tile__label">TOTAL ITEM</span>
             <span class="andon-tile__value">{{ number_format($totalItem, 0, ',', '.') }}</span>
             <span class="andon-tile__note">{{ $totalBuku }} buku + {{ $totalBarang }} barang lain</span>
         </a>
         <a class="andon-tile andon-tile--line" href="{{ route('kategori.index') }}">
-            <span class="andon-tile__label">KATEGORI <span class="andon-tile__arrow">↗</span></span>
+            <span class="andon-tile__label">KATEGORI</span>
             <span class="andon-tile__value">{{ number_format($totalKategori, 0, ',', '.') }}</span>
             <span class="andon-tile__note">Jenis barang terdaftar</span>
         </a>
         <a class="andon-tile andon-tile--line" href="{{ route('denah-gudang') }}">
-            <span class="andon-tile__label">RAK GUDANG <span class="andon-tile__arrow">↗</span></span>
+            <span class="andon-tile__label">RAK GUDANG</span>
             <span class="andon-tile__value">{{ number_format($totalRak, 0, ',', '.') }}</span>
             <span class="andon-tile__note">Lokasi penyimpanan</span>
         </a>
         <a class="andon-tile {{ $barangMenipis > 0 ? 'andon-tile--red' : 'andon-tile--line' }}" href="{{ route('barang.stok-menipis', ['from' => 'dashboard']) }}">
-            <span class="andon-tile__label">STOK MENIPIS <span class="andon-tile__arrow">↗</span></span>
+            <span class="andon-tile__label">STOK MENIPIS</span>
             <span class="andon-tile__value">{{ number_format($barangMenipis, 0, ',', '.') }}</span>
             <span class="andon-tile__note">{{ $barangMenipis > 0 ? 'Perlu perhatian segera' : 'Stok aman' }}</span>
         </a>

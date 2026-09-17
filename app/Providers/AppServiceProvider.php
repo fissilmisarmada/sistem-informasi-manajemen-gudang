@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+ #if (config('app.env') === 'local' || str_contains(request()->header('x-forwarded-host'), 'ngrok')) {
+            #URL::forceScheme('https');
     }
 }
+
+
+

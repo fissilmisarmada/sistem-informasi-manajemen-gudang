@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-04-15T00:00:00.000Z",
+  "title": "Design System: Sistem Informasi Manajemen Gudang",
+  "extensions": {
+    "colorMeta": {
+      "amber": { "role": "primary", "displayName": "Andon Amber", "canonical": "#F7D60A", "tonalRamp": ["#3A3100", "#6B5A00", "#9A8300", "#C4A800", "#F7D60A", "#FBE86A", "#FFF3A3", "#FFFBE0"] },
+      "amber-dim": { "role": "primary", "displayName": "Amber Dim", "canonical": "#E6C200", "tonalRamp": ["#332C00", "#665800", "#9A8500", "#C4A800", "#E6C200", "#F0D84D", "#F8E985", "#FFF6C2"] },
+      "amber-glow": { "role": "primary", "displayName": "Amber Glow", "canonical": "rgba(247,214,10,0.14)", "tonalRamp": ["rgba(247,214,10,0.06)", "rgba(247,214,10,0.10)", "rgba(247,214,10,0.14)", "rgba(247,214,10,0.22)", "rgba(247,214,10,0.35)", "rgba(247,214,10,0.50)", "rgba(247,214,10,0.70)", "rgba(247,214,10,1)"] },
+      "ink": { "role": "secondary", "displayName": "Ink", "canonical": "#0F172A", "tonalRamp": ["#020617", "#0F172A", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#E2E8F0"] },
+      "navy": { "role": "secondary", "displayName": "Navy", "canonical": "#0F2540", "tonalRamp": ["#081425", "#0F2540", "#162E52", "#1E3A5F", "#2A4A73", "#3B5F8A", "#6B8AB0", "#C9DAEC"] },
+      "navy-deep": { "role": "secondary", "displayName": "Navy Deep", "canonical": "#162E52", "tonalRamp": ["#0A1A33", "#0F2540", "#162E52", "#1E3A5F", "#2E4F7A", "#4A6B96", "#7D9BBF", "#C9DAEC"] },
+      "bg": { "role": "neutral", "displayName": "Parchment Bg", "canonical": "#F6F1E8", "tonalRamp": ["#E8DDC2", "#EDE2CC", "#F0E8D6", "#F3EDE0", "#F6F1E8", "#F9F6EF", "#FCFBF7", "#FFFFFF"] },
+      "surface": { "role": "neutral", "displayName": "Surface", "canonical": "#FFFFFF", "tonalRamp": ["#E2E8F0", "#EEF2F7", "#F1F5F9", "#F8FAFC", "#FBFBFD", "#FCFCF9", "#FFFFFF", "#FFFFFF"] },
+      "surface-soft": { "role": "neutral", "displayName": "Surface Soft", "canonical": "#F8FAFC", "tonalRamp": ["#E2E8F0", "#EEF2F7", "#F1F5F9", "#F8FAFC", "#FBFDFF", "#FDFEFF", "#FFFFFF", "#FFFFFF"] },
+      "surface-muted": { "role": "neutral", "displayName": "Surface Muted", "canonical": "#EEF2F7", "tonalRamp": ["#CBD5E1", "#DCE4EE", "#E4EAF2", "#EEF2F7", "#F1F5F9", "#F8FAFC", "#FCFDFF", "#FFFFFF"] },
+      "line": { "role": "neutral", "displayName": "Line", "canonical": "#E2E8F0", "tonalRamp": ["#94A3B8", "#B8C4D6", "#CBD5E1", "#DCE4EE", "#E2E8F0", "#EDF1F6", "#F1F5F9", "#F8FAFC"] },
+      "line-strong": { "role": "neutral", "displayName": "Line Strong", "canonical": "#CBD5E1", "tonalRamp": ["#64748B", "#94A3B8", "#B8C4D6", "#CBD5E1", "#DCE4EE", "#E2E8F0", "#EEF2F7", "#F8FAFC"] },
+      "muted": { "role": "neutral", "displayName": "Muted", "canonical": "#475569", "tonalRamp": ["#0F172A", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#CBD5E1", "#E2E8F0"] },
+      "faint": { "role": "neutral", "displayName": "Faint", "canonical": "#94A3B8", "tonalRamp": ["#334155", "#475569", "#64748B", "#7A8FA8", "#94A3B8", "#B8C4D6", "#DCE4EE", "#F1F5F9"] },
+      "red": { "role": "tertiary", "displayName": "Signal Red", "canonical": "#DC2626", "tonalRamp": ["#450A0A", "#7F1D1D", "#B91C1C", "#DC2626", "#EF4444", "#F87171", "#FCA5A5", "#FECACA"] },
+      "red-surface": { "role": "tertiary", "displayName": "Red Surface", "canonical": "#FEF2F2", "tonalRamp": ["#FECACA", "#FECACA", "#FEE2E2", "#FEF2F2", "#FFF1F1", "#FFF5F5", "#FFFBFB", "#FFFFFF"] },
+      "green": { "role": "tertiary", "displayName": "Signal Green", "canonical": "#16A34A", "tonalRamp": ["#052E16", "#065F46", "#047857", "#16A34A", "#22C55E", "#4ADE80", "#86EFAC", "#A7F3D0"] },
+      "green-surface": { "role": "tertiary", "displayName": "Green Surface", "canonical": "#ECFDF5", "tonalRamp": ["#A7F3D0", "#BBF7D8", "#D1FAE5", "#ECFDF5", "#F0FDF4", "#F7FEF9", "#FBFFFC", "#FFFFFF"] },
+      "saas-indigo": { "role": "secondary", "displayName": "SaaS Indigo", "canonical": "#4F46E5", "tonalRamp": ["#1E1B4B", "#312E81", "#4338CA", "#4F46E5", "#6366F1", "#818CF8", "#A5B4FC", "#C7D2FE"] },
+      "saas-indigo-surface": { "role": "secondary", "displayName": "SaaS Indigo Surface", "canonical": "#EEF2FF", "tonalRamp": ["#C7D2FE", "#DDD6FE", "#E0E7FF", "#EEF2FF", "#F0F3FF", "#F5F7FF", "#FAFBFF", "#FFFFFF"] },
+      "saas-indigo-border": { "role": "secondary", "displayName": "SaaS Indigo Border", "canonical": "#C7D2FE", "tonalRamp": ["#4F46E5", "#6366F1", "#818CF8", "#A5B4FC", "#C7D2FE", "#DDD6FE", "#E0E7FF", "#EEF2FF"] },
+      "saas-teal": { "role": "tertiary", "displayName": "SaaS Teal", "canonical": "#0D9488", "tonalRamp": ["#042F2E", "#0F3F3B", "#115E59", "#0D9488", "#14B8A6", "#2DD4BF", "#5EEAD4", "#99F6E4"] },
+      "saas-teal-surface": { "role": "tertiary", "displayName": "SaaS Teal Surface", "canonical": "#CCFBF1", "tonalRamp": ["#99F6E4", "#A7F3D0", "#CCFBF1", "#D1FAE5", "#ECFDF5", "#F0FDF4", "#FFFFFF", "#FFFFFF"] },
+      "saas-teal-border": { "role": "tertiary", "displayName": "SaaS Teal Border", "canonical": "#99F6E4", "tonalRamp": ["#0D9488", "#14B8A6", "#2DD4BF", "#5EEAD4", "#99F6E4", "#CCFBF1", "#D1FAE5", "#ECFDF5"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero heading — satu per viewport, extra-bold dengan tracking -0.04em." },
+      "headline": { "displayName": "Headline", "purpose": "Judul halaman 22px/800, andon-page-title." },
+      "title": { "displayName": "Title", "purpose": "Nama barang / tile value label — 13px/700." },
+      "body": { "displayName": "Body", "purpose": "Paragraf dan deskripsi 14px/500, line-height 1.5." },
+      "label": { "displayName": "Label", "purpose": "Uppercase 10–11px/800, tracking .10–.14em untuk penanda struktur." },
+      "mono": { "displayName": "Mono", "purpose": "JetBrains Mono 600 untuk numerik tabular dan kode." }
+    },
+    "shadows": [
+      { "name": "soft-lift", "value": "0 6px 24px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)", "purpose": "Default untuk panel, hero, card di atas parchment." },
+      { "name": "strong-lift", "value": "0 10px 28px rgba(15,23,42,0.08), 0 2px 6px rgba(15,23,42,0.05)", "purpose": "Scan card navy dan hover card — sedikit lebih dalam." },
+      { "name": "quick-shadow", "value": "0 2px 12px rgba(15,23,42,0.04)", "purpose": "Quick-card Andon — hampir flat, naik ke soft-lift saat hover." },
+      { "name": "amber-glow", "value": "0 4px 16px rgba(247,214,10,0.14)", "purpose": "Glow tombol amber — satu-satunya shadow berwarna." }
+    ],
+    "motion": [
+      { "name": "ease-enter", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Entrance andon-in / andon-page-in — exponential ease-out, 360–450ms." },
+      { "name": "ease-state", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Transisi state button/card (150–180ms) — background, border, transform." },
+      { "name": "scan-line", "value": "cubic-bezier(0.4, 0, 0.2, 1) 2.2s 1.2s forwards", "purpose": "Sapuan scan-line sekali di scan card navy." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "380px" },
+      { "name": "md", "value": "560px" },
+      { "name": "lg", "value": "640px" },
+      { "name": "xl", "value": "980px" },
+      { "name": "2xl", "value": "1180px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Tombol struktur utama — ink solid untuk aksi primer non-amber.",
+      "html": "<button class=\"ds-btn-primary\">Simpan Perubahan</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:0 16px;border-radius:12px;font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;font-size:13px;font-weight:700;letter-spacing:-0.01em;border:1px solid #0F172A;background:#0F172A;color:#fff;cursor:pointer;transition:background .16s,border-color .16s,transform .14s,box-shadow .16s}.ds-btn-primary:hover{background:#162E52;transform:translateY(-1px);box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04)}.ds-btn-primary:focus-visible{outline:2px solid #0F2540;outline-offset:2px}"
+    },
+    {
+      "name": "Amber Button",
+      "kind": "button",
+      "refersTo": "button-amber",
+      "description": "Satu-satunya tombol amber — marker presisi, satu per hero.",
+      "html": "<button class=\"ds-btn-amber\">Scan & Input Barang</button>",
+      "css": ".ds-btn-amber{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:0 16px;border-radius:12px;font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;font-size:13px;font-weight:800;letter-spacing:-0.01em;border:1px solid #E6C200;background:#F7D60A;color:#0F172A;cursor:pointer;box-shadow:0 4px 16px rgba(247,214,10,.14);transition:filter .16s,transform .14s}.ds-btn-amber:hover{filter:brightness(.98);transform:translateY(-1px)}.ds-btn-amber:focus-visible{outline:2px solid #0F2540;outline-offset:2px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Tombol sekunder permukaan putih untuk aksi sekunder.",
+      "html": "<button class=\"ds-btn-ghost\">Kelola Pengguna</button>",
+      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:0 16px;border-radius:12px;font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;font-size:13px;font-weight:700;letter-spacing:-0.01em;border:1px solid #CBD5E1;background:#fff;color:#0F172A;cursor:pointer;transition:border-color .16s,transform .14s,box-shadow .16s}.ds-btn-ghost:hover{border-color:#0F172A;transform:translateY(-1px);box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04)}.ds-btn-ghost:focus-visible{outline:2px solid #0F2540;outline-offset:2px}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Field lembut — bg tint, focus ink, radius 14px, 48px di mobile.",
+      "html": "<label class=\"ds-label\">Nama Barang</label><input class=\"ds-input\" placeholder=\"Cari SKU atau nama barang\" />",
+      "css": ".ds-label{display:block;font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;color:#475569;margin-bottom:6px;text-transform:uppercase}.ds-input{width:100%;padding:11px 14px;border:1px solid #E8EAF0;border-radius:14px;font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;font-size:14px;background:#FBFBFD;color:#0F172A;transition:border-color .16s,box-shadow .16s,background .16s}.ds-input::placeholder{color:#94A3B8}.ds-input:focus{outline:none;background:#fff;border-color:#0F172A;box-shadow:0 0 0 3px rgba(15,23,42,.06)}"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Permukaan putih lembut di atas parchment — radius 20px, soft lift.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-head\">Ringkasan Inventaris</div><div class=\"ds-card-row\"><span>Stok menipis</span><strong>12 item perlu restock</strong></div></div>",
+      "css": ".ds-card{background:#fff;border:1px solid #EDEEF2;border-radius:20px;box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);padding:16px;transition:box-shadow .22s,border-color .22s,transform .22s}.ds-card:hover{box-shadow:0 10px 28px rgba(15,23,42,.08),0 2px 6px rgba(15,23,42,.05);transform:translateY(-1px)}.ds-card-head{font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;color:#475569;margin-bottom:12px}.ds-card-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #F1F5F9;font-size:12px;color:#475569}.ds-card-row strong{color:#0F172A;font-weight:700}"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-green",
+      "description": "Pill status — green/red/blue/yellow, bukan filter chip.",
+      "html": "<span class=\"ds-badge ds-badge--green\">Masuk</span> <span class=\"ds-badge ds-badge--red\">Menipis</span> <span class=\"ds-badge ds-badge--blue\">Rak A-12</span>",
+      "css": ".ds-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:700;border:1px solid transparent}.ds-badge--green{background:#ECFDF5;color:#065F46;border-color:#A7F3D0}.ds-badge--red{background:#FEF2F2;color:#991B1B;border-color:#FECACA}.ds-badge--blue{background:#EFF6FF;color:#1E3A5F;border-color:#DBEAFE}"
+    },
+    {
+      "name": "Scan Card",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Kartu navy magnetik — CTA scan dengan scan-line sekali.",
+      "html": "<a class=\"ds-scan\" href=\"#\"><span class=\"ds-scan__label\">SCAN BARCODE</span><h3>Input cepat via pindai</h3><p>Barcode → lookup barang → assign ke rak &amp; denah.</p><span class=\"ds-scan__cta\">Buka scanner ›</span></a>",
+      "css": ".ds-scan{display:flex;flex-direction:column;justify-content:space-between;gap:12px;background:#0F172A;color:#fff;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(15,23,42,.08),0 2px 6px rgba(15,23,42,.05);text-decoration:none;position:relative;overflow:hidden;min-height:160px;transition:transform .16s}.ds-scan::after{content:'';position:absolute;inset:auto -18% -22% auto;width:220px;height:120px;background:repeating-linear-gradient(90deg,rgba(247,214,10,.18) 0 10px,transparent 10px 20px);transform:rotate(-8deg);pointer-events:none}.ds-scan:hover{transform:translateY(-2px)}.ds-scan__label{font-size:10px;font-weight:800;letter-spacing:.14em;color:#F7D60A;display:flex;align-items:center;gap:8px}.ds-scan__label::before{content:'';width:8px;height:8px;border-radius:999px;background:#F7D60A;box-shadow:0 0 0 4px rgba(247,214,10,.18)}.ds-scan h3{margin:0;font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;font-size:20px;font-weight:800;letter-spacing:-.03em;line-height:1;color:#fff}.ds-scan p{margin:0;color:rgba(255,255,255,.72);font-size:12px;line-height:1.5}.ds-scan__cta{font-size:12px;font-weight:800;letter-spacing:.06em;color:#F7D60A;display:inline-flex;align-items:center;gap:8px}.ds-scan:hover .ds-scan__cta{gap:12px}"
+    },
+    {
+      "name": "Quick Action",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Quick-grid soft card — icon invert ke ink+amber + bottom amber marker saat hover.",
+      "html": "<a class=\"ds-q\" href=\"#\"><span class=\"ds-q__icon\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M7 16V8l-4 4 4 4\"/><path d=\"M17 8v8l4-4-4-4\"/><path d=\"M3 12h18\"/></svg></span>Mutasi</a>",
+      "css": ".ds-q{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px 12px 14px;background:#fff;border:1px solid #EDEEF2;border-radius:16px;box-shadow:0 2px 12px rgba(15,23,42,.04);text-decoration:none;font-family:'Instrument Sans',ui-sans-serif,system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:-.01em;color:#0F172A;text-align:center;position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s,border-color .18s}.ds-q::after{content:'';position:absolute;left:14px;right:14px;bottom:0;height:2px;border-radius:999px;background:transparent;transition:background .18s}.ds-q:hover{transform:translateY(-3px);border-color:#CBD5E1;box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04)}.ds-q:hover::after{background:#F7D60A}.ds-q__icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#F8FAFC;border:1px solid #E2E8F0;color:#0F172A;transition:background .18s,color .18s,border-color .18s,transform .18s}.ds-q:hover .ds-q__icon{background:#0F172A;color:#F7D60A;border-color:#0F172A;transform:translateY(-1px) scale(1.02)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Andon Lantai Gudang",
+    "overview": "Sistem ini adalah lampu andon di lorong rak — bukan poster, bukan katalog. Background parchment hangat (#F6F1E8) adalah kertas kerja gudang; ink/navy adalah struktur; amber (#F7D60A) adalah marker presisi — garis scan, dot, hairline — yang muncul hanya untuk menuntun mata ke aksi berikutnya. Kepadatan dijaga lapang dengan container 1120–1180px dan gap 14–16px. Brand hidup di detail presisi: repeating top-bar, scan-line gradient, dan dot hijau online. Estetika operasional-presisi: Instrument Sans tegas, sudut membulat lembut 12–20px yang ramah di thumb HP, dan bayangan halus ber-offset + blur. Kecepatan scan di atas dekorasi; setiap interaksi kritis harus lolos uji satu-tangan di HP.",
+    "keyCharacteristics": [
+      "Parchment + Ink + Marker-Amber — hangat tapi tegas, high-contrast untuk lorong gudang",
+      "Marker Presisi — amber sebagai garis tipis/dot/scan-line, jarang tapi wajib terlihat",
+      "Soft & Bulat — radius 12–20px, border halus, card-stack ramah thumb",
+      "Scan-First — jalur barcode adalah jalur utama; UI mengundang scan sebelum ketik",
+      "Operational, bukan dekoratif — bayangan punya offset+blur, motion exponential ease-out"
+    ],
+    "rules": [
+      { "name": "The Marker-Only Amber Rule", "body": "Amber hanya sebagai marker presisi (garis ≤3px, dot 6–8px, scan-line) dan tombol aksi primer .btn--amber. Jangan pakai amber sebagai fill luas, background section, atau border tebal.", "section": "colors" },
+      { "name": "The Parchment-Is-The-Page Rule", "body": "Halaman selalu parchment (#F6F1E8), bukan putih. Putih hanya untuk permukaan yang diangkat (card/panel/header).", "section": "colors" },
+      { "name": "The One Display Rule", "body": "Hanya satu Display (hero h1) per viewport. Semua judul lain turun ke Headline/Title.", "section": "typography" },
+      { "name": "The Label-Is-Signal Rule", "body": "Label uppercase hanya untuk penanda struktur (kicker, panel head, tile label), bukan untuk body copy.", "section": "typography" },
+      { "name": "The Offset-Plus-Blur Rule", "body": "Setiap shadow wajib punya offset Y dan blur — zero-offset halo atau hard block shadow tidak ada di sistem ini.", "section": "elevation" },
+      { "name": "The Hover-Lifts Rule", "body": "Hover mengangkat 1–3px dan memperdalam shadow; tidak ada perubahan warna besar.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do pakai amber hanya sebagai marker presisi (≤3px line / 6–8px dot / scan-line) — raritasnya adalah sinyal.",
+      "Do jaga halaman di parchment #F6F1E8; putih hanya untuk permukaan terangkat.",
+      "Do pertahankan radius lembut 12–20px dan shadow dengan offset+blur — soft & bulat, bukan kotak keras.",
+      "Do buat input 48px di mobile dan button 44px — thumb-friendly di lorong rak.",
+      "Do pakai Instrument Sans 800 dengan tracking negatif untuk judul; body 1.5 untuk scan cepat.",
+      "Do invert quick-icon ke ink+amber saat hover dan pakai bottom 2px amber marker — feedback presisi.",
+      "Do hormati prefers-reduced-motion — matikan entrance & scan-line animation."
+    ],
+    "donts": [
+      "Don't pakai amber sebagai background luas, fill section, atau border tebal — itu menghancurkan hierarki marker.",
+      "Don't pakai border-left atau border-right tebal (>1px) sebagai aksen pada card/list — aksen hanya hairline top atau bottom marker tipis.",
+      "Don't buat shadow tanpa offset atau tanpa blur (halo dekoratif / hard 4px block) — bukan bagian dari sistem ini.",
+      "Don't tambah kicker/eyebrow di atas heading di luar .andon-kicker hero yang sudah ada — heading harus berdiri sendiri.",
+      "Don't pakai gradient text, glass/blur dekoratif, atau shadow berwarna — kedalaman hanya dari tinta + blur halus.",
+      "Don't pakai monospace untuk gaya \"teknis\" di luar kode/numerik tabular — Instrument Sans adalah voice sistem.",
+      "Don't invent warna di luar palet yang sudah ada (amber/navy/green/red + indigo/teal sekunder) — sekunder baru harus lewat DESIGN.md."
+    ]
+  }
+}

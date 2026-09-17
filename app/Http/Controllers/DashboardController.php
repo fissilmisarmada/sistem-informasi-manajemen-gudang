@@ -44,6 +44,7 @@ class DashboardController extends Controller
         $d['barangMenipisBarang'] = $bukuKategoriId ? Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->where('kategori_id', '!=', $bukuKategoriId)->count() : 0;
         $d['bukuMenipis'] = $bukuKategoriId ? Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->where('kategori_id', $bukuKategoriId)->count() : 0;
         $d['totalStokMenipis'] = $d['barangMenipisBarang'] + $d['bukuMenipis'];
+        $d['totalMutasi'] = MutasiBarang::count();
         return view('dashboard.staff', $d);
     }
 

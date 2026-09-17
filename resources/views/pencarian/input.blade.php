@@ -1,23 +1,14 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 <style>
     .intake-page {
         max-width: 880px;
         margin: 0 auto;
-        padding: 24px 16px 48px;
+        padding: 16px 16px 48px;
     }
-    .back-button {
-        display: inline-flex; align-items: center; gap: 8px;
-        padding: 9px 14px; border-radius: 999px; background: var(--andon-panel);
-        border: 1px solid var(--andon-line-strong); color: var(--andon-ink); font-size: 13px; font-weight: 700;
-        text-decoration: none; transition: all .18s ease;
-        box-shadow: var(--andon-shadow); margin-bottom: 22px;
-    }
-    .back-button:hover { border-color: var(--andon-ink); transform: translateY(-1px); color: var(--andon-ink); }
-    .intake-heading { margin-bottom: 22px; }
-    .eyebrow { display: inline-block; padding: 4px 10px; background: var(--andon-amber); color: var(--andon-amber-ink); border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; border: 1px solid #E6C200; }
-    h1 { margin: 0; color: var(--andon-ink); font-size: 26px; font-weight: 800; letter-spacing: -.03em; }
+    .intake-heading { margin-bottom: 14px; }
+    .intake-heading h1 { margin: 0; color: var(--andon-ink); font-size: 20px; font-weight: 800; letter-spacing: -.03em; }
     .subtitle { margin: 6px 0 0; color: var(--andon-muted); font-size: 13px; }
     .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
     .step { padding: 14px 16px; background: var(--andon-panel); border: 1px solid #EDEEF2; border-radius: 20px; color: var(--andon-muted); font-size: 12px; font-weight: 600; box-shadow: 0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); transition: all .18s; }
@@ -71,16 +62,9 @@
 </style>
 
 <div class="intake-page">
-    <a class="back-button" href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff') }}">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px; height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
-        Kembali
-    </a>
-
+    <a class="back-link" href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff') }}" style="margin-bottom:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <div class="intake-heading">
-        <div>
-            <span class="eyebrow">Penerimaan Inventaris</span>
-            <h1>Scan & Input Barang</h1>
-        </div>
+        <h1>Scan & Input Barang</h1>
     </div>
 
     @if(session('success'))
@@ -330,5 +314,7 @@ cameraButton.addEventListener('click', startCameraFlow);
 cameraStop.addEventListener('click', stopCamera);
 window.addEventListener('beforeunload', stopCamera);
 document.addEventListener('visibilitychange', ()=>{ if(document.hidden) stopCamera(); });
+// Opsi A: auto-buka kamera saat halaman dimuat
+setTimeout(() => { if (!cameraStream && !stopScan) startCameraFlow(); }, 300);
 </script>
 @endsection
