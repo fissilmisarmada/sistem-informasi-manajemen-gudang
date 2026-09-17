@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 <style>
@@ -15,20 +15,20 @@
         position: relative;
     }
     .andon-auth::before {
-        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-        background: repeating-linear-gradient(90deg, var(--andon-amber) 0 18px, var(--andon-ink) 18px 36px);
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        background: repeating-linear-gradient(90deg, var(--andon-amber) 0 14px, transparent 14px 28px);
     }
     .andon-auth__card {
         width: 100%; max-width: 400px;
         background: var(--andon-panel);
         border: 1px solid #EDEEF2;
         border-radius: 20px;
-        box-shadow: 0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+        box-shadow: var(--andon-shadow-strong);
         overflow: hidden;
         position: relative;
     }
     .andon-auth__card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--andon-amber); }
-    .andon-auth__inner { padding: 26px 26px 20px; }
+    .andon-auth__inner { padding: 26px 22px 20px; }
     .andon-auth__brand { text-align: center; margin-bottom: 18px; }
     .andon-auth__brand img { height: 64px; width: auto; object-fit: contain; display: block; margin: 0 auto 10px; }
     .andon-auth__brand h1 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.03em; color: var(--andon-ink); }
@@ -58,8 +58,9 @@
     }
     .andon-btn--primary { background: var(--andon-ink); color: #fff; border-color: var(--andon-ink); box-shadow: 0 8px 20px rgba(15,23,42,.18); }
     .andon-btn--primary:hover { background: var(--andon-navy-2); transform: translateY(-1px); }
-    .andon-back { display: block; text-align: center; font-size: 11px; font-weight: 700; color: var(--andon-navy); margin-top: 14px; }
-    .andon-back:hover { text-decoration: underline; }
+    .andon-back { display: grid; place-items: center; width: 40px; height: 40px; margin: 14px auto 0; border-radius: 999px; background: #fff; color: var(--andon-ink); border: 1px solid var(--andon-line-strong); box-shadow: var(--andon-shadow); text-decoration: none; }
+    .andon-back:hover { border-color: var(--andon-ink); transform: translateY(-1px); box-shadow: var(--andon-shadow-strong); }
+    .andon-back svg { width: 16px; height: 16px; }
     .andon-foot { text-align: center; margin-top: 14px; font-size: 10px; font-weight: 600; letter-spacing: .06em; color: var(--andon-faint); }
 </style>
 
@@ -96,7 +97,7 @@
                 </button>
             </form>
 
-            <a class="andon-back" href="{{ route('login') }}">← Kembali ke Login</a>
+            <a class="andon-back" href="{{ route('login') }}" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
             <div class="andon-foot">© 2026 Fissilmi & Ismail · Sistem Gudang UT</div>
         </div>
     </section>

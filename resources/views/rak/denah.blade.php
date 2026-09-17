@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
     @php
@@ -74,18 +74,19 @@
         .warehouse-footer-link{display:inline-block;margin-top:14px;color:var(--andon-navy);font-size:11px;font-weight:800}
         .warehouse-footer-link:hover{color:var(--andon-ink);text-decoration:underline}
         .tab-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-        .denah-canvas{position:relative;width:100%;height:420px;background:#F8FAFC;border:1px solid #EDEEF2;border-radius:20px;overflow:hidden;box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04)}
+        .denah-canvas{position:relative;width:100%;height:420px;background:#F8FAFC;border:1px solid #EDEEF2;border-radius:20px;overflow:hidden;box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);touch-action:none}
+        .denah-box{ touch-action:none; }
         @media(max-width:800px){.warehouse-header{display:block} .warehouse-search{margin-top:16px} .warehouse-layout{grid-template-columns:1fr} .detail-panel{position:static}}
         @media(max-width:560px){.warehouse-page{padding-top:0} .warehouse-summary{grid-template-columns:repeat(2,1fr)} .warehouse-grid{grid-template-columns:repeat(4,minmax(54px,1fr));gap:7px} .rack-tile{min-height:72px} .warehouse-search{display:grid;grid-template-columns:1fr auto} .warehouse-search input{grid-column:1/-1} .warehouse-search select{width:auto}}
     </style>
 
     <div class="warehouse-page">
         @if(auth()->user()->isPimpinan())
-            <a class="btn btn--ghost" href="{{ route('dashboard.pimpinan') }}" style="margin-bottom:14px;min-height:36px;padding:0 14px;font-size:12px">&larr; Kembali</a>
+            <a class="back-link" href="{{ route('dashboard.pimpinan') }}"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
         @elseif(auth()->user()->isStaff())
-            <a class="btn btn--ghost" href="{{ route('dashboard.staff') }}" style="margin-bottom:14px;min-height:36px;padding:0 14px;font-size:12px">&larr; Kembali</a>
+            <a class="back-link" href="{{ route('dashboard.staff') }}"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
         @elseif(auth()->user()->isAdmin())
-            <a class="btn btn--ghost" href="{{ route('dashboard.admin') }}" style="margin-bottom:14px;min-height:36px;padding:0 14px;font-size:12px">&larr; Kembali</a>
+            <a class="back-link" href="{{ route('dashboard.admin') }}"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
         @endif
         <div class="warehouse-header">
             <div>
@@ -277,12 +278,37 @@ async function openAreaDetail(id){
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAreaPopover(); });
 window.addEventListener('resize', ()=>{ if(popoverAnchor) placePopover(popoverAnchor); });
 window.addEventListener('scroll', ()=>{ if(document.getElementById('area-popover').style.display!=='none' && popoverAnchor) placePopover(popoverAnchor); }, true);
-// drag
+// drag — mouse + touch (pointer)
 if(canEdit){
 let drag=null, moved=false, canvas=document.getElementById('denah-canvas');
-canvas?.addEventListener('mousedown', e=>{ const box=e.target.closest('.denah-box'); if(!box) return; if(e.target.closest('button,a')) return; drag={el:box,sx:e.clientX,sy:e.clientY,ox:parseFloat(box.dataset.x),oy:parseFloat(box.dataset.y)}; moved=false; e.preventDefault(); });
-window.addEventListener('mousemove', e=>{ if(!drag) return; moved=true; const rect=canvas.getBoundingClientRect(); const dx=(e.clientX-drag.sx)/rect.width*100, dy=(e.clientY-drag.sy)/rect.height*100; let nx=Math.max(0,Math.min(90,drag.ox+dx)), ny=Math.max(0,Math.min(85,drag.oy+dy)); drag.el.style.left=nx+'%'; drag.el.style.top=ny+'%'; drag.el.dataset.x=nx; drag.el.dataset.y=ny; });
-window.addEventListener('mouseup', async (e)=>{ if(!drag) return; const id=drag.el.dataset.id, x=parseFloat(drag.el.dataset.x), y=parseFloat(drag.el.dataset.y), w=parseFloat(drag.el.dataset.w), h=parseFloat(drag.el.dataset.h); const wasMoved=moved; drag=null; moved=false; if(wasMoved){ e.stopPropagation(); try{ await api('/denah-area/'+id+'/posisi','PATCH',{x,y,w,h}); }catch{ } }});
+function pt(e){ const t=e.touches ? e.touches[0] : e; return {x:t.clientX, y:t.clientY}; }
+function startDrag(e){
+    const box=e.target.closest('.denah-box'); if(!box) return;
+    if(e.target.closest('button,a')) return;
+    const p=pt(e);
+    drag={el:box,sx:p.x,sy:p.y,ox:parseFloat(box.dataset.x),oy:parseFloat(box.dataset.y)};
+    moved=false; if(e.cancelable) e.preventDefault();
+}
+function onMove(e){
+    if(!drag) return; moved=true;
+    const p=pt(e), rect=canvas.getBoundingClientRect();
+    const dx=(p.x-drag.sx)/rect.width*100, dy=(p.y-drag.sy)/rect.height*100;
+    let nx=Math.max(0,Math.min(90,drag.ox+dx)), ny=Math.max(0,Math.min(85,drag.oy+dy));
+    drag.el.style.left=nx+'%'; drag.el.style.top=ny+'%'; drag.el.dataset.x=nx; drag.el.dataset.y=ny;
+    if(e.cancelable) e.preventDefault();
+}
+async function endDrag(e){
+    if(!drag) return;
+    const id=drag.el.dataset.id, x=parseFloat(drag.el.dataset.x), y=parseFloat(drag.el.dataset.y), w=parseFloat(drag.el.dataset.w), h=parseFloat(drag.el.dataset.h);
+    const wasMoved=moved; drag=null; moved=false;
+    if(wasMoved){ if(e) e.stopPropagation(); try{ await api('/denah-area/'+id+'/posisi','PATCH',{x,y,w,h}); }catch{} }
+}
+canvas?.addEventListener('mousedown', startDrag);
+canvas?.addEventListener('touchstart', startDrag, {passive:false});
+window.addEventListener('mousemove', onMove);
+window.addEventListener('touchmove', onMove, {passive:false});
+window.addEventListener('mouseup', endDrag);
+window.addEventListener('touchend', endDrag);
 window.addEventListener('click', e=>{ if(moved) e.stopPropagation(); }, true);
 }
 </script>

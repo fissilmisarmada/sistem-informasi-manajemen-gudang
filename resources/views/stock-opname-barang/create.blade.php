@@ -1,9 +1,8 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 <style>
-    .back-link { display:inline-flex; align-items:center; gap:8px; margin-bottom:20px; padding:9px 14px; background:#e2e8f0; color:#0f172a; border-radius:9px; font-weight:700; font-size:14px; text-decoration:none; }
-    .back-link:hover { background:#cbd5e1; }
+
     .page-sub { font-size:14px; color:var(--andon-muted); margin-bottom:24px; }
     .grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
     .card { background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); padding:24px; }
@@ -29,7 +28,7 @@
     @media(max-width:700px) { .grid { grid-template-columns:1fr; } }
 </style>
 
-<a href="{{ request('from') === 'detail-barang' ? route('barang.show', $barang) : (request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('stock-opname-barang.index')) }}" class="back-link">← Kembali</a>
+<a href="{{ request('from') === 'detail-barang' ? route('barang.show', $barang) : (request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('stock-opname-barang.index')) }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
 
 <h1 class="andon-page-title" style="margin-bottom:6px">Opname: {{ $barang->nama }}</h1>
 <p class="page-sub">{{ $barang->kode_barang }} · {{ $barang->kategori->nama }}</p>

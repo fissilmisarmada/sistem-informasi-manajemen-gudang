@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 <style>
@@ -32,13 +32,10 @@
     @media(max-width:640px){.page-head h1{font-size:20px}}
 </style>
 
-<a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="btn btn--ghost" style="margin-bottom:14px;min-height:36px;padding:0 14px;font-size:12px">← Kembali</a>
+<a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
 
 <div class="page-head">
     <h1>Kategori Barang</h1>
-    @if(auth()->user()->isAdmin())
-        <button class="btn btn--primary" onclick="document.getElementById('modal-tambah').classList.add('active')">+ Tambah Kategori</button>
-    @endif
 </div>
 
 @if(session('success'))

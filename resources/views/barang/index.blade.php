@@ -64,20 +64,11 @@
     <div class="page-head">
         <div>
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="btn btn--ghost" style="min-height:36px;padding:0 14px;font-size:12px">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
-                    Kembali
-                </a>
+                <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
                 <h1>Barang Gudang</h1>
             </div>
-            <p>Inventaris lantai — saring, cari, dan buka detail stok.</p>
+
         </div>
-        @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
-            <a href="{{ route('barang.create') }}" class="btn btn--primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                Tambah Barang
-            </a>
-        @endif
     </div>
 
     @if(session('success'))

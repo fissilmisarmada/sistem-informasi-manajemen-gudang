@@ -35,12 +35,7 @@
 </style>
 
 <div class="users-page">
-    <div style="margin-bottom:14px;">
-        <a class="btn btn--ghost" href="{{ route('dashboard.admin') }}" style="min-height:36px;padding:0 14px;font-size:12px;">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
-            Kembali
-        </a>
-    </div>
+    <a class="back-link" href="{{ route('dashboard.admin') }}" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <div class="users-head">
         <span class="andon-kicker"><i></i> ADMINISTRASI</span>
         <h1>Manajemen User</h1>

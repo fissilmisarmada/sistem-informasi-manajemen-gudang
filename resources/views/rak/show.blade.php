@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 <style>
@@ -26,7 +26,7 @@
 </style>
 
 <div class="rack-page">
-    <a class="btn btn--ghost" href="{{ request('from') === 'kelola-rak' ? route('rak.index', request('return_from') ? ['from' => request('return_from')] : []) : route('denah-gudang', ['rak' => $rak->id]) }}" style="margin-bottom:14px;min-height:36px;padding:0 14px;font-size:12px">&larr; Kembali</a>
+    <a class="back-link" href="{{ request('from') === 'kelola-rak' ? route('rak.index', request('return_from') ? ['from' = aria-label="Kembali"> request('return_from')] : []) : route('denah-gudang', ['rak' => $rak->id]) }}"  style="margin-bottom:14px;min-height:36px;padding:0 14px;font-size:12px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <div class="page-head">
         <div><div class="eyebrow">Lokasi inventaris gudang</div><h1>{{ $rak->kode_rak }}</h1></div>
     </div>
