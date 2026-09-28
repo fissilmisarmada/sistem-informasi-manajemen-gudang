@@ -16,9 +16,9 @@
                 <svg viewBox="0 0 320 96" width="100%" height="96" role="img" aria-hidden="true" style="display:block;" preserveAspectRatio="xMidYMid meet">
                     @foreach($bl as $lbl => $val)
                         @php $i = $loop->index; $x = 14 + $i * 78; $h = $mx > 0 ? max(4, ($val / $mx) * 58) : 4; $y = 72 - $h; @endphp
-                        <rect x="{{ $x }}" y="{{ $y }}" width="44" height="{{ $h }}" rx="6" fill="{{ $lbl === 'Buku' ? '#0F172A' : ($lbl === 'Barang' ? '#334155' : ($lbl === 'Kategori' ? '#4F46E5' : '#0D9488')) }}" />
-                        <text x="{{ $x + 22 }}" y="{{ $y - 6 }}" text-anchor="middle" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="10" font-weight="600" fill="#0F172A">{{ number_format($val, 0, ',', '.') }}</text>
-                        <text x="{{ $x + 22 }}" y="88" text-anchor="middle" font-family="'Instrument Sans',ui-sans-serif,system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="0.06em" fill="#94A3B8">{{ strtoupper($lbl) }}</text>
+                        <rect x="{{ $x }}" y="{{ $y }}" width="44" height="{{ $h }}" rx="6" fill="{{ $lbl === 'Buku' ? '#2D3142' : ($lbl === 'Barang' ? '#4F5D75' : ($lbl === 'Kategori' ? '#EF8354' : '#BFC0C0')) }}" />
+                        <text x="{{ $x + 22 }}" y="{{ $y - 6 }}" text-anchor="middle" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="10" font-weight="600" fill="#2D3142">{{ number_format($val, 0, ',', '.') }}</text>
+                        <text x="{{ $x + 22 }}" y="88" text-anchor="middle" font-family="'Instrument Sans',ui-sans-serif,system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="0.06em" fill="#667085">{{ strtoupper($lbl) }}</text>
                     @endforeach
                 </svg>
             </div>

@@ -15,7 +15,7 @@
     .filter-bar input[type="text"]{flex:2;min-width:200px}
     .filter-bar select{flex:1;min-width:150px}
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-    .barang-card{background:var(--andon-panel);border:1px solid var(--andon-line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;display:flex;flex-direction:column;position:relative;box-shadow:0 4px 16px rgba(15,23,42,.04)}
+    .barang-card{background:var(--andon-panel);border:1px solid var(--andon-line);border-radius:16px;overflow:hidden;transition:transform .18s,box-shadow .18s,border-color .18s;display:flex;flex-direction:column;position:relative;box-shadow:0 4px 16px rgba(15,23,42,.04);text-decoration:none;color:inherit;}
     .barang-card::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:var(--andon-navy)}
     .barang-card--warn::before{background:var(--andon-red)}
     .barang-card:hover{transform:translateY(-3px);box-shadow:var(--andon-shadow);border-color:var(--andon-line-strong)}
@@ -72,9 +72,14 @@
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success" role="status">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:18px;height:18px;flex:0 0 auto"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {{ session('success') }}
+        </div>
+    @endif
+    @if($errors->any())
+        <div class="alert alert-error" role="alert">
+            {{ $errors->first() }}
         </div>
     @endif
 
@@ -111,7 +116,7 @@
     @else
         <div class="grid">
             @foreach($barangs as $barang)
-            <div class="barang-card {{ $barang->isStokMenipis() ? 'barang-card--warn' : '' }}" data-url="{{ route('barang.show', ['barang' => $barang, 'from' => request('from')]) }}">
+            <a class="barang-card {{ $barang->isStokMenipis() ? 'barang-card--warn' : '' }}" href="{{ route('barang.show', ['barang' => $barang, 'from' => request('from')]) }}">
                 <div class="barang-img">
                     @if($barang->gambar)
                         <img src="{{ Storage::url($barang->gambar) }}" alt="{{ $barang->nama }}">
@@ -125,7 +130,12 @@
                     <div class="barang-meta">
                         <span class="badge badge-blue">{{ $barang->kategori->nama }}</span>
                         @if($barang->rak)
-                            <span class="badge badge-gray">{{ $barang->rak->kode_rak }}</span>
+                            <span class="badge badge-gray">Rak: {{ $barang->rak->kode_rak }}</span>
+                        @else
+                            <span class="badge badge-yellow">Tanpa rak</span>
+                        @endif
+                        @if($barang->denahArea)
+                            <span class="badge badge-gray">Area: {{ $barang->denahArea->nama }}</span>
                         @endif
                         @if($barang->isStokMenipis())
                             <span class="badge badge-red">Stok Menipis</span>
@@ -138,7 +148,7 @@
                         @endif
                     </div>
                 </div>
-            </div>
+            </a>
             @endforeach
         </div>
 
@@ -147,10 +157,4 @@
         </div>
     @endif
 </div>
-
-<script>
-document.querySelectorAll('.barang-card').forEach(card => {
-    card.addEventListener('click', function() { window.location.href = this.dataset.url; });
-});
-</script>
 @endsection

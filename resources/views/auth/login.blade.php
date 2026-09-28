@@ -25,7 +25,7 @@
         content: '';
         position: absolute; inset: 0;
         background:
-            radial-gradient(900px 420px at 18% 12%, rgba(247,214,10,.10) 0%, transparent 62%),
+            radial-gradient(900px 420px at 18% 12%, rgba(239,131,84,.14) 0%, transparent 62%),
             linear-gradient(180deg, rgba(253,251,246,.74) 0%, rgba(246,241,232,.82) 100%);
         pointer-events: none;
     }

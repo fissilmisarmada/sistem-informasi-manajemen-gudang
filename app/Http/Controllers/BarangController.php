@@ -121,6 +121,12 @@ class BarangController extends Controller
 
     public function destroy(Barang $barang)
     {
+        if ($barang->mutasi()->exists() || $barang->stockOpname()->exists()) {
+            return back()->withErrors([
+                'barang' => 'Barang tidak dapat dihapus karena memiliki riwayat mutasi atau stock opname. Gunakan data ini sebagai arsip audit.',
+            ]);
+        }
+
         if ($barang->gambar) {
             Storage::disk('public')->delete($barang->gambar);
         }

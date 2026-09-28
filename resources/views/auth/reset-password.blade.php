@@ -11,7 +11,7 @@
         place-items: center;
         padding: 24px 16px;
         background:
-            radial-gradient(900px 420px at 18% 12%, rgba(247,214,10,.18) 0%, transparent 62%),
+            radial-gradient(900px 420px at 18% 12%, rgba(239,131,84,.16) 0%, transparent 62%),
             linear-gradient(180deg, #FDFBF6 0%, var(--andon-bg) 100%);
         position: relative;
     }

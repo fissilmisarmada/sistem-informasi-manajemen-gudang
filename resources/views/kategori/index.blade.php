@@ -62,12 +62,12 @@
         <tbody>
             @forelse($kategoris as $kategori)
             <tr>
-                <td><span class="badge badge-blue">{{ $kategori->kode_kategori }}</span></td>
-                <td><strong>{{ $kategori->nama }}</strong></td>
-                <td style="color:var(--andon-muted)">{{ $kategori->deskripsi ?? '-' }}</td>
-                <td>{{ $kategori->barang_count }} barang</td>
+                <td data-label="Kode"><span class="badge badge-blue">{{ $kategori->kode_kategori }}</span></td>
+                <td data-label="Nama Kategori"><strong>{{ $kategori->nama }}</strong></td>
+                <td data-label="Deskripsi" style="color:var(--andon-muted)">{{ $kategori->deskripsi ?? '-' }}</td>
+                <td data-label="Jumlah Barang">{{ $kategori->barang_count }} barang</td>
                 @if(auth()->user()->isAdmin())
-                <td>
+                <td data-label="Aksi">
                     <button class="btn btn--ghost edit-btn" style="min-height:32px;padding:0 10px;font-size:12px;"
                         data-id="{{ $kategori->id }}"
                         data-kode="{{ $kategori->kode_kategori }}"

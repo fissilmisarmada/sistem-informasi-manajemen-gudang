@@ -72,6 +72,59 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('users', ['id' => $admin->id]);
     }
 
+    public function test_admin_can_delete_barang_without_history(): void
+    {
+        $admin = \App\Models\User::factory()->create(['role' => 'admin']);
+        $kategori = \App\Models\Kategori::create([
+            'kode_kategori' => 'ATK',
+            'nama' => 'Alat Tulis',
+        ]);
+        $barang = \App\Models\Barang::create([
+            'kode_barang' => 'ATK-DELETE',
+            'nama' => 'Barang Tanpa Riwayat',
+            'kategori_id' => $kategori->id,
+            'satuan' => 'pcs',
+            'stok' => 0,
+            'stok_minimum' => 0,
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('barang.destroy', $barang))
+            ->assertRedirect(route('barang.index'));
+
+        $this->assertDatabaseMissing('barang', ['id' => $barang->id]);
+    }
+
+    public function test_admin_cannot_delete_barang_with_history(): void
+    {
+        $admin = \App\Models\User::factory()->create(['role' => 'admin']);
+        $kategori = \App\Models\Kategori::create([
+            'kode_kategori' => 'ATK',
+            'nama' => 'Alat Tulis',
+        ]);
+        $barang = \App\Models\Barang::create([
+            'kode_barang' => 'ATK-HISTORY',
+            'nama' => 'Barang Dengan Riwayat',
+            'kategori_id' => $kategori->id,
+            'satuan' => 'pcs',
+            'stok' => 1,
+            'stok_minimum' => 0,
+        ]);
+        \App\Models\MutasiBarang::create([
+            'barang_id' => $barang->id,
+            'staff_id' => $admin->id,
+            'jenis' => 'masuk',
+            'jumlah' => 1,
+            'tanggal' => now()->toDateString(),
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('barang.destroy', $barang))
+            ->assertSessionHasErrors('barang');
+
+        $this->assertDatabaseHas('barang', ['id' => $barang->id]);
+    }
+
     public function test_staff_can_place_an_unassigned_book_on_a_rack(): void
     {
         $staff = \App\Models\User::factory()->create(['role' => 'staff']);
@@ -149,6 +202,50 @@ class ExampleTest extends TestCase
         $this->actingAs($pimpinan)
             ->get(route('laporan.export'))
             ->assertForbidden();
+    }
+
+    public function test_import_csv_rejects_conflicts_and_creates_new_items(): void
+    {
+        $staff = \App\Models\User::factory()->create(['role' => 'staff']);
+        $kategori = \App\Models\Kategori::create([
+            'kode_kategori' => 'ELEK',
+            'nama' => 'Elektronik',
+        ]);
+        $existing = \App\Models\Barang::create([
+            'kode_barang' => 'BRG-EXIST',
+            'nama' => 'Barang Lama',
+            'kategori_id' => $kategori->id,
+            'satuan' => 'pcs',
+            'stok' => 10,
+            'stok_minimum' => 2,
+        ]);
+
+        $csv = implode("\n", [
+            'kode_barang,nama,kode_kategori,kategori,satuan,stok,stok_minimum,kode_rak,keterangan',
+            'BRG-EXIST,Barang Ditolak,ELEK,Elektronik,pcs,99,5,,',
+            'BRG-NEW,Barang Baru,ELEK,Elektronik,pcs,15,3,,',
+        ]);
+
+        $this->actingAs($staff)
+            ->post(route('laporan.import'), [
+                'file' => \Illuminate\Http\UploadedFile::fake()->createWithContent('laporan.csv', $csv),
+            ])
+            ->assertRedirect(route('laporan.index'))
+            ->assertSessionHas('sukses');
+
+        // Check existing barang was NOT overwritten (Option 1)
+        $this->assertDatabaseHas('barang', [
+            'kode_barang' => 'BRG-EXIST',
+            'nama' => 'Barang Lama',
+            'stok' => 10,
+        ]);
+
+        // Check new barang was created
+        $this->assertDatabaseHas('barang', [
+            'kode_barang' => 'BRG-NEW',
+            'nama' => 'Barang Baru',
+            'stok' => 15,
+        ]);
     }
 
     public function test_staff_can_export_and_import_book_report(): void

@@ -38,18 +38,18 @@
             <tbody>
                 @foreach($riwayat as $r)
                 <tr>
-                    <td>{{ $r->tanggal->format('d/m/Y') }}</td>
-                    <td>{{ $r->jumlah_tercatat }} {{ $barang->satuan }}</td>
-                    <td>{{ $r->jumlah_fisik }} {{ $barang->satuan }}</td>
-                    <td>
+                    <td data-label="Tanggal">{{ $r->tanggal->format('d/m/Y') }}</td>
+                    <td data-label="Tercatat">{{ $r->jumlah_tercatat }} {{ $barang->satuan }}</td>
+                    <td data-label="Fisik">{{ $r->jumlah_fisik }} {{ $barang->satuan }}</td>
+                    <td data-label="Selisih">
                         @if($r->selisih == 0)
                             <span class="badge badge-green">Sesuai</span>
                         @else
                             <span class="badge badge-red">{{ $r->selisih > 0 ? '+' : '' }}{{ $r->selisih }}</span>
                         @endif
                     </td>
-                    <td>{{ $r->keterangan ?? '-' }}</td>
-                    <td>{{ $r->staff->name }}</td>
+                    <td data-label="Keterangan">{{ $r->keterangan ?? '-' }}</td>
+                    <td data-label="Staff">{{ $r->staff->name }}</td>
                 </tr>
                 @endforeach
             </tbody>

@@ -63,12 +63,12 @@
             <tbody>
                 @foreach($barangs as $barang)
                     <tr>
-                        <td style="font-weight:700;color:var(--andon-muted);font-size:12px">{{ $barang->kode_barang }}</td>
-                        <td><a class="item-name" href="{{ route('barang.show', ['barang' => $barang, 'from' => request('from')]) }}">{{ $barang->nama }}</a></td>
-                        <td>{{ $barang->kategori->nama }}</td>
-                        <td>{{ $barang->rak?->kode_rak ?? 'Belum ditempatkan' }}</td>
-                        <td><span class="stock-low">{{ $barang->stok }} {{ $barang->satuan }}</span> <span class="stock-minimum">/ min. {{ $barang->stok_minimum }}</span></td>
-                        <td><span class="badge">Stok menipis</span></td>
+                        <td data-label="Kode" style="font-weight:700;color:var(--andon-muted);font-size:12px">{{ $barang->kode_barang }}</td>
+                        <td data-label="Nama Barang"><a class="item-name" href="{{ route('barang.show', ['barang' => $barang, 'from' => request('from')]) }}">{{ $barang->nama }}</a></td>
+                        <td data-label="Kategori">{{ $barang->kategori->nama }}</td>
+                        <td data-label="Lokasi Rak">{{ $barang->rak?->kode_rak ?? 'Belum ditempatkan' }}</td>
+                        <td data-label="Stok"><span class="stock-low">{{ $barang->stok }} {{ $barang->satuan }}</span> <span class="stock-minimum">/ min. {{ $barang->stok_minimum }}</span></td>
+                        <td data-label="Status"><span class="badge">Stok menipis</span></td>
                     </tr>
                 @endforeach
             </tbody>

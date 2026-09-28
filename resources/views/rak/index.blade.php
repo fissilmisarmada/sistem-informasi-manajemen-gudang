@@ -63,7 +63,14 @@
         @else
             <div class="table-wrap"><table><thead><tr><th>Kode Rak</th><th>Lokasi</th><th>Kapasitas</th><th>Jenis Barang</th><th>Total Stok</th><th>Aksi</th></tr></thead><tbody>
                 @foreach($dataRak as $rak)
-                    <tr><td class="rack-code">{{ $rak->kode_rak }}</td><td>{{ $rak->nama_lokasi }}</td><td>{{ $rak->kapasitas ? number_format($rak->kapasitas, 0, ',', '.') . ' unit' : 'Belum ditentukan' }}</td><td>{{ $rak->barang_count }} jenis</td><td class="stock">{{ number_format((int) ($rak->barang_sum_stok ?? 0), 0, ',', '.') }} unit</td><td><div class="actions"><a href="{{ route('rak.show', ['rak' => $rak, 'from' => 'kelola-rak', 'return_from' => request('from')]) }}">Lihat isi rak</a>@if(auth()->user()->isAdmin())<form method="POST" action="{{ route('rak.destroy', $rak) }}" onsubmit="return confirm('Hapus lokasi rak ini?')">@csrf @method('DELETE')<button class="btn btn--ghost" type="submit" style="min-height:32px;padding:0 10px;font-size:12px;color:var(--andon-red);border-color:#FECACA">Hapus</button></form>@endif</div></td></tr>
+                    <tr>
+                        <td data-label="Kode Rak" class="rack-code">{{ $rak->kode_rak }}</td>
+                        <td data-label="Lokasi">{{ $rak->nama_lokasi }}</td>
+                        <td data-label="Kapasitas">{{ $rak->kapasitas ? number_format($rak->kapasitas, 0, ',', '.') . ' unit' : 'Belum ditentukan' }}</td>
+                        <td data-label="Jenis Barang">{{ $rak->barang_count }} jenis</td>
+                        <td data-label="Total Stok" class="stock">{{ number_format((int) ($rak->barang_sum_stok ?? 0), 0, ',', '.') }} unit</td>
+                        <td data-label="Aksi"><div class="actions"><a href="{{ route('rak.show', ['rak' => $rak, 'from' => 'kelola-rak', 'return_from' => request('from')]) }}">Lihat isi rak</a>@if(auth()->user()->isAdmin())<form method="POST" action="{{ route('rak.destroy', $rak) }}" onsubmit="return confirm('Hapus lokasi rak ini?')">@csrf @method('DELETE')<button class="btn btn--ghost" type="submit" style="min-height:32px;padding:0 10px;font-size:12px;color:var(--andon-red);border-color:#FECACA">Hapus</button></form>@endif</div></td>
+                    </tr>
                 @endforeach
             </tbody></table></div>
         @endif

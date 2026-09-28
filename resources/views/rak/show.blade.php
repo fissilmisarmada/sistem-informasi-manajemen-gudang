@@ -43,7 +43,12 @@
         @else
             <div class="table-wrap"><table><thead><tr><th>Kode Barang</th><th>Nama Barang</th><th>Kategori</th><th>Stok</th></tr></thead><tbody>
                 @foreach($barang as $item)
-                    <tr><td>{{ $item->kode_barang }}</td><td>{{ $item->nama }}</td><td>{{ $item->kategori?->nama ?? '-' }}</td><td class="stock">{{ $item->stok }} {{ $item->satuan }}</td></tr>
+                    <tr>
+                        <td data-label="Kode Barang">{{ $item->kode_barang }}</td>
+                        <td data-label="Nama Barang"><a href="{{ route('barang.show', $item) }}" style="color:var(--andon-navy);font-weight:700;">{{ $item->nama }}</a></td>
+                        <td data-label="Kategori">{{ $item->kategori?->nama ?? '-' }}</td>
+                        <td data-label="Stok" class="stock">{{ $item->stok }} {{ $item->satuan }}</td>
+                    </tr>
                 @endforeach
             </tbody></table></div>
         @endif

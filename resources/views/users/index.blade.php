@@ -77,10 +77,10 @@
         <tbody>
             @forelse($users as $user)
                 <tr>
-                    <td style="font-weight:700;">{{ $user->name }}</td>
-                    <td style="color:var(--andon-muted);">{{ $user->email }}</td>
-                    <td><span class="role-badge">{{ ucfirst($user->role) }}</span></td>
-                    <td>
+                    <td data-label="Nama" style="font-weight:700;">{{ $user->name }}</td>
+                    <td data-label="Email" style="color:var(--andon-muted);">{{ $user->email }}</td>
+                    <td data-label="Role"><span class="role-badge">{{ ucfirst($user->role) }}</span></td>
+                    <td data-label="Aksi">
                         @if($user->id !== auth()->id())
                             <form action="{{ route('users.destroy', $user) }}" method="POST" onsubmit="return confirm('Hapus user ini?')">
                                 @csrf

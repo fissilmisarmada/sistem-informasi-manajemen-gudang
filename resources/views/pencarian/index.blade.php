@@ -25,7 +25,7 @@
     .badge-green { background:var(--andon-green); color:#fff; }
     .badge-red { background:var(--andon-red); color:#fff; }
     .badge-gray { background:#F8FAFC; color:var(--andon-muted); border-color:var(--andon-line); }
-    .badge-yellow { background:var(--andon-amber); color:var(--andon-amber-ink); border-color:#E6C200; }
+    .badge-yellow { background:#FFF1EE; color:#9A3412; border-color:#F5B49B; }
     .empty-state { text-align:center; padding:48px 20px; color:var(--andon-faint); background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); }
     .empty-state .icon { font-size:40px; margin-bottom:10px; }
     .welcome-state { text-align:center; padding:48px 20px; background:var(--andon-panel); border:1px solid #EDEEF2; border-radius:20px; box-shadow:0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); }
