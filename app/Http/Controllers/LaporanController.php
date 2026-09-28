@@ -76,39 +76,63 @@ class LaporanController extends Controller
         }
 
         $imported = 0;
-        DB::transaction(function () use ($handle, &$imported) {
+        $conflicts = 0;
+        $invalidRows = 0;
+
+        DB::transaction(function () use ($handle, &$imported, &$conflicts, &$invalidRows) {
             while (($row = fgetcsv($handle)) !== false) {
                 if (count($row) < 9 || trim((string) $row[0]) === '') {
+                    $invalidRows++;
+                    continue;
+                }
+
+                $kodeBarang = trim((string) $row[0]);
+
+                // Opsi 1: Menandai konflik dan menolak update jika kode_barang sudah ada
+                if (Barang::where('kode_barang', $kodeBarang)->exists()) {
+                    $conflicts++;
+                    continue;
+                }
+
+                $kategori = Kategori::where('kode_kategori', trim((string) $row[2]))->first();
+                if (!$kategori) {
+                    $invalidRows++;
                     continue;
                 }
 
                 $rak = trim((string) $row[7]) !== ''
-                    ? Rak::where('kode_rak', trim($row[7]))->first()
+                    ? Rak::where('kode_rak', trim((string) $row[7]))->first()
                     : null;
-                $kategori = Kategori::where('kode_kategori', trim($row[2]))->first();
 
-                if (!$kategori) {
-                    continue;
-                }
+                Barang::create([
+                    'kode_barang'  => $kodeBarang,
+                    'nama'         => trim((string) $row[1]),
+                    'kategori_id'  => $kategori->id,
+                    'satuan'       => trim((string) $row[4]) !== '' ? trim((string) $row[4]) : 'pcs',
+                    'stok'         => is_numeric($row[5]) ? max(0, (int) $row[5]) : 0,
+                    'stok_minimum' => is_numeric($row[6]) ? max(0, (int) $row[6]) : 0,
+                    'rak_id'       => $rak?->id,
+                    'keterangan'   => trim((string) $row[8]) !== '' ? trim((string) $row[8]) : null,
+                ]);
 
-                Barang::updateOrCreate(
-                    ['kode_barang' => trim($row[0])],
-                    [
-                        'nama' => trim($row[1]),
-                        'kategori_id' => $kategori->id,
-                        'satuan' => trim($row[4]) !== '' ? trim($row[4]) : 'pcs',
-                        'stok' => is_numeric($row[5]) ? max(0, (int) $row[5]) : 0,
-                        'stok_minimum' => is_numeric($row[6]) ? max(0, (int) $row[6]) : 0,
-                        'rak_id' => $rak?->id,
-                        'keterangan' => trim($row[8]) !== '' ? trim($row[8]) : null,
-                    ]
-                );
                 $imported++;
             }
         });
 
         fclose($handle);
 
-        return redirect()->route('laporan.index')->with('sukses', "Import selesai. {$imported} data barang diproses.");
+        $msg = "Import selesai. {$imported} data barang baru ditambahkan.";
+        if ($conflicts > 0 || $invalidRows > 0) {
+            $details = [];
+            if ($conflicts > 0) {
+                $details[] = "{$conflicts} data ditolak karena konflik (kode_barang sudah ada)";
+            }
+            if ($invalidRows > 0) {
+                $details[] = "{$invalidRows} baris ditolak (kategori/format tidak valid)";
+            }
+            $msg .= ' (' . implode(', ', $details) . ').';
+        }
+
+        return redirect()->route('laporan.index')->with('sukses', $msg);
     }
 }

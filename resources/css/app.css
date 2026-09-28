@@ -11,46 +11,43 @@
 
 /* ── Andon Light — modern clean ── */
 :root {
-    --andon-bg:           #F6F1E8;
-    --andon-surface:      #FFFFFF;
-    --andon-surface-2:    #F8FAFC;
-    --andon-surface-3:    #EEF2F7;
+    --jet-black: #2D3142;
+    --silver: #BFC0C0;
+    --white: #FFFFFF;
+    --coral-glow: #EF8354;
+    --blue-slate: #4F5D75;
 
-    --andon-ink:          #0F172A;
-    --andon-muted:        #475569;
-    --andon-faint:        #94A3B8;
-
-    --andon-line:         #E2E8F0;
-    --andon-line-strong:  #CBD5E1;
-
-    --andon-amber:        #F7D60A;
-    --andon-amber-dim:    #E6C200;
-    --andon-amber-ink:    #0F172A;
-    --andon-amber-glow:   rgba(247,214,10,.14);
-
-    --andon-navy:         #0F2540;
-    --andon-navy-2:       #162E52;
-
-    --andon-blue:         #0F2540;
-    --andon-red:          #DC2626;
-    --andon-red-surface:  #FEF2F2;
-    --andon-green:        #16A34A;
-    --andon-green-surface:#ECFDF5;
-
-    --andon-panel:        #FFFFFF;
-
-    /* SaaS secondary palette — untuk kategori/status sekunder & ilustrasi, bukan marker Andon */
-    --saas-indigo:        #4F46E5;
-    --saas-indigo-surface:#EEF2FF;
-    --saas-indigo-border: #C7D2FE;
-    --saas-teal:          #0D9488;
-    --saas-teal-surface:  #CCFBF1;
-    --saas-teal-border:   #99F6E4;
-
-    --andon-radius:       18px;
-    --andon-radius-sm:    12px;
-    --andon-shadow:       0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
-    --andon-shadow-strong:0 10px 28px rgba(15,23,42,.08), 0 2px 6px rgba(15,23,42,.05);
+    --andon-bg: var(--silver);
+    --andon-surface: var(--white);
+    --andon-surface-2: #F5F5F5;
+    --andon-surface-3: #E7E8E8;
+    --andon-ink: var(--jet-black);
+    --andon-muted: #4F5D75;
+    --andon-faint: #667085;
+    --andon-line: #D4D5D5;
+    --andon-line-strong: #A7A9AA;
+    --andon-amber: var(--coral-glow);
+    --andon-amber-dim: #D96F45;
+    --andon-amber-ink: var(--jet-black);
+    --andon-amber-glow: rgba(239,131,84,.18);
+    --andon-navy: var(--blue-slate);
+    --andon-navy-2: var(--jet-black);
+    --andon-blue: var(--blue-slate);
+    --andon-red: #C24132;
+    --andon-red-surface: #FFF1EE;
+    --andon-green: #3F7D58;
+    --andon-green-surface: #EEF7F0;
+    --andon-panel: var(--white);
+    --saas-indigo: var(--blue-slate);
+    --saas-indigo-surface: #E8EBEF;
+    --saas-indigo-border: #B8C0CB;
+    --saas-teal: #5F7C83;
+    --saas-teal-surface: #EAF1F2;
+    --saas-teal-border: #B9CDD0;
+    --andon-radius: 14px;
+    --andon-radius-sm: 10px;
+    --andon-shadow: 0 4px 16px rgba(45,49,66,.08), 0 1px 2px rgba(45,49,66,.05);
+    --andon-shadow-strong: 0 10px 24px rgba(45,49,66,.14), 0 2px 5px rgba(45,49,66,.08);
 }
 
 * { box-sizing: border-box; }
@@ -71,7 +68,7 @@ body {
     padding-top: 58px;
 }
 body.body--auth { padding-top: 0; }
-::selection { background: var(--andon-amber); color: var(--andon-amber-ink); }
+::selection { background: var(--coral-glow); color: var(--jet-black); }
 :focus-visible { outline: 2px solid var(--andon-navy); outline-offset: 2px; border-radius: 4px; }
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--andon-bg); }
@@ -94,7 +91,7 @@ button, input, select, textarea { font: inherit; }
 }
 .site-header__bar {
     height: 3px;
-    background: repeating-linear-gradient(90deg, var(--andon-amber) 0 14px, transparent 14px 28px);
+    background: var(--coral-glow);
 }
 .site-header__inner {
     max-width: 1180px;

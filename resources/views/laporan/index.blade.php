@@ -82,10 +82,10 @@
     </div>
 
     @if(session('sukses'))
-        <div class="alert alert-success">{{ session('sukses') }}</div>
+        <div class="alert alert-success" role="status">{{ session('sukses') }}</div>
     @endif
     @if($errors->any())
-        <div class="alert alert-error">{{ $errors->first() }}</div>
+        <div class="alert alert-error" role="alert">{{ $errors->first() }}</div>
     @endif
 
     <div class="metrics">
@@ -129,7 +129,15 @@
             <thead><tr><th>Kode</th><th>Nama Barang</th><th>Kategori</th><th>Rak</th><th>Stok</th><th>Minimum</th><th>Status</th></tr></thead>
             <tbody>
                 @forelse($barangs as $barang)
-                    <tr><td>{{ $barang->kode_barang }}</td><td><a class="item-name" href="{{ route('barang.show', $barang) }}">{{ $barang->nama }}</a></td><td>{{ $barang->kategori?->nama ?? '-' }}</td><td>{{ $barang->rak?->kode_rak ?? 'Belum ditempatkan' }}</td><td class="{{ $barang->isStokMenipis() ? 'stock-low' : 'stock-ok' }}">{{ $barang->stok }} {{ $barang->satuan }}</td><td>{{ $barang->stok_minimum }} {{ $barang->satuan }}</td><td><span class="status {{ $barang->isStokMenipis() ? 'low' : 'ok' }}">{{ $barang->isStokMenipis() ? 'Stok menipis' : 'Aman' }}</span></td></tr>
+                    <tr>
+                        <td data-label="Kode">{{ $barang->kode_barang }}</td>
+                        <td data-label="Nama Barang"><a class="item-name" href="{{ route('barang.show', $barang) }}">{{ $barang->nama }}</a></td>
+                        <td data-label="Kategori">{{ $barang->kategori?->nama ?? '-' }}</td>
+                        <td data-label="Rak">{{ $barang->rak?->kode_rak ?? 'Belum ditempatkan' }}</td>
+                        <td data-label="Stok" class="{{ $barang->isStokMenipis() ? 'stock-low' : 'stock-ok' }}">{{ $barang->stok }} {{ $barang->satuan }}</td>
+                        <td data-label="Minimum">{{ $barang->stok_minimum }} {{ $barang->satuan }}</td>
+                        <td data-label="Status"><span class="status {{ $barang->isStokMenipis() ? 'low' : 'ok' }}">{{ $barang->isStokMenipis() ? 'Stok menipis' : 'Aman' }}</span></td>
+                    </tr>
                 @empty
                     <tr><td class="empty" colspan="7">Belum ada data barang.</td></tr>
                 @endforelse

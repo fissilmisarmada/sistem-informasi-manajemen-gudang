@@ -17,9 +17,9 @@
     .step.active strong { color: var(--andon-ink); }
     .card { padding: 22px; background: var(--andon-panel); border: 1px solid #EDEEF2; border-radius: 20px; box-shadow: 0 6px 24px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); margin-bottom: 18px; }
     .card h2 { margin: 0 0 16px; color: var(--andon-ink); font-size: 16px; font-weight: 800; letter-spacing: -.02em; display: flex; align-items: center; gap: 8px; }
-    .scan-card { border-color: rgba(247,214,10,.55); background: var(--andon-panel); box-shadow: var(--andon-shadow); position: relative; overflow: hidden; }
+    .scan-card { border-color: rgba(239,131,84,.55); background: var(--andon-panel); box-shadow: var(--andon-shadow); position: relative; overflow: hidden; }
     .scan-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--andon-amber); }
-    .scan-badge { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; padding: 4px 10px; border-radius: 999px; background: var(--andon-amber); color: var(--andon-amber-ink); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; border: 1px solid #E6C200; }
+    .scan-badge { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; padding: 4px 10px; border-radius: 999px; background: var(--andon-amber); color: var(--andon-amber-ink); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; border: 1px solid var(--andon-amber-dim); }
     .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .field { margin-bottom: 16px; }
     label { display: block; margin-bottom: 8px; color: var(--andon-muted); font-size: 11px; font-weight: 700; letter-spacing:.06em; }
@@ -50,7 +50,7 @@
     .alert-warning { background: #FFFBEB; border-color: #FDE68A; color: #92400E; }
     .alert-error { background: #FEF2F2; border-color: #FECACA; color: #7F1D1D; }
     .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 12px; }
-    .manual-note { margin-bottom: 16px; padding: 12px 14px; background: #FFFBEB; border: 1px solid rgba(247,214,10,.5); border-radius: 12px; color: #92400E; font-size: 13px; line-height: 1.5; }
+    .manual-note { margin-bottom: 16px; padding: 12px 14px; background: #FFFBEB; border: 1px solid rgba(239,131,84,.5); border-radius: 12px; color: #92400E; font-size: 13px; line-height: 1.5; }
     .manual-client { display: none; }
     @media (max-width: 650px) {
         .intake-heading { display: block; }
@@ -121,7 +121,7 @@
             </div>
 
             <div class="known-item" id="known-item">
-                <img id="known-image" alt="Foto barang">
+                <img id="known-image" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='100%25' height='100%25' fill='%23FFFFFF'/%3E%3C/svg%3E" alt="Foto barang">
                 <div>
                     <strong id="known-name"></strong>
                     <span id="known-meta"></span>
