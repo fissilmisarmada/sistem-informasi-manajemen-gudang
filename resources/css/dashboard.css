@@ -13,7 +13,7 @@
     margin-bottom: 20px; position: relative;
     animation: andon-in .45s cubic-bezier(.16,1,.3,1) both;
 }
-.andon-hero--single { grid-template-columns: 1fr; max-width: 560px; }
+.andon-hero--single { grid-template-columns: 1fr; width: 100%; max-width: none; }
 .andon-hero__copy {
     background: var(--andon-panel);
     border: 1px solid var(--andon-line);

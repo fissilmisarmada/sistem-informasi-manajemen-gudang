@@ -2,8 +2,9 @@
 
 @section('content')
 <style>
+    body { overflow: hidden; }
     .site-header { display: none !important; }
-    .site-main { max-width: none !important; padding: 0 !important; }
+    .site-main { max-width: none !important; width: 100%; margin-left: 0 !important; padding: 0 !important; }
     .andon-auth {
         min-height: 100vh;
         display: grid;

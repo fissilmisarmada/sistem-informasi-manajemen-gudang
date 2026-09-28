@@ -2,9 +2,9 @@
 
 @section('content')
 <style>
-    body { background: var(--andon-bg); }
+    body { background: var(--andon-bg); overflow: hidden; }
     .site-header { display: none !important; }
-    .site-main { max-width: none !important; padding: 0 !important; }
+    .site-main { max-width: none !important; width: 100%; margin-left: 0 !important; padding: 0 !important; }
 
     .andon-login {
         min-height: 100dvh;
