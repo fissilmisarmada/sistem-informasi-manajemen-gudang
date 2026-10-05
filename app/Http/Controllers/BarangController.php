@@ -40,7 +40,7 @@ class BarangController extends Controller
     public function stokMenipis()
     {
         $barangs = Barang::with(['kategori', 'rak'])
-            ->whereRaw('stok <= stok_minimum AND stok_minimum > 0')
+            ->stokMenipis()
             ->orderBy('nama')
             ->paginate(15);
 

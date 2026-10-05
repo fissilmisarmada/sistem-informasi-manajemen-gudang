@@ -44,4 +44,9 @@ class Barang extends Model
     {
         return $this->stok <= $this->stok_minimum && $this->stok_minimum > 0;
     }
+
+    public function scopeStokMenipis($query)
+    {
+        return $query->whereRaw('stok <= stok_minimum AND stok_minimum > 0');
+    }
 }
