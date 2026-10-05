@@ -16,4 +16,9 @@ class Kategori extends Model
     {
         return $this->hasMany(Barang::class, 'kategori_id');
     }
+
+    public static function bukuId(): ?int
+    {
+        return static::where('kode_kategori', 'BKU')->value('id');
+    }
 }

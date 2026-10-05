@@ -12,8 +12,7 @@ class DashboardController extends Controller
 {
     private function data(): array
     {
-        $bukuKategori = Kategori::where('kode_kategori', 'BKU')->first();
-        $bukuKategoriId = $bukuKategori?->id;
+        $bukuKategoriId = Kategori::bukuId();
 
         return [
             'bukuKategoriId' => $bukuKategoriId,
@@ -26,8 +25,8 @@ class DashboardController extends Controller
             'totalAdmin' => User::where('role', 'admin')->count(),
             'totalStaff' => User::where('role', 'staff')->count(),
             'totalPimpinan' => User::where('role', 'pimpinan')->count(),
-            'barangMenipis' => Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->count(),
-            'barangMenipis3' => Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->orderBy('nama')->take(3)->get(),
+            'barangMenipis' => Barang::stokMenipis()->count(),
+            'barangMenipis3' => Barang::stokMenipis()->orderBy('nama')->take(3)->get(),
             'aktivitasTerbaru' => MutasiBarang::with(['barang.kategori', 'staff'])->latest('created_at')->take(4)->get(),
         ];
     }
@@ -41,8 +40,8 @@ class DashboardController extends Controller
     {
         $d = $this->data();
         $bukuKategoriId = $d['bukuKategoriId'];
-        $d['barangMenipisBarang'] = $bukuKategoriId ? Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->where('kategori_id', '!=', $bukuKategoriId)->count() : 0;
-        $d['bukuMenipis'] = $bukuKategoriId ? Barang::whereRaw('stok <= stok_minimum AND stok_minimum > 0')->where('kategori_id', $bukuKategoriId)->count() : 0;
+        $d['barangMenipisBarang'] = $bukuKategoriId ? Barang::stokMenipis()->where('kategori_id', '!=', $bukuKategoriId)->count() : 0;
+        $d['bukuMenipis'] = $bukuKategoriId ? Barang::stokMenipis()->where('kategori_id', $bukuKategoriId)->count() : 0;
         $d['totalStokMenipis'] = $d['barangMenipisBarang'] + $d['bukuMenipis'];
         $d['totalMutasi'] = MutasiBarang::count();
         return view('dashboard.staff', $d);

@@ -111,9 +111,8 @@ class PencarianController extends Controller
         $kategori_id = $request->input('kategori_id');
         $tipe       = $request->input('tipe', 'semua'); // semua | buku | barang
 
-        // Ambil kategori Buku
-        $bukuKategori = Kategori::where('kode_kategori', 'BKU')->first();
-        $bukuKategoriId = $bukuKategori?->id;
+        // Ambil ID kategori Buku
+        $bukuKategoriId = Kategori::bukuId();
 
         $query = Barang::with(['kategori', 'rak']);
 
