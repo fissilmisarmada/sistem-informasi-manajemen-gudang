@@ -28,8 +28,9 @@ test.describe('Journey 5: Pelaporan & Export/Import CSV', () => {
     await page.getByRole('button', { name: /Import CSV/i }).click();
 
     // Harusnya dapat pesan error
-    await expect(page.locator('.alert-error')).toBeVisible();
-    await expect(page.locator('.alert-error')).toContainText(/Format CSV tidak sesuai/i);
+    const alert = page.getByRole('alert');
+    await expect(alert).toBeVisible();
+    await expect(alert).toContainText(/Format CSV tidak sesuai/i);
   });
 
 });
