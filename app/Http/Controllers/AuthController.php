@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -15,12 +18,12 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        $users = User::query()
+        $demoUsers = User::query()
             ->select(['name', 'email', 'role'])
             ->orderBy('name')
             ->get();
 
-        return view('auth.login', compact('users'));
+        return view('auth.login', compact('demoUsers'));
     }
 
     /**
@@ -88,8 +91,10 @@ class AuthController extends Controller
         $status = Password::reset(
             $credentials,
             function (User $user, string $password) {
-                $user->password = $password;
+                $user->forceFill(['password' => Hash::make($password)])->save();
+                $user->setRememberToken(Str::random(60));
                 $user->save();
+                event(new PasswordReset($user));
             }
         );
 
@@ -114,18 +119,6 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
-    }
-
-    /**
-     * Redirect user to appropriate dashboard or login page.
-     */
-    public function dashboardRedirect()
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        return redirect()->intended($this->dashboardUntukRole());
     }
 
     /**
