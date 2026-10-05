@@ -10,6 +10,8 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        abort_if(app()->environment('production'), 403, 'Seeder tidak boleh dijalankan di production.');
+
         foreach ([
             ['name' => 'Admin', 'email' => 'admin@gmail.com', 'role' => 'admin', 'password' => 'admin123'],
             ['name' => 'Staff', 'email' => 'staff@gmail.com', 'role' => 'staff', 'password' => 'staff123'],

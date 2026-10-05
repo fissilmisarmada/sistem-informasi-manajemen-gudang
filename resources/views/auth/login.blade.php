@@ -176,15 +176,17 @@
                 @csrf
                 <div class="andon-field">
                     <div class="andon-field__head">
-                        <label for="email">EMAIL ADDRESS</label>
+                        <label for="email">PILIH ROLE</label>
                         <a class="andon-forgot--inline" href="{{ route('password.request') }}">Lupa password?</a>
                     </div>
                     <div class="andon-input">
-                        <svg class="andon-input__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8l8 5 8-5"/><rect x="3" y="7" width="18" height="12" rx="2"/></svg>
-                        <select id="email" name="email" class="andon-control andon-control--select" required>
-                            <option value="" disabled selected hidden>Pilih email Anda</option>
-                            @foreach($users as $user)
-                                <option value="{{ $user->email }}" @selected(old('email') === $user->email)>{{ $user->email }}</option>
+                        <svg class="andon-input__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <select id="email" name="email" data-testid="select-role" class="andon-control andon-control--select" required onchange="document.getElementById('password').focus();">
+                            <option value="" disabled selected hidden>Pilih role Anda</option>
+                            @foreach($demoUsers as $du)
+                                <option value="{{ $du->email }}" @selected(old('email') === $du->email)>
+                                    {{ ucfirst($du->role) }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -194,7 +196,7 @@
                     <label for="password">PASSWORD</label>
                     <div class="andon-input">
                         <svg class="andon-input__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M9 11V8a3 3 0 016 0v3"/></svg>
-                        <input type="password" id="password" name="password" class="andon-control" style="padding-right:48px !important;" placeholder="Masukkan password" required>
+                        <input type="password" id="password" name="password" data-testid="input-password" class="andon-control" style="padding-right:48px !important;" placeholder="Masukkan password" required>
                         <button type="button" class="andon-toggle" id="togglePassword" aria-label="Tampilkan password">
                             <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
                             <svg id="eye-slash-icon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l18 18"/><path d="M10.6 10.6A3 3 0 0012 15a3 3 0 002.4-4.4"/><path d="M9.9 5.1A11 11 0 0112 5c7 0 11 7 11 7a17 17 0 01-4.2 5.1"/><path d="M14.8 14.8A11 11 0 0012 19c-7 0-11-7-11-7a17 17 0 014.2-5.1"/></svg>
@@ -202,7 +204,7 @@
                     </div>
                 </div>
 
-                <button class="andon-btn andon-btn--primary" type="submit">Masuk</button>
+                <button class="andon-btn andon-btn--primary" data-testid="button-submit" type="submit">Masuk</button>
             </form>
 
             <div class="andon-foot">© 2026 Fissilmi & Ismail · Sistem Gudang UT</div>
