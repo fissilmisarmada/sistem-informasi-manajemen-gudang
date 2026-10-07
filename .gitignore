@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+ngrok.exe
+/playwright/.auth/
+/test-results/
+/playwright-report/
