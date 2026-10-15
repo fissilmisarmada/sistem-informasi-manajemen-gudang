@@ -36,13 +36,16 @@
     .empty-state{text-align:center;padding:48px 20px;background:var(--andon-panel);border-radius:16px;border:1px solid var(--andon-line);color:var(--andon-muted);box-shadow:var(--andon-shadow)}
     .empty-state .icon{font-size:36px;margin-bottom:8px}
     .empty-state p{margin:0;font-weight:700;font-size:13px;color:var(--andon-muted)}
-    .pagination-wrap{margin-top:22px}
-    .pagination-wrap nav{display:flex;justify-content:center}
-    .pagination-wrap nav>div:first-child{display:none}
-    .pagination-wrap nav>div:last-child{display:flex;align-items:center;gap:6px}
-    .pagination-wrap nav a,.pagination-wrap nav span{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:0 12px;border:1px solid var(--andon-line);border-radius:10px;background:var(--andon-panel);color:var(--andon-muted);font-size:13px;font-weight:600;text-decoration:none;transition:all .18s}
-    .pagination-wrap nav a:hover{background:#F8FAFC;border-color:var(--andon-line-strong);color:var(--andon-ink)}
-    .pagination-wrap nav span[aria-current="page"]{border-color:var(--andon-ink);background:var(--andon-ink);color:#fff;font-weight:700}
+    .pagination-footer{margin-top:16px;display:flex;justify-content:flex-start}
+    .pagination-wrap>div>div:first-child,
+    .pagination-wrap p.text-sm,
+    .pagination-wrap nav>div:first-child{display:none !important}
+    .pagination-wrap nav{display:flex;justify-content:flex-start;flex-wrap:wrap;width:100%}
+    .pagination-wrap nav>div:last-child{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:flex-start}
+    .pagination-wrap nav a,.pagination-wrap nav span{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 12px;border:0;border-radius:999px;background:#2D3142;color:#fff;font-size:13px;font-weight:600;text-decoration:none;transition:all .16s}
+    .pagination-wrap nav a:hover{background:#3d4258;color:#fff}
+    .pagination-wrap nav span[aria-current="page"]{background:#4F5D75;color:#fff;font-weight:700;box-shadow:0 1px 6px rgba(15,23,42,.16);min-width:36px;width:36px;height:36px;padding:0;border-radius:50%}
+    .pagination-wrap nav span[aria-disabled="true"]{opacity:.45}
     .pagination-wrap nav svg{width:16px;height:16px}
     @media(max-width:640px){
         .page-head{gap:10px;margin-bottom:14px}
@@ -62,12 +65,9 @@
 
 <div class="barang-page">
     <div class="page-head">
-        <div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-                <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
-                <h1>Barang Gudang</h1>
-            </div>
-
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+            <h1>Barang Gudang</h1>
         </div>
     </div>
 
@@ -152,8 +152,10 @@
             @endforeach
         </div>
 
-        <div class="pagination-wrap">
-            {{ $barangs->links() }}
+        <div class="pagination-footer">
+            <div class="pagination-wrap">
+                {{ $barangs->links() }}
+            </div>
         </div>
     @endif
 </div>

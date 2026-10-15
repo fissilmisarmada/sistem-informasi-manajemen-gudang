@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Barang;
+use App\Observers\BarangObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }
+        Barang::observe(BarangObserver::class);
     }
 }
 

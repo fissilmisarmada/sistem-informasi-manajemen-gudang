@@ -7,7 +7,7 @@
         margin: 0 auto;
         padding: 16px 16px 48px;
     }
-    .intake-heading { margin-bottom: 14px; }
+    .intake-heading { display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom: 14px; }
     .intake-heading h1 { margin: 0; color: var(--andon-ink); font-size: 20px; font-weight: 800; letter-spacing: -.03em; }
     .subtitle { margin: 6px 0 0; color: var(--andon-muted); font-size: 13px; }
     .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
@@ -62,8 +62,8 @@
 </style>
 
 <div class="intake-page">
-    <a class="back-link" href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff') }}" style="margin-bottom:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <div class="intake-heading">
+        <a class="back-link" href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
         <h1>Scan & Input Barang</h1>
     </div>
 

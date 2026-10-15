@@ -1,29 +1,17 @@
 @extends('layouts.app')
 @section('content')
 <div class="andon-dashboard">
-    <section class="andon-hero andon-hero--single">
-        <a class="andon-scan andon-scan--light" href="{{ route('laporan.index') }}">
-            <span class="andon-scan__label">LAPORAN</span>
-            <div>
-                <h2>Lihat laporan</h2>
-                <p>Ringkasan inventaris & aktivitas — siap untuk keputusan.</p>
-            </div>
-            @php
-                $bl = ['Buku' => $totalBuku ?? 0, 'Barang' => $totalBarang ?? 0, 'Kategori' => $totalKategori ?? 0, 'Rak' => $totalRak ?? 0];
-                $mx = max(1, max($bl));
-            @endphp
-            <div class="andon-bar-chart andon-bar-chart--vertical" aria-label="Ringkasan: Buku, Barang, Kategori, Rak">
-                <svg viewBox="0 0 320 96" width="100%" height="96" role="img" aria-hidden="true" style="display:block;" preserveAspectRatio="xMidYMid meet">
-                    @foreach($bl as $lbl => $val)
-                        @php $i = $loop->index; $x = 14 + $i * 78; $h = $mx > 0 ? max(4, ($val / $mx) * 58) : 4; $y = 72 - $h; @endphp
-                        <rect x="{{ $x }}" y="{{ $y }}" width="44" height="{{ $h }}" rx="6" fill="{{ $lbl === 'Buku' ? '#2D3142' : ($lbl === 'Barang' ? '#4F5D75' : ($lbl === 'Kategori' ? '#EF8354' : '#BFC0C0')) }}" />
-                        <text x="{{ $x + 22 }}" y="{{ $y - 6 }}" text-anchor="middle" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="10" font-weight="600" fill="#2D3142">{{ number_format($val, 0, ',', '.') }}</text>
-                        <text x="{{ $x + 22 }}" y="88" text-anchor="middle" font-family="'Instrument Sans',ui-sans-serif,system-ui,sans-serif" font-size="8" font-weight="700" letter-spacing="0.06em" fill="#667085">{{ strtoupper($lbl) }}</text>
-                    @endforeach
-                </svg>
-            </div>
-            <span class="andon-scan__cta">Buka laporan ›</span>
-        </a>
+    <section class="andon-role-panel andon-role-panel--pimpinan">
+        <div class="andon-role-panel__copy">
+            <h1>Kondisi gudang</h1>
+            <p>Ringkasan eksekutif untuk melihat kesehatan stok, pemanfaatan rak, dan aktivitas operasional terbaru.</p>
+        </div>
+        <div class="andon-role-panel__actions" aria-label="Aksi pimpinan">
+            <a href="{{ route('laporan.index') }}"><span class="andon-role-action__head"><em>01</em><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg></i></span><strong>Laporan</strong><span>Buka ringkasan siap putuskan.</span></a>
+            <a href="{{ route('mutasi-barang.index') }}"><span class="andon-role-action__head"><em>02</em><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16 3 12l4-4"/><path d="M3 12h10a4 4 0 0 1 4 4v4"/><path d="M17 8 21 12l-4 4"/><path d="M21 12H11a4 4 0 0 0-4 4v4"/></svg></i></span><strong>Mutasi</strong><span>Pantau pergerakan barang.</span></a>
+            <a href="{{ route('denah-gudang') }}"><span class="andon-role-action__head"><em>03</em><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/><circle cx="9" cy="14" r="1.5" fill="currentColor" stroke="none"/></svg></i></span><strong>Denah Gudang</strong><span>Lihat konteks lokasi fisik.</span></a>
+            <a href="{{ route('barang.stok-menipis', ['from' => 'dashboard']) }}"><span class="andon-role-action__head"><em>04</em><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 2.2 16a1 1 0 0 0 .9 1.5h16a1 1 0 0 0 .9-1.5L11.7 3.3a1 1 0 0 0-1.7 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></i></span><strong>Risiko Stok</strong><span>Cek item perlu perhatian.</span></a>
+        </div>
     </section>
 
     <div class="andon-tiles">
@@ -55,7 +43,7 @@
             <div class="andon-data">
                 <div class="andon-data__row"><span class="andon-dotline"><i style="background:var(--andon-ink)"></i> Total item</span><strong>{{ number_format($totalItem, 0, ',', '.') }} item</strong></div>
                 <div class="andon-data__row"><span class="andon-dotline"><i style="background:var(--andon-green)"></i> Kategori</span><strong>{{ number_format($totalKategori, 0, ',', '.') }} kategori</strong></div>
-                <div class="andon-data__row"><span class="andon-dotline"><i style="background:#8B5CF6"></i> Rak gudang</span><strong>{{ number_format($totalRak, 0, ',', '.') }} rak</strong></div>
+                <div class="andon-data__row"><span class="andon-dotline"><i style="background:var(--saas-indigo)"></i> Rak gudang</span><strong>{{ number_format($totalRak, 0, ',', '.') }} rak</strong></div>
                 <div class="andon-data__row"><span class="andon-dotline"><i style="background:var(--andon-red)"></i> Stok menipis</span><strong style="color: {{ $barangMenipis > 0 ? 'var(--andon-red)' : 'var(--andon-ink)' }}">{{ number_format($barangMenipis, 0, ',', '.') }} item</strong></div>
             </div>
         </section>

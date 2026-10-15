@@ -41,12 +41,12 @@ Beda dari inventaris generik: **penempatan berbasis denah & rak visual + barcode
 - Data & migrasi existing (barang/rak/kategori) wajib dipertahankan — tidak boleh ada penghapusan atau perubahan skema yang menghilangkan data.
 - Web responsif (mobile web): harus nyaman di HP untuk scan di rak, bukan native app.
 - Bahasa antarmuka: Indonesia dengan istilah teknis tetap English (SKU, barcode, stock opname, mutasi, rak, denah).
-- Stack existing: Laravel + Vite + Tailwind — dipertahankan.
+- Stack existing: Laravel + Vite + Tailwind.
 - Belum diputuskan: hosting/deploy target spesifik, merek scanner spesifik, kebutuhan offline/PWA.
 
 ## Brand Commitments
 
-- Nama: Sistem Informasi Manajemen Gudang (dipertahankan).
+- Nama: Sistem Informasi Manajemen Gudang.
 - Voice: operasional, jelas, ringkas — istilah gudang yang familiar (Rak, Denah, Mutasi, Stock Opname, Pencarian).
 - Belum ada palet/logo/typography yang mengikat secara brand — belum direkam sebagai constraint visual.
 

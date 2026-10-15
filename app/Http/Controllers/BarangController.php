@@ -62,13 +62,25 @@ class BarangController extends Controller
             'kategori_id'   => 'required|exists:kategori,id',
             'satuan'        => 'required|string|max:50',
             'stok'          => 'required|integer|min:0',
-            'stok_minimum'  => 'required|integer|min:0',
             'rak_id'        => 'nullable|exists:rak,id',
             'gambar'        => 'nullable|image|max:2048',
-            'keterangan'    => 'nullable|string',
+            'keterangan'    => 'nullable|string|max:2000',
+            'isbn'          => 'nullable|string|max:30',
+            'jumlah_halaman'=> 'nullable|integer|min:1|max:99999',
+            'kategori_asli' => 'nullable|string|max:100',
         ]);
 
-        $data = $request->except('gambar');
+        $data = $request->except(['gambar', 'stok_minimum', 'isbn', 'jumlah_halaman', 'kategori_asli']);
+        $ket = array_filter([
+            'isbn' => trim((string) $request->isbn),
+            'kategori_asli' => trim((string) $request->kategori_asli),
+            'jumlah_halaman' => $request->filled('jumlah_halaman') ? (int) $request->jumlah_halaman : null,
+            'catatan' => trim((string) $request->keterangan),
+        ], fn($v) => $v !== '' && $v !== null);
+        // reuse kolom keterangan (cast array di model) — ponytail: tambah kolom terpisah jika buku >20 field
+        $data['keterangan'] = $ket ?: null;
+        $kat = Kategori::find($request->kategori_id);
+        $data['stok_minimum'] = Barang::stokMinimumForKategori($kat?->kode_kategori);
 
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->store('barang', 'public');
@@ -99,13 +111,24 @@ class BarangController extends Controller
             'nama'          => 'required|string|max:255',
             'kategori_id'   => 'required|exists:kategori,id',
             'satuan'        => 'required|string|max:50',
-            'stok_minimum'  => 'required|integer|min:0',
             'rak_id'        => 'nullable|exists:rak,id',
             'gambar'        => 'nullable|image|max:2048',
-            'keterangan'    => 'nullable|string',
+            'keterangan'    => 'nullable|string|max:2000',
+            'isbn'          => 'nullable|string|max:30',
+            'jumlah_halaman'=> 'nullable|integer|min:1|max:99999',
+            'kategori_asli' => 'nullable|string|max:100',
         ]);
 
-        $data = $request->except('gambar');
+        $data = $request->except(['gambar', 'stok_minimum', 'isbn', 'jumlah_halaman', 'kategori_asli']);
+        $ket = array_filter([
+            'isbn' => trim((string) $request->isbn),
+            'kategori_asli' => trim((string) $request->kategori_asli),
+            'jumlah_halaman' => $request->filled('jumlah_halaman') ? (int) $request->jumlah_halaman : null,
+            'catatan' => trim((string) $request->keterangan),
+        ], fn($v) => $v !== '' && $v !== null);
+        $data['keterangan'] = $ket ?: null;
+        $kat = Kategori::find($request->kategori_id);
+        $data['stok_minimum'] = Barang::stokMinimumForKategori($kat?->kode_kategori);
 
         if ($request->hasFile('gambar')) {
             if ($barang->gambar) {

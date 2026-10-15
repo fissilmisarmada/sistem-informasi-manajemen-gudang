@@ -13,11 +13,13 @@
     .badge-red { background:#fee2e2; color:#991b1b; }
     .badge-blue { background:#dbeafe; color:#1d4ed8; }
     .badge-yellow { background:#fef9c3; color:#854d0e; }
-    .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; border:none; text-decoration:none; }
-    .btn-primary { background:#3b82f6; color:#fff; }
-    .btn-secondary { background:#e2e8f0; color:#0f172a; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:8px 14px; border-radius:10px; font-weight:700; font-size:13px; cursor:pointer; border:1px solid transparent; text-decoration:none; min-height:32px; }
+    .btn-primary { background:var(--andon-ink); color:#fff; border-color:var(--andon-ink); }
+    .btn-primary:hover{ background:var(--andon-navy-2); }
+    .btn-secondary { background:#fff; color:var(--andon-ink); border-color:var(--andon-line-strong); }
     .action-group { display:flex; flex-direction:column; align-items:stretch; gap:7px; min-width:92px; }
-    .action-group .btn { justify-content:center; width:100%; }
+    .action-group .btn { justify-content:center; width:100%; min-height:36px; }
+    @media(max-width:640px){ .action-group .btn{ min-height:44px; font-size:14px; } }
     .alert-success { background:#dcfce7; color:#166534; border:1px solid #bbf7d0; padding:12px 16px; border-radius:9px; margin-bottom:18px; font-weight:600; }
     .empty-state { text-align:center; padding:40px; color:#94a3b8; }
 </style>
@@ -36,12 +38,14 @@
     @if($barangs->isEmpty())
         <div class="empty-state">Belum ada barang terdaftar.</div>
     @else
+        <div style="overflow-x:auto">
         <table>
             <thead>
                 <tr>
                     <th>Kode</th>
                     <th>Nama Barang</th>
                     <th>Kategori</th>
+                    <th>Lokasi</th>
                     <th>Stok Sistem</th>
                     <th>Opname Terakhir</th>
                     <th>Aksi</th>
@@ -49,19 +53,39 @@
             </thead>
             <tbody>
                 @foreach($barangs as $barang)
+                @php
+                    $gudang = $barang->denahArea->nama ?? $barang->rak->nama_lokasi ?? null;
+                    $rakLabel = $barang->rak ? $barang->rak->kode_rak . ' · ' . $barang->rak->nama_lokasi : null;
+                @endphp
                 <tr>
-                    <td><span class="badge badge-blue">{{ $barang->kode_barang }}</span></td>
-                    <td>
+                    <td data-label="Kode"><span class="badge badge-blue">{{ $barang->kode_barang }}</span></td>
+                    <td data-label="Nama Barang">
                         <a href="{{ route('barang.show', $barang) }}" style="color:#3b82f6;font-weight:700;">{{ $barang->nama }}</a>
                     </td>
-                    <td>{{ $barang->kategori->nama }}</td>
-                    <td>
-                        <strong>{{ $barang->stok }}</strong> {{ $barang->satuan }}
+                    <td data-label="Kategori">{{ $barang->kategori->nama }}</td>
+                    <td data-label="Lokasi">
+                        @if($gudang || $rakLabel)
+                            <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left">
+                                @if($gudang)
+                                    <span class="badge badge-gray" style="max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ $gudang }}</span>
+                                @endif
+                                @if($rakLabel)
+                                    <span style="font-size:11px;font-weight:700;color:var(--andon-faint);line-height:1.2">{{ $rakLabel }}</span>
+                                @else
+                                    <span style="font-size:11px;color:var(--andon-faint)">Tanpa rak</span>
+                                @endif
+                            </div>
+                        @else
+                            <span class="badge badge-yellow">Belum ditempatkan</span>
+                        @endif
+                    </td>
+                    <td data-label="Stok Sistem">
+                        <strong style="font-weight:800">{{ $barang->stok }}</strong> {{ $barang->satuan }}
                         @if($barang->isStokMenipis())
                             <span class="badge badge-red" style="margin-left:4px;">Menipis</span>
                         @endif
                     </td>
-                    <td>
+                    <td data-label="Opname Terakhir">
                         @if($barang->stockOpname->isNotEmpty())
                             @php $last = $barang->stockOpname->first(); @endphp
                             {{ $last->tanggal->format('d/m/Y') }}
@@ -74,7 +98,7 @@
                             <span style="color:#94a3b8;">Belum pernah</span>
                         @endif
                     </td>
-                    <td>
+                    <td data-label="Aksi">
                         <div class="action-group">
                             <a href="{{ route('stock-opname-barang.create', ['barang' => $barang, 'from' => 'stock-opname-barang']) }}" class="btn btn-primary">Opname</a>
                             <a href="{{ route('stock-opname-barang.riwayat', ['barang' => $barang, 'from' => 'stock-opname-barang']) }}" class="btn btn-secondary">Riwayat</a>
@@ -84,6 +108,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     @endif
 </div>
 @endsection

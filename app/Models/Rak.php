@@ -15,7 +15,13 @@ class Rak extends Model
         'kode_rak',
         'nama_lokasi',
         'kapasitas',
+        'denah_area_id',
     ];
+
+    public function denahArea()
+    {
+        return $this->belongsTo(DenahArea::class, 'denah_area_id');
+    }
 
 
     public function barang()

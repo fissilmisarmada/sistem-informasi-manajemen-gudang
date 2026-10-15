@@ -3,7 +3,7 @@
 @section('content')
 <style>
     .report-page { max-width:1120px; margin:0 auto; }
-    .report-head { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:18px; flex-wrap:wrap; }
+    .report-head { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:18px; flex-wrap:wrap; }
     .andon-kicker { display:inline-flex; align-items:center; gap:8px; font-size:10px; font-weight:800; letter-spacing:.14em; color:var(--andon-faint); }
     .andon-kicker i { width:18px; height:2px; background:var(--andon-amber); display:inline-block; border-radius:999px; }
     .report-head h1 { margin:8px 0 0; color:var(--andon-ink); font-size:28px; font-weight:800; letter-spacing:-.04em; line-height:1; }
@@ -64,20 +64,20 @@
 </style>
 
 <div class="report-page">
-    <a class="back-link" href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <div class="report-head">
-        <div>
-            <span class="andon-kicker"><i></i> MONITORING INVENTARIS GUDANG</span>
-            <h1>Laporan Gudang</h1>
-            <p>Ringkasan stok, penempatan, dan aktivitas operasional gudang.</p>
+        <div style="display:flex;align-items:center;gap:12px">
+            <a class="back-link" href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+            <div>
+                <span class="andon-kicker"><i></i> MONITORING INVENTARIS GUDANG</span>
+                <h1>Laporan Gudang</h1>
+                <p>Ringkasan stok, penempatan, dan aktivitas operasional gudang.</p>
+            </div>
         </div>
         <div style="display:flex;gap:9px;flex-wrap:wrap;">
-            @if(in_array(auth()->user()->role, ['admin', 'staff'], true))
-                <a class="btn btn--primary" href="{{ route('laporan.export') }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l4-4m-4 4l-4-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 15v4a1 1 0 001 1h16a1 1 0 001-1v-4"/></svg>
-                    Export CSV
-                </a>
-            @endif
+            <a class="btn btn--primary" href="{{ route('laporan.export') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l4-4m-4 4l-4-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 15v4a1 1 0 001 1h16a1 1 0 001-1v-4"/></svg>
+                Export CSV
+            </a>
         </div>
     </div>
 
@@ -115,7 +115,7 @@
         </section>
     </div>
 
-    @if(in_array(auth()->user()->role, ['admin', 'staff'], true))
+    @if(auth()->user()->isAdmin())
         <form class="import-panel" method="POST" action="{{ route('laporan.import') }}" enctype="multipart/form-data">
             @csrf
             <div><label for="file">IMPORT DATA BARANG CSV</label><input type="file" id="file" name="file" accept=".csv,.txt" required class="andon-control"></div>

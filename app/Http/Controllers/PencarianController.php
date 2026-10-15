@@ -85,6 +85,7 @@ class PencarianController extends Controller
             $data['gambar'] = $request->file('gambar')->store('barang', 'public');
         }
 
+        $kat = Kategori::find($data['kategori_id']);
         $barang = Barang::create([
             'kategori_id' => $data['kategori_id'],
             'rak_id' => $data['rak_id'],
@@ -93,7 +94,7 @@ class PencarianController extends Controller
             'gambar' => $data['gambar'] ?? null,
             'satuan' => 'pcs',
             'stok' => 0,
-            'stok_minimum' => 0,
+            'stok_minimum' => Barang::stokMinimumForKategori($kat?->kode_kategori),
         ]);
 
         MutasiBarang::catat($barang, $request->user(), 'masuk', $data['jumlah'], 'Input barang baru melalui scan barcode');

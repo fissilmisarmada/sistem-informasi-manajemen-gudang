@@ -11,9 +11,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
+        // B3: guest — auth sudah login redirect ke dashboard per role (anti loop /lupa-password)
+        $middleware->redirectGuestsTo(fn() => route('login'));
+        $middleware->redirectUsersTo(function (\Illuminate\Http\Request $request) {
+            $role = auth()->user()?->role;
+            return $role ? route("dashboard.{$role}") : route('login');
+        });
         $middleware->web(append: [
             \App\Http\Middleware\SecurityHeaders::class,
         ]);

@@ -15,9 +15,10 @@
     .empty-state { text-align:center; padding:40px; color:#94a3b8; }
 </style>
 
-<a href="{{ request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('stock-opname-barang.index') }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
-
-<h1 class="andon-page-title" style="margin-bottom:6px">Riwayat Opname: {{ $barang->nama }}</h1>
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+    <a href="{{ request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('stock-opname-barang.index') }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <h1 class="andon-page-title" style="margin:0">Riwayat Opname: {{ $barang->nama }}</h1>
+</div>
 <p class="page-sub">{{ $barang->kode_barang }} · {{ $barang->kategori->nama }}</p>
 
 <div class="card">

@@ -1,14 +1,17 @@
 @extends('layouts.app')
 @section('content')
 <div class="andon-dashboard">
-    <section class="andon-hero andon-hero--single">
-        <a class="andon-scan" href="{{ route('pencarian.input') }}">
-            <span class="andon-scan__label">SCAN BARCODE</span>
-            <div>
-                <h2>Pindai untuk mutasi</h2>
-            </div>
-            <span class="andon-scan__cta">Mulai scan ›</span>
-        </a>
+    <section class="andon-role-panel andon-role-panel--staff">
+        <div class="andon-role-panel__copy">
+            <h1>Tugas gudang hari ini</h1>
+            <p>Fokus operasional: cek stok menipis, lanjutkan mutasi, dan tuntaskan opname tanpa selisih.</p>
+        </div>
+        <div class="andon-role-panel__actions" aria-label="Aksi staff">
+            <a href="{{ route('pencarian.index') }}"><span class="andon-role-action__head"><em>01</em><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m15.5 15.5 4 4"/></svg></i></span><strong>Cari Barang</strong><span>Temukan lokasi sebelum bergerak.</span></a>
+            <a href="{{ route('mutasi-barang.create') }}"><span class="andon-role-action__head"><em>02</em><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8.5 19 12l-7 3.5L5 12 12 8.5Z"/><path d="M5 12v3.5L12 19l7-3.5V12"/><path d="M12 12v7"/></svg></i></span><strong>Input Mutasi</strong><span>Catat masuk atau keluar.</span></a>
+            <a href="{{ route('stock-opname-barang.index') }}"><span class="andon-role-action__head"><em>03</em><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h6a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/><path d="m9 13 2 2 4-4"/></svg></i></span><strong>Stock Opname</strong><span>Cocokkan stok fisik.</span></a>
+            <a href="{{ route('barang.stok-menipis', ['from' => 'dashboard']) }}"><span class="andon-role-action__head"><em>04</em><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 2.2 16a1 1 0 0 0 .9 1.5h16a1 1 0 0 0 .9-1.5L11.7 3.3a1 1 0 0 0-1.7 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></i></span><strong>Stok Menipis</strong><span>Prioritaskan restock.</span></a>
+        </div>
     </section>
 
     <div class="andon-tiles andon-tiles--staff">
