@@ -73,26 +73,27 @@
         .empty-map{padding:34px 12px;color:var(--andon-muted);text-align:center;font-size:12px;font-weight:600}
         .warehouse-footer-link{display:inline-block;margin-top:14px;color:var(--andon-navy);font-size:11px;font-weight:800}
         .warehouse-footer-link:hover{color:var(--andon-ink);text-decoration:underline}
-        .tab-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-        .denah-canvas{position:relative;width:100%;height:420px;background:#F8FAFC;border:1px solid #EDEEF2;border-radius:20px;overflow:hidden;box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);touch-action:none}
-        .denah-box{ touch-action:none; }
+        .denah-link{display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;color:var(--andon-navy);font-size:12px;font-weight:800;text-decoration:none}
+        .denah-link:hover{color:var(--andon-ink);text-decoration:underline}
         @media(max-width:800px){.warehouse-header{display:block} .warehouse-search{margin-top:16px} .warehouse-layout{grid-template-columns:1fr} .detail-panel{position:static}}
         @media(max-width:560px){.warehouse-page{padding-top:0} .warehouse-summary{grid-template-columns:repeat(2,1fr)} .warehouse-grid{grid-template-columns:repeat(4,minmax(54px,1fr));gap:7px} .rack-tile{min-height:72px} .warehouse-search{display:grid;grid-template-columns:1fr auto} .warehouse-search input{grid-column:1/-1} .warehouse-search select{width:auto}}
     </style>
 
     <div class="warehouse-page">
-        @if(auth()->user()->isPimpinan())
-            <a class="back-link" href="{{ route('dashboard.pimpinan') }}"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
-        @elseif(auth()->user()->isStaff())
-            <a class="back-link" href="{{ route('dashboard.staff') }}"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
-        @elseif(auth()->user()->isAdmin())
-            <a class="back-link" href="{{ route('dashboard.admin') }}"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
-        @endif
         <div class="warehouse-header">
-            <div>
-                <div class="warehouse-eyebrow">Monitoring lokasi barang</div>
-                <h1>Denah Gudang</h1>
-                <p>Pantau kondisi stok dan temukan lokasi rak secara cepat.</p>
+            <div style="display:flex;align-items:center;gap:12px">
+                @if(auth()->user()->isPimpinan())
+                    <a class="back-link" href="{{ route('dashboard.pimpinan') }}"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+                @elseif(auth()->user()->isStaff())
+                    <a class="back-link" href="{{ route('dashboard.staff') }}"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+                @elseif(auth()->user()->isAdmin())
+                    <a class="back-link" href="{{ route('dashboard.admin') }}"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+                @endif
+                <div>
+                    <div class="warehouse-eyebrow">Monitoring lokasi barang</div>
+                    <h1>Denah Gudang</h1>
+                    <p>Pantau kondisi stok dan temukan lokasi rak secara cepat.</p>
+                </div>
             </div>
             <form class="warehouse-search" method="GET" action="{{ route('denah-gudang') }}">
                 <input class="andon-control" type="search" name="q" value="{{ $search }}" placeholder="Cari nomor atau lokasi rak..." aria-label="Cari nomor atau lokasi rak">
@@ -113,10 +114,7 @@
             <div class="summary-item"><i class="summary-dot" style="background:var(--andon-red);"></i><div><strong>{{ $ringkasan['kosong'] }}</strong><span>Rak Kosong</span></div></div>
         </div>
 
-        <div class="tab-row">
-            <button type="button" id="tab-rak" class="btn btn--primary" style="min-height:36px;padding:0 16px;font-size:12px;" onclick="showTab('rak')">Rak (Buku)</button>
-            <button type="button" id="tab-area" class="btn btn--ghost" style="min-height:36px;padding:0 16px;font-size:12px;" onclick="showTab('area')">Area Gudang (Buku/Barang Luar Rak)</button>
-        </div>
+        <a href="{{ route('denah-area.index') }}" class="denah-link">Lihat denah ruangan (foto) &rsaquo;</a>
 
         <div class="warehouse-layout" id="panel-rak">
             <section class="map-panel">
@@ -178,138 +176,6 @@
             </aside>
         </div>
 
-        <div id="panel-area" style="display:none;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px;gap:10px;flex-wrap:wrap;">
-                <h2 style="margin:0;color:var(--andon-ink);font-size:17px;font-weight:800;letter-spacing:-.02em">Denah Area Bebas</h2>
-                @if(!auth()->user()->isPimpinan())
-                <button type="button" id="btn-tambah-area" class="btn btn--primary" style="min-height:36px">+ Tambah Area</button>
-                @endif
-            </div>
-            <div id="denah-canvas" class="denah-canvas">
-                @foreach($denahAreas as $area)
-                <div class="denah-box" data-id="{{ $area->id }}" data-x="{{ $area->x }}" data-y="{{ $area->y }}" data-w="{{ $area->w }}" data-h="{{ $area->h }}" onclick="openAreaDetail({{ $area->id }})" title="Klik untuk lihat isi" style="position:absolute;left:{{ $area->x }}%;top:{{ $area->y }}%;width:{{ $area->w }}%;height:{{ $area->h }}%;background:{{ $area->warna }}18;border:2px solid {{ $area->warna }};border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;">
-                    <strong style="color:{{ $area->warna }};font-size:12px;">{{ $area->kode_area }}</strong>
-                    <span style="color:var(--andon-ink);font-size:11px;font-weight:600">{{ $area->nama }} ({{ $area->barang_count }})</span>
-                    @if(!auth()->user()->isPimpinan())
-                    <span style="margin-top:4px;display:flex;gap:4px;">
-                        <button type="button" onclick="event.stopPropagation();editArea({{ $area->id }})" class="btn btn--ghost" style="min-height:24px;padding:0 8px;font-size:10px">Edit</button>
-                        <button type="button" onclick="event.stopPropagation();hapusArea({{ $area->id }})" class="btn btn--ghost" style="min-height:24px;padding:0 8px;font-size:10px;color:var(--andon-red);border-color:#FECACA">Hapus</button>
-                        <a href="{{ route('denah-area.show', $area) }}" onclick="event.stopPropagation()" class="btn btn--ghost" style="min-height:24px;padding:0 8px;font-size:10px">Lihat</a>
-                    </span>
-                    @else
-                    <a href="{{ route('denah-area.show', $area) }}" onclick="event.stopPropagation()" class="btn btn--ghost" style="margin-top:4px;min-height:24px;padding:0 8px;font-size:10px">Lihat isi</a>
-                    @endif
-                </div>
-                @endforeach
-            </div>
-            <div id="area-popover-backdrop" style="display:none;position:fixed;inset:0;z-index:40;" onclick="closeAreaPopover()"></div>
-            <div id="area-popover" role="dialog" aria-modal="true" style="display:none;position:fixed;z-index:41;max-width:480px;width:min(88vw,480px);background:var(--andon-panel);border:1px solid var(--andon-line);border-radius:16px;box-shadow:var(--andon-shadow-strong);overflow:hidden;opacity:0;transform:scale(.96) translateY(6px);transform-origin:top left;transition:opacity .18s ease, transform .22s cubic-bezier(.16,1,.3,1);">
-                <div style="padding:14px 16px 12px;border-bottom:1px solid var(--andon-line);">
-                    <div id="area-popover-title" style="color:var(--andon-ink);font-size:14px;font-weight:800;letter-spacing:-.02em;"></div>
-                    <div id="area-popover-sub" style="color:var(--andon-muted);font-size:11px;margin-top:2px;"></div>
-                </div>
-                <div id="area-popover-body" style="padding:10px 14px 6px;max-height:42vh;overflow:auto;font-size:13px;color:var(--andon-ink);">Memuat...</div>
-                <div style="padding:10px 14px 12px;border-top:1px solid #F8FAFC;display:flex;justify-content:space-between;align-items:center;gap:10px;">
-                    <span style="color:var(--andon-faint);font-size:11px;">Klik di luar untuk tutup</span>
-                    <a id="area-popover-link" href="#" style="color:var(--andon-navy);font-weight:700;font-size:12px;text-decoration:none;">Lihat halaman &rsaquo;</a>
-                </div>
-            </div>
-            @if(!auth()->user()->isPimpinan())
-            <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                <select id="area-barang" class="andon-control" style="flex:1;min-width:180px;height:40px"><option value="">Pilih barang (semua, termasuk buku)</option>@foreach(\App\Models\Barang::with('kategori')->orderBy('nama')->get() as $b)<option value="{{ $b->id }}">{{ $b->kode_barang }} - {{ $b->nama }}{{ $b->rak_id ? ' [Rak: '.$b->rak->kode_rak.']' : '' }}{{ $b->denah_area_id ? ' [Area]' : '' }}</option>@endforeach</select>
-                <select id="area-target" class="andon-control" style="flex:1;min-width:140px;height:40px"><option value="">Pilih area</option>@foreach($denahAreas as $a)<option value="{{ $a->id }}">{{ $a->kode_area }} - {{ $a->nama }}</option>@endforeach</select>
-                <button type="button" onclick="assignBarangKeArea()" class="btn btn--primary" style="min-height:40px">Tempatkan</button>
-            </div>
-            <p style="color:var(--andon-muted);font-size:11px;margin-top:8px;">Tip: drag kotak area untuk atur posisi. Buku/barang apa pun bisa ditaruh di area jika rak penuh.</p>
-            @endif
-        </div>
     </div>
 
-<script>
-const canEdit = {{ auth()->user()->isPimpinan() ? 'false' : 'true' }};
-function showTab(t){
-    document.getElementById('panel-rak').style.display=t==='rak'?'grid':'none';
-    document.getElementById('panel-area').style.display=t==='area'?'block':'none';
-    const rk=document.getElementById('tab-rak'), ar=document.getElementById('tab-area');
-    if(t==='rak'){ rk.className='btn btn--primary'; ar.className='btn btn--ghost'; }
-    else { rk.className='btn btn--ghost'; ar.className='btn btn--primary'; }
-    rk.style.cssText='min-height:36px;padding:0 16px;font-size:12px';
-    ar.style.cssText='min-height:36px;padding:0 16px;font-size:12px';
-}
-async function api(url,method,body){ const r=await fetch(url,{method,headers:{'Content-Type':'application/json','X-CSRF-TOKEN':'{{ csrf_token() }}','Accept':'application/json'},body:body?JSON.stringify(body):undefined}); if(!r.ok) throw new Error(await r.text()); return r.json(); }
-document.getElementById('btn-tambah-area')?.addEventListener('click', async ()=>{ const kode=prompt('Kode area (mis: A1)'); if(!kode) return; const nama=prompt('Nama area'); if(!nama) return; try{ await api('{{ route("denah-area.store") }}','POST',{kode_area:kode,nama,x:5,y:5,w:20,h:15,warna:'#4F5D75'}); location.reload(); }catch(e){ alert('Gagal: '+e.message); }});
-async function hapusArea(id){ if(!confirm('Hapus area ini?')) return; await api('/denah-area/'+id,'DELETE'); location.reload(); }
-async function editArea(id){ const nama=prompt('Nama baru'); if(!nama) return; const kode=prompt('Kode baru'); await api('/denah-area/'+id,'PUT',{kode_area:kode||undefined,nama,x:5,y:5,w:20,h:15}); location.reload(); }
-async function assignBarangKeArea(){ const barang_id=document.getElementById('area-barang').value, denah_area_id=document.getElementById('area-target').value; if(!barang_id||!denah_area_id) return alert('Pilih barang & area'); await api('{{ route("denah-area.assign") }}','POST',{barang_id,denah_area_id}); location.reload(); }
-let popoverAnchor=null;
-function closeAreaPopover(){
-    const pop=document.getElementById('area-popover'), bd=document.getElementById('area-popover-backdrop');
-    pop.style.opacity='0'; pop.style.transform='scale(.96) translateY(6px)';
-    setTimeout(()=>{ pop.style.display='none'; bd.style.display='none'; }, 180);
-}
-function placePopover(anchor){
-    const pop=document.getElementById('area-popover'), bd=document.getElementById('area-popover-backdrop');
-    bd.style.display='block'; pop.style.display='block';
-    const r=anchor.getBoundingClientRect(), vw=window.innerWidth, vh=window.innerHeight;
-    const pw=pop.offsetWidth, ph=pop.offsetHeight;
-    let left=Math.min(vw-16-pw, Math.max(16, r.left + r.width/2 - pw/2));
-    let top=r.bottom + 10;
-    if(top + ph > vh - 16) top = Math.max(16, r.top - ph - 10);
-    pop.style.left=left+'px'; pop.style.top=top+'px';
-    pop.style.transformOrigin = (top > r.top ? 'top' : 'bottom') + ' center';
-    requestAnimationFrame(()=>{ pop.style.opacity='1'; pop.style.transform='scale(1) translateY(0)'; });
-}
-async function openAreaDetail(id){
-    const anchor=event?.currentTarget || document.querySelector(`.denah-box[data-id="${id}"]`);
-    popoverAnchor=anchor;
-    const title=document.getElementById('area-popover-title'), sub=document.getElementById('area-popover-sub'), body=document.getElementById('area-popover-body'), link=document.getElementById('area-popover-link');
-    title.textContent='Memuat...'; sub.textContent=''; body.innerHTML='<span style="color:var(--andon-faint);">Memuat…</span>'; link.href='/denah-area/'+id;
-    placePopover(anchor);
-    try{
-        const data=await api('/denah-area/'+id,'GET');
-        title.textContent=data.kode_area+' — '+data.nama;
-        sub.textContent=(data.keterangan||'Area gudang')+' · '+data.barang.length+' barang';
-        link.href='/denah-area/'+id;
-        if(!data.barang || data.barang.length===0) body.innerHTML='<p style="color:var(--andon-muted);padding:8px 0 4px;">Belum ada barang di area ini.</p>';
-        else body.innerHTML='<div style="display:flex;flex-direction:column;gap:6px;">'+data.barang.map(b=>`<a href="/barang/${b.id}" style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--andon-line);border-radius:10px;text-decoration:none;color:inherit;background:#F8FAFC;"><span><strong style="color:var(--andon-ink);font-size:12px;">${b.kode_barang}</strong> <span style="color:var(--andon-ink);">${b.nama}</span> <span style="color:var(--andon-faint);font-size:11px;">· ${b.kategori?b.kategori.nama:'-'}</span></span><strong style="color:var(--andon-ink);white-space:nowrap;">${b.stok} ${b.satuan}</strong></a>`).join('')+'</div>';
-        placePopover(anchor);
-    }catch(e){ body.textContent='Gagal memuat: '+e.message; }
-}
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAreaPopover(); });
-window.addEventListener('resize', ()=>{ if(popoverAnchor) placePopover(popoverAnchor); });
-window.addEventListener('scroll', ()=>{ if(document.getElementById('area-popover').style.display!=='none' && popoverAnchor) placePopover(popoverAnchor); }, true);
-// drag — mouse + touch (pointer)
-if(canEdit){
-let drag=null, moved=false, canvas=document.getElementById('denah-canvas');
-function pt(e){ const t=e.touches ? e.touches[0] : e; return {x:t.clientX, y:t.clientY}; }
-function startDrag(e){
-    const box=e.target.closest('.denah-box'); if(!box) return;
-    if(e.target.closest('button,a')) return;
-    const p=pt(e);
-    drag={el:box,sx:p.x,sy:p.y,ox:parseFloat(box.dataset.x),oy:parseFloat(box.dataset.y)};
-    moved=false; if(e.cancelable) e.preventDefault();
-}
-function onMove(e){
-    if(!drag) return; moved=true;
-    const p=pt(e), rect=canvas.getBoundingClientRect();
-    const dx=(p.x-drag.sx)/rect.width*100, dy=(p.y-drag.sy)/rect.height*100;
-    let nx=Math.max(0,Math.min(90,drag.ox+dx)), ny=Math.max(0,Math.min(85,drag.oy+dy));
-    drag.el.style.left=nx+'%'; drag.el.style.top=ny+'%'; drag.el.dataset.x=nx; drag.el.dataset.y=ny;
-    if(e.cancelable) e.preventDefault();
-}
-async function endDrag(e){
-    if(!drag) return;
-    const id=drag.el.dataset.id, x=parseFloat(drag.el.dataset.x), y=parseFloat(drag.el.dataset.y), w=parseFloat(drag.el.dataset.w), h=parseFloat(drag.el.dataset.h);
-    const wasMoved=moved; drag=null; moved=false;
-    if(wasMoved){ if(e) e.stopPropagation(); try{ await api('/denah-area/'+id+'/posisi','PATCH',{x,y,w,h}); }catch{} }
-}
-canvas?.addEventListener('mousedown', startDrag);
-canvas?.addEventListener('touchstart', startDrag, {passive:false});
-window.addEventListener('mousemove', onMove);
-window.addEventListener('touchmove', onMove, {passive:false});
-window.addEventListener('mouseup', endDrag);
-window.addEventListener('touchend', endDrag);
-window.addEventListener('click', e=>{ if(moved) e.stopPropagation(); }, true);
-}
-</script>
 @endsection

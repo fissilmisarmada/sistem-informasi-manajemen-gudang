@@ -37,6 +37,39 @@ class UserController extends Controller
         return redirect()->route('users')->with('sukses', 'User berhasil ditambahkan.');
     }
 
+    public function updatePassword(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user->update(['password' => Hash::make($validated['password'])]);
+
+        return back()->with('sukses', 'Password ' . $user->name . ' diperbarui.');
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'role' => 'required|in:admin,staff,pimpinan',
+            'password' => 'nullable|string|min:8|confirmed',
+        ]);
+
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'role' => $validated['role'],
+        ];
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+        $user->update($data);
+
+        return back()->with('sukses', 'User ' . $user->name . ' diperbarui.');
+    }
+
     public function destroy(User $user)
     {
         if ($user->id === Auth::id()) {

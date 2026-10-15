@@ -16,6 +16,8 @@
     textarea.andon-control{resize:vertical;min-height:88px}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .form-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+    .book-fieldset{border:1px solid #E8EAF0;border-radius:14px;padding:14px 14px 2px;margin:0 0 16px;background:#FBFBFD}
+    .book-fieldset legend{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--andon-muted);padding:0 6px}
     .hint{font-size:11px;color:var(--andon-faint);margin-top:6px;font-weight:600}
     .alert-error{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;padding:10px 14px;border-radius:10px;margin-bottom:16px;font-size:13px;font-weight:600}
     @media(max-width:600px){.form-row{grid-template-columns:1fr;gap:0}}
@@ -77,16 +79,10 @@
             </div>
         </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label>Stok Awal <span class="req">*</span></label>
-                <input class="andon-control" type="number" name="stok" value="{{ old('stok', 0) }}" min="0" required>
-            </div>
-            <div class="form-group">
-                <label>Stok Minimum</label>
-                <input class="andon-control" type="number" name="stok_minimum" value="{{ old('stok_minimum', 0) }}" min="0">
-                <p class="hint">Alert muncul jika stok ≤ nilai ini</p>
-            </div>
+        <div class="form-group">
+            <label>Stok Awal <span class="req">*</span></label>
+            <input class="andon-control" type="number" name="stok" value="{{ old('stok', 0) }}" min="0" required>
+            <p class="hint">Stok minimum otomatis 10 · Furnitur (Meja/Kursi) = 0 · Alert jika stok ≤ minimum</p>
         </div>
 
         <div class="form-group">
@@ -95,10 +91,27 @@
             <p class="hint">Opsional · maks 2MB (JPG, PNG, GIF, WebP)</p>
         </div>
 
-        <div class="form-group">
-            <label>Keterangan</label>
-            <textarea class="andon-control" name="keterangan" rows="3" placeholder="Deskripsi atau catatan tambahan...">{{ old('keterangan') }}</textarea>
-        </div>
+        <fieldset class="book-fieldset">
+            <legend>Detail Buku <span style="font-weight:600;color:var(--andon-faint)">(opsional)</span></legend>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ISBN</label>
+                    <input class="andon-control" type="text" name="isbn" value="{{ old('isbn') }}" placeholder="9786021234002" maxlength="30">
+                </div>
+                <div class="form-group">
+                    <label>Jumlah Halaman</label>
+                    <input class="andon-control" type="number" name="jumlah_halaman" value="{{ old('jumlah_halaman') }}" min="1" max="99999" placeholder="168">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Kategori Asli / Penulis</label>
+                <input class="andon-control" type="text" name="kategori_asli" value="{{ old('kategori_asli') }}" placeholder="Manajemen, Teknologi Informasi...">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+                <label>Catatan / Keterangan Umum</label>
+                <textarea class="andon-control" name="keterangan" rows="2" placeholder="Deskripsi atau catatan tambahan...">{{ old('keterangan') }}</textarea>
+            </div>
+        </fieldset>
 
         <div class="form-actions">
             <a href="{{ route('barang.index') }}" class="btn btn--ghost">Batal</a>

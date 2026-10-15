@@ -5,21 +5,52 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\DenahArea;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DenahAreaController extends Controller
 {
     public function index()
     {
-        return response()->json(DenahArea::withCount('barang')->orderBy('kode_area')->get());
+        $areas = DenahArea::withCount(['barang', 'rak'])->with('rak.barang')->orderBy('kode_area')->get();
+        if (request()->wantsJson()) {
+            return response()->json($areas);
+        }
+        return view('denah-area.index', ['areas' => $areas]);
     }
 
     public function show(DenahArea $denahArea)
     {
-        $denahArea->load(['barang.kategori']);
+        $denahArea->load(['barang.kategori', 'rak.barang.kategori']);
         if (request()->wantsJson()) {
             return response()->json($denahArea);
         }
         return view('denah-area.show', ['area' => $denahArea]);
+    }
+
+    public function uploadDenah(Request $request, DenahArea $denahArea)
+    {
+        $request->validate(['denah_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048']);
+        if ($denahArea->denah_image) {
+            Storage::disk('public')->delete($denahArea->denah_image);
+        }
+        $path = $request->file('denah_image')->store('denah-area', 'public');
+        $denahArea->update(['denah_image' => $path]);
+        if ($request->wantsJson()) {
+            return response()->json($denahArea->fresh());
+        }
+        return back()->with('success', 'Denah ' . $denahArea->nama . ' berhasil diperbarui.');
+    }
+
+    public function hapusDenah(Request $request, DenahArea $denahArea)
+    {
+        if ($denahArea->denah_image) {
+            Storage::disk('public')->delete($denahArea->denah_image);
+            $denahArea->update(['denah_image' => null]);
+        }
+        if ($request->wantsJson()) {
+            return response()->json(['ok' => true]);
+        }
+        return back()->with('success', 'Denah ' . $denahArea->nama . ' dihapus.');
     }
 
     public function store(Request $request)

@@ -3,7 +3,7 @@
 @section('content')
 <style>
     .stok-page{max-width:1120px;margin:0 auto}
-    .page-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+    .page-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
     .page-head h1{margin:6px 0 0;font-size:22px;font-weight:800;letter-spacing:-.03em;color:var(--andon-ink);line-height:1}
     .page-head p{margin:6px 0 0;font-size:12px;color:var(--andon-muted)}
     .summary{margin-bottom:16px;padding:16px 18px;background:var(--andon-panel);border:1px solid #EDEEF2;border-radius:20px;box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;transition:box-shadow .22s cubic-bezier(.16,1,.3,1)}
@@ -30,10 +30,8 @@
 
 <div class="stok-page">
 <div class="page-head">
-    <div>
-        <a href="{{ request('from') === 'laporan' ? route('laporan.index') : (auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan'))) }}" class="back-link"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
-        <h1>Stok Menipis</h1>
-    </div>
+    <a href="{{ request('from') === 'laporan' ? route('laporan.index') : (auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan'))) }}" class="back-link"  aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <h1>Stok Menipis</h1>
 </div>
 
 <div class="summary">

@@ -10,6 +10,7 @@ use App\Http\Controllers\RakController;
 use App\Http\Controllers\DenahAreaController;
 use App\Http\Controllers\StockOpnameBarangController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VoiceController;
 use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/staff', [DashboardController::class, 'staff'])->middleware('role:staff')->name('dashboard.staff');
     Route::get('/dashboard/pimpinan', [DashboardController::class, 'pimpinan'])->middleware('role:pimpinan')->name('dashboard.pimpinan');
 
-    Route::get('/denah-gudang', [RakController::class, 'denahGudang'])
+    Route::get('/denah-gudang', function () { return redirect()->route('denah-area.index'); })
         ->middleware('role:admin,staff,pimpinan')
         ->name('denah-gudang');
 
@@ -43,9 +44,11 @@ Route::middleware('auth')->group(function () {
         ->middleware('role:admin,staff')
         ->name('denah-gudang.assign');
 
+    Route::get('/denah-area', [DenahAreaController::class, 'index'])->middleware('role:admin,staff,pimpinan')->name('denah-area.index');
     Route::get('/denah-area/{denahArea}', [DenahAreaController::class, 'show'])->middleware('role:admin,staff,pimpinan')->name('denah-area.show');
+    Route::post('/denah-area/{denahArea}/denah', [DenahAreaController::class, 'uploadDenah'])->middleware('role:admin,staff')->name('denah-area.upload');
+    Route::delete('/denah-area/{denahArea}/denah', [DenahAreaController::class, 'hapusDenah'])->middleware('role:admin,staff')->name('denah-area.hapus-denah');
     Route::prefix('denah-area')->name('denah-area.')->middleware('role:admin,staff')->group(function () {
-        Route::get('/', [DenahAreaController::class, 'index'])->name('index');
         Route::post('/', [DenahAreaController::class, 'store'])->name('store');
         Route::put('/{denahArea}', [DenahAreaController::class, 'update'])->name('update');
         Route::delete('/{denahArea}', [DenahAreaController::class, 'destroy'])->name('destroy');
@@ -57,30 +60,29 @@ Route::middleware('auth')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::put('/users/{user}/password', [UserController::class, 'updatePassword'])->name('users.password');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     });
 
+    // Laporan — C6/C7: import admin only, export untuk pimpinan juga
     Route::get('/laporan', [LaporanController::class, 'index'])
-        ->middleware('role:admin,staff,pimpinan')
-        ->name('laporan.index');
+        ->middleware('role:admin,staff,pimpinan')->name('laporan.index');
+    Route::get('/laporan/export', [LaporanController::class, 'export'])
+        ->middleware('role:admin,staff,pimpinan')->name('laporan.export');
+    Route::post('/laporan/import', [LaporanController::class, 'import'])
+        ->middleware('role:admin')->name('laporan.import');
 
-    Route::middleware('role:admin,staff')->group(function () {
-        Route::get('/laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
-        Route::post('/laporan/import', [LaporanController::class, 'import'])->name('laporan.import');
-    });
-
+    // Rak — A3: konsisten hanya admin tulis
     Route::prefix('rak')->name('rak.')->group(function () {
-        Route::middleware('role:admin,staff')->group(function () {
+        Route::middleware('role:admin,staff,pimpinan')->group(function () {
             Route::get('/', [RakController::class, 'index'])->name('index');
-            Route::post('/', [RakController::class, 'store'])->name('store');
+            Route::get('/{rak}', [RakController::class, 'show'])->name('show');
         });
 
         Route::middleware('role:admin')->group(function () {
+            Route::post('/', [RakController::class, 'store'])->name('store');
             Route::put('/{rak}', [RakController::class, 'update'])->name('update');
             Route::delete('/{rak}', [RakController::class, 'destroy'])->name('destroy');
-        });
-
-        Route::middleware('role:admin,staff,pimpinan')->group(function () {
-            Route::get('/{rak}', [RakController::class, 'show'])->name('show');
         });
     });
 
@@ -96,19 +98,17 @@ Route::middleware('auth')->group(function () {
         ->middleware('role:admin,staff,pimpinan')
         ->name('pencarian.index');
 
-    // Kategori barang
+    // Kategori barang — A2: tulis hanya admin
     Route::prefix('kategori')->name('kategori.')->middleware('role:admin,staff,pimpinan')->group(function () {
         Route::get('/', [KategoriController::class, 'index'])->name('index');
-        Route::middleware('role:admin,staff')->group(function () {
-            Route::post('/', [KategoriController::class, 'store'])->name('store');
-        });
         Route::middleware('role:admin')->group(function () {
+            Route::post('/', [KategoriController::class, 'store'])->name('store');
             Route::put('/{kategori}', [KategoriController::class, 'update'])->name('update');
             Route::delete('/{kategori}', [KategoriController::class, 'destroy'])->name('destroy');
         });
     });
 
-    // Barang gudang
+    // Barang gudang — A1: edit/update/destroy hanya admin
     Route::prefix('barang')->name('barang.')->middleware('role:admin,staff,pimpinan')->group(function () {
         Route::get('/', [BarangController::class, 'index'])->name('index');
         Route::get('/stok-menipis', [BarangController::class, 'stokMenipis'])->name('stok-menipis');
@@ -117,14 +117,16 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:admin,staff')->group(function () {
             Route::get('/tambah/baru', [BarangController::class, 'create'])->name('create');
             Route::post('/', [BarangController::class, 'store'])->name('store');
-            Route::get('/{barang}/edit', [BarangController::class, 'edit'])->name('edit');
-            Route::put('/{barang}', [BarangController::class, 'update'])->name('update');
         });
 
         Route::middleware('role:admin')->group(function () {
+            Route::get('/{barang}/edit', [BarangController::class, 'edit'])->name('edit');
+            Route::put('/{barang}', [BarangController::class, 'update'])->name('update');
             Route::delete('/{barang}', [BarangController::class, 'destroy'])->name('destroy');
         });
     });
+
+    Route::post('/voice/transcribe', [VoiceController::class, 'transcribe'])->middleware('role:admin,staff')->name('voice.transcribe');
 
     // Mutasi barang (masuk/keluar)
     Route::prefix('mutasi-barang')->name('mutasi-barang.')->middleware('role:admin,staff,pimpinan')->group(function () {

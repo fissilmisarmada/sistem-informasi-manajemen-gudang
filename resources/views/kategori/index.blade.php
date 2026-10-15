@@ -2,7 +2,7 @@
 
 @section('content')
 <style>
-    .page-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+    .page-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
     .page-head h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.03em;color:var(--andon-ink);line-height:1}
     .alert{padding:12px 14px;border-radius:12px;margin-bottom:16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px}
     .alert-success{background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0}
@@ -32,9 +32,8 @@
     @media(max-width:640px){.page-head h1{font-size:20px}}
 </style>
 
-<a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
-
 <div class="page-head">
+    <a href="{{ auth()->user()->isAdmin() ? route('dashboard.admin') : (auth()->user()->isStaff() ? route('dashboard.staff') : route('dashboard.pimpinan')) }}" class="back-link" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <h1>Kategori Barang</h1>
 </div>
 
@@ -68,7 +67,7 @@
                 <td data-label="Jumlah Barang">{{ $kategori->barang_count }} barang</td>
                 @if(auth()->user()->isAdmin())
                 <td data-label="Aksi">
-                    <button class="btn btn--ghost edit-btn" style="min-height:32px;padding:0 10px;font-size:12px;"
+                    <button class="btn btn--ghost edit-btn" style="min-height:44px;padding:0 14px;font-size:13px;"
                         data-id="{{ $kategori->id }}"
                         data-kode="{{ $kategori->kode_kategori }}"
                         data-nama="{{ $kategori->nama }}"
@@ -78,7 +77,7 @@
                     <form method="POST" action="{{ route('kategori.destroy', $kategori) }}" style="display:inline"
                         onsubmit="return confirm('Hapus kategori {{ $kategori->nama }}?')">
                         @csrf @method('DELETE')
-                        <button type="submit" class="btn btn--ghost" style="min-height:32px;padding:0 10px;font-size:12px;color:var(--andon-red);border-color:#FECACA">Hapus</button>
+                        <button type="submit" class="btn btn--ghost" style="min-height:44px;padding:0 14px;font-size:13px;color:var(--andon-red);border-color:#FECACA">Hapus</button>
                     </form>
                 </td>
                 @endif
@@ -99,16 +98,16 @@
         <form method="POST" action="{{ route('kategori.store') }}">
             @csrf
             <div class="form-group">
-                <label>Kode Kategori</label>
-                <input class="andon-control" type="text" name="kode_kategori" placeholder="Contoh: ATK, BKU, KMP" required maxlength="20">
+                <label for="tambah-kode">Kode Kategori</label>
+                <input class="andon-control" type="text" name="kode_kategori" id="tambah-kode" placeholder="Contoh: ATK, BKU, KMP" required maxlength="20">
             </div>
             <div class="form-group">
-                <label>Nama Kategori</label>
-                <input class="andon-control" type="text" name="nama" placeholder="Contoh: Alat Tulis Kantor" required maxlength="100">
+                <label for="tambah-nama">Nama Kategori</label>
+                <input class="andon-control" type="text" name="nama" id="tambah-nama" placeholder="Contoh: Alat Tulis Kantor" required maxlength="100">
             </div>
             <div class="form-group">
-                <label>Deskripsi</label>
-                <textarea class="andon-control" name="deskripsi" rows="3" placeholder="Opsional"></textarea>
+                <label for="tambah-deskripsi">Deskripsi</label>
+                <textarea class="andon-control" name="deskripsi" id="tambah-deskripsi" rows="3" placeholder="Opsional"></textarea>
             </div>
             <div class="form-actions">
                 <button type="button" class="btn btn--ghost" onclick="document.getElementById('modal-tambah').classList.remove('active')">Batal</button>
@@ -125,15 +124,15 @@
         <form method="POST" id="form-edit" action="">
             @csrf @method('PUT')
             <div class="form-group">
-                <label>Kode Kategori</label>
+                <label for="edit-kode">Kode Kategori</label>
                 <input class="andon-control" type="text" name="kode_kategori" id="edit-kode" required maxlength="20">
             </div>
             <div class="form-group">
-                <label>Nama Kategori</label>
+                <label for="edit-nama">Nama Kategori</label>
                 <input class="andon-control" type="text" name="nama" id="edit-nama" required maxlength="100">
             </div>
             <div class="form-group">
-                <label>Deskripsi</label>
+                <label for="edit-deskripsi">Deskripsi</label>
                 <textarea class="andon-control" name="deskripsi" id="edit-deskripsi" rows="3"></textarea>
             </div>
             <div class="form-actions">

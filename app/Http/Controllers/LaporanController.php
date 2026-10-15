@@ -110,7 +110,7 @@ class LaporanController extends Controller
                     'kategori_id'  => $kategori->id,
                     'satuan'       => trim((string) $row[4]) !== '' ? trim((string) $row[4]) : 'pcs',
                     'stok'         => is_numeric($row[5]) ? max(0, (int) $row[5]) : 0,
-                    'stok_minimum' => is_numeric($row[6]) ? max(0, (int) $row[6]) : 0,
+                    'stok_minimum' => Barang::stokMinimumForKategori($kategori->kode_kategori),
                     'rak_id'       => $rak?->id,
                     'keterangan'   => trim((string) $row[8]) !== '' ? trim((string) $row[8]) : null,
                 ]);

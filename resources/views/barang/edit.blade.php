@@ -18,6 +18,8 @@
     .form-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
     .hint{font-size:11px;color:var(--andon-faint);margin-top:6px;font-weight:600}
     .alert-error{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;padding:10px 14px;border-radius:10px;margin-bottom:16px;font-size:13px;font-weight:600}
+    .book-fieldset{border:1px solid #E8EAF0;border-radius:14px;padding:14px 14px 2px;margin:0 0 16px;background:#FBFBFD}
+    .book-fieldset legend{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--andon-muted);padding:0 6px}
     .current-img{width:120px;height:90px;object-fit:cover;border-radius:10px;margin-bottom:8px;display:block;border:1px solid var(--andon-line)}
     @media(max-width:600px){.form-row{grid-template-columns:1fr;gap:0}}
     @media(max-width:420px){.form-actions{flex-direction:column-reverse}.form-actions .btn{width:100%;justify-content:center}}
@@ -78,11 +80,7 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Stok Minimum</label>
-            <input class="andon-control" type="number" name="stok_minimum" value="{{ old('stok_minimum', $barang->stok_minimum) }}" min="0">
-            <p class="hint">Stok saat ini: <strong style="color:var(--andon-ink)">{{ $barang->stok }} {{ $barang->satuan }}</strong> · ubah stok lewat Mutasi Barang.</p>
-        </div>
+        <p class="hint">Stok minimum otomatis: <strong style="color:var(--andon-ink)">{{ \App\Models\Barang::stokMinimumForKategori($barang->kategori?->kode_kategori) }} {{ $barang->satuan }}</strong> (Furnitur = 0, lainnya = 10) · Stok saat ini: <strong style="color:var(--andon-ink)">{{ $barang->stok }} {{ $barang->satuan }}</strong> · ubah stok lewat Mutasi.</p>
 
         <div class="form-group">
             <label>Gambar Barang</label>
@@ -93,10 +91,34 @@
             <input class="andon-control" type="file" name="gambar" accept="image/*">
         </div>
 
-        <div class="form-group">
-            <label>Keterangan</label>
-            <textarea class="andon-control" name="keterangan" rows="3">{{ old('keterangan', $barang->keterangan) }}</textarea>
-        </div>
+        @php
+            $rawKet = $barang->keterangan;
+            if (is_string($rawKet)) { $d = json_decode($rawKet, true); if (is_array($d)) $rawKet = $d; }
+            $ketArr = is_array($rawKet) ? $rawKet : [];
+            // legacy: keterangan pernah simpan string json langsung — catatan di $ketArr['catatan'] agar tidak hilang
+            $catatanFallback = is_string($barang->keterangan) && !is_array($rawKet) ? $barang->keterangan : ($ketArr['catatan'] ?? $ketArr['keterangan'] ?? '');
+        @endphp
+        <fieldset class="book-fieldset">
+            <legend>Detail Buku <span style="font-weight:600;color:var(--andon-faint)">(opsional)</span></legend>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ISBN</label>
+                    <input class="andon-control" type="text" name="isbn" value="{{ old('isbn', $ketArr['isbn'] ?? '') }}" placeholder="9786021234002" maxlength="30">
+                </div>
+                <div class="form-group">
+                    <label>Jumlah Halaman</label>
+                    <input class="andon-control" type="number" name="jumlah_halaman" value="{{ old('jumlah_halaman', $ketArr['jumlah_halaman'] ?? '') }}" min="1" max="99999" placeholder="168">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Kategori Asli / Penulis</label>
+                <input class="andon-control" type="text" name="kategori_asli" value="{{ old('kategori_asli', $ketArr['kategori_asli'] ?? '') }}" placeholder="Manajemen, Teknologi Informasi...">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+                <label>Catatan / Keterangan Umum</label>
+                <textarea class="andon-control" name="keterangan" rows="2" placeholder="Deskripsi atau catatan tambahan...">{{ old('keterangan', $catatanFallback) }}</textarea>
+            </div>
+        </fieldset>
 
         <div class="form-actions">
             <a href="{{ route('barang.show', $barang) }}" class="btn btn--ghost">Batal</a>

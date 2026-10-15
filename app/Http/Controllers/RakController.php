@@ -26,6 +26,7 @@ class RakController extends Controller
             'kode_rak'    => 'required|string|max:20|unique:rak,kode_rak',
             'nama_lokasi' => 'required|string|max:100',
             'kapasitas'   => 'nullable|integer|min:0',
+            'denah_area_id' => 'nullable|exists:denah_area,id',
         ]);
 
 
@@ -44,6 +45,7 @@ class RakController extends Controller
             'kode_rak'    => 'required|string|max:20|unique:rak,kode_rak,' . $rak->id,
             'nama_lokasi' => 'required|string|max:100',
             'kapasitas'   => 'nullable|integer|min:0',
+            'denah_area_id' => 'nullable|exists:denah_area,id',
         ]);
 
         $rak->update($validated);

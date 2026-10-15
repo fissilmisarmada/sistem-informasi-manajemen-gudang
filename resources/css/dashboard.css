@@ -14,6 +14,191 @@
     animation: andon-in .45s cubic-bezier(.16,1,.3,1) both;
 }
 .andon-hero--single { grid-template-columns: 1fr; width: 100%; max-width: none; }
+.andon-role-panel {
+    display: grid;
+    grid-template-columns: minmax(0, .92fr) minmax(360px, 1.08fr);
+    gap: 18px;
+    align-items: stretch;
+    margin-bottom: 20px;
+    padding: 18px;
+    background: rgba(255,255,255,.74);
+    border: 1px solid rgba(226,232,240,.82);
+    border-radius: var(--andon-radius);
+    box-shadow: var(--andon-shadow);
+    backdrop-filter: blur(14px) saturate(1.12);
+    -webkit-backdrop-filter: blur(14px) saturate(1.12);
+    position: relative;
+    overflow: hidden;
+    animation: andon-in .45s cubic-bezier(.16,1,.3,1) both;
+}
+.andon-role-panel::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    background: repeating-linear-gradient(90deg, var(--andon-amber) 0 14px, transparent 14px 28px);
+}
+.andon-role-panel::after {
+    content: '';
+    position: absolute;
+    inset: 3px 1px auto;
+    height: 72px;
+    background: linear-gradient(180deg, rgba(255,255,255,.58), transparent);
+    pointer-events: none;
+}
+.andon-role-panel__copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 214px;
+    padding: 8px 4px 8px 2px;
+    position: relative;
+    z-index: 1;
+}
+.andon-role-panel__copy h1 {
+    margin: 0 0 10px;
+    max-width: 12ch;
+    color: var(--andon-ink);
+    font-size: clamp(1.375rem, 4vw, 1.75rem);
+    font-weight: 800;
+    letter-spacing: -.04em;
+    line-height: .95;
+}
+.andon-role-panel__copy p {
+    margin: 0;
+    max-width: 44ch;
+    color: var(--andon-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.andon-role-panel__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+}
+.andon-role-panel__actions::before,
+.andon-role-panel__actions::after {
+    content: '';
+    position: absolute;
+    background: var(--andon-amber);
+    opacity: .8;
+    pointer-events: none;
+}
+.andon-role-panel__actions::before { left: calc(50% - 6px); right: calc(50% - 6px); top: calc(50% - 1px); height: 2px; }
+.andon-role-panel__actions::after { top: calc(50% - 46px); bottom: calc(50% - 46px); left: calc(50% - 1px); width: 2px; }
+.andon-role-panel__actions {
+    align-items: stretch;
+}
+.andon-role-panel__actions a {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 110px;
+    padding: 14px;
+    color: var(--andon-ink);
+    text-decoration: none;
+    --lift: 0px;
+    height: 100%;
+    background: var(--andon-surface);
+    border: 1px solid rgba(226,232,240,.9);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(15,23,42,.04);
+    transition: transform .16s, box-shadow .16s, border-color .16s, background .16s, backdrop-filter .16s;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    transform: translateY(var(--lift));
+}
+.andon-role-panel__actions a:nth-child(1),
+.andon-role-panel__actions a:nth-child(4) { --lift: -1px; }
+.andon-role-panel__actions a:nth-child(2),
+.andon-role-panel__actions a:nth-child(3) { --lift: 1px; }
+.andon-role-panel__actions a::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 0 28%, rgba(255,255,255,.56) 46%, transparent 66%);
+    transform: translateX(-120%);
+    transition: transform .42s cubic-bezier(.16,1,.3,1);
+    pointer-events: none;
+}
+.andon-role-panel__actions a::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: transparent;
+    transition: background .16s;
+}
+.andon-role-panel__actions:hover::before,
+.andon-role-panel__actions:hover::after { opacity: 1; }
+.andon-role-panel__actions a:hover {
+    transform: translateY(calc(var(--lift) - 2px));
+    border-color: var(--andon-line-strong);
+    box-shadow: var(--andon-shadow);
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(14px) saturate(1.15);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+}
+.andon-role-panel__actions a:hover::before { transform: translateX(120%); }
+.andon-role-panel__actions a:hover::after { background: var(--andon-amber); }
+.andon-role-panel__actions a:hover em {
+    background: var(--andon-ink);
+    border-color: var(--andon-ink);
+    color: var(--andon-amber);
+}
+.andon-role-panel__actions a{overflow:hidden}
+.andon-role-action__head{display:flex;align-items:center;gap:0;margin-bottom:12px}
+.andon-role-action__head em{margin-bottom:0 !important;flex:0 0 auto}
+.andon-role-action__head i{position:absolute;top:10px;right:12px;width:38px;height:38px;border:0;border-radius:999px;background:radial-gradient(closest-side, rgba(255,255,255,.96) 44%, rgba(248,250,252,.72) 78%, transparent 100%);display:grid;place-items:center;flex:0 0 auto;color:var(--andon-muted);opacity:.30;pointer-events:none;transition:opacity .16s,color .16s,transform .16s,filter .16s;filter:drop-shadow(0 2px 6px rgba(15,23,42,.09))}
+.andon-role-action__head i svg{width:28px;height:28px;display:block}
+.andon-role-panel__actions a:hover .andon-role-action__head i{opacity:.42;color:var(--andon-ink);transform:scale(1.07);filter:drop-shadow(0 3px 10px rgba(15,23,42,.12))}
+.andon-role-panel__actions em {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 12px;
+    border-radius: 999px;
+    background: var(--andon-surface-2);
+    border: 1px solid var(--andon-line);
+    color: var(--andon-muted);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1;
+    transition: background .16s, border-color .16s, color .16s;
+}
+.andon-role-panel__actions strong {
+    display: block;
+    color: var(--andon-ink);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+}
+.andon-role-panel__actions span {
+    display: block;
+    margin-top: 6px;
+    color: var(--andon-muted);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .andon-role-panel,
+    .andon-role-panel__actions a { background: var(--andon-panel); }
+}
 .andon-hero__copy {
     background: var(--andon-panel);
     border: 1px solid var(--andon-line);
@@ -129,7 +314,7 @@
 .andon-tile--navy .andon-tile__icon { background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.18); color: #fff; }
 .andon-tile__arrow { color: var(--andon-faint); transition: transform .16s, color .16s; }
 .andon-tile:hover .andon-tile__arrow { transform: translate(3px, -3px); color: currentColor; }
-.andon-tile__value { margin-top: auto; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 28px; font-weight: 600; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.andon-tile__value { margin-top: auto; font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -.05em; line-height: 1; font-variant-numeric: tabular-nums; }
 .andon-tile:first-child .andon-tile__value { font-size: 36px; letter-spacing: -.06em; }
 .andon-tile__value small { font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: -.02em; color: inherit; opacity: .7; margin-left: 4px; }
 .andon-tile__note { margin-top: 6px; font-size: 11px; font-weight: 500; color: var(--andon-muted); line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -182,12 +367,13 @@
 .andon-grid .andon-panel { animation: andon-in .4s cubic-bezier(.16,1,.3,1) .2s both; }
 
 @media (prefers-reduced-motion: reduce) {
-    .andon-hero, .andon-tiles .andon-tile, .andon-quick .andon-q, .andon-grid .andon-panel { animation: none !important; }
-    .andon-scan::before { display: none !important; }
+    .andon-hero, .andon-role-panel, .andon-tiles .andon-tile, .andon-quick .andon-q, .andon-grid .andon-panel { animation: none !important; }
+    .andon-scan::before, .andon-role-panel__actions a::before { display: none !important; }
+    .andon-role-panel__actions a { transform: none !important; }
 }
 
 @media (max-width: 980px) {
-    .andon-hero { grid-template-columns: 1fr; }
+    .andon-hero, .andon-role-panel { grid-template-columns: 1fr; }
     .andon-tiles { flex-wrap: wrap; }
     .andon-tile { flex: 1 1 calc(50% - 1px); border-right: 0; border-bottom: 1px solid var(--andon-line); }
     .andon-tiles--staff .andon-tile { flex: 1 1 calc(50% - 1px); }
@@ -196,8 +382,43 @@
     .andon-quick { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 560px) {
-    .andon-hero__copy { padding: 18px 16px 16px; }
+    .andon-hero__copy { padding: 0; }
     .andon-hero__copy h1 { font-size: 22px; }
+    .andon-role-panel { display: block; padding: 12px 12px 10px; gap: 0; border-radius: 18px; }
+    .andon-role-panel__copy { min-height: 0; padding: 2px 2px 8px; min-width: 0; }
+    .andon-role-panel__copy h1 { font-size: 16px; margin-bottom: 0; max-width: none; line-height: 1.2; }
+    .andon-role-panel__copy p { display: none; }
+    .andon-role-panel__actions {
+        display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden;
+        padding-bottom: 6px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: var(--andon-faint) transparent;
+    }
+    .andon-role-panel__actions::-webkit-scrollbar { height: 4px; }
+    .andon-role-panel__actions::-webkit-scrollbar-track { background: transparent; }
+    .andon-role-panel__actions::-webkit-scrollbar-thumb {
+        background: var(--andon-faint);
+        border-radius: 999px;
+        border: 1px solid transparent;
+        background-clip: content-box;
+    }
+    .andon-role-panel__actions:hover::-webkit-scrollbar-thumb { background: var(--andon-muted); }
+    .andon-role-panel__actions::before,
+    .andon-role-panel__actions::after { display: none; }
+    .andon-role-panel__actions a,
+    .andon-role-panel__actions a:nth-child(n) {
+        --lift: 0px; flex: 0 0 auto; scroll-snap-align: start;
+        min-height: 44px; min-width: max-content; padding: 10px 14px;
+        transform: none; flex-direction: row; align-items: center; gap: 8px;
+        border-radius: 999px; font-size: 12px; white-space: nowrap;
+    }
+    .andon-role-panel__actions em { margin-bottom: 0; width: 22px; height: 22px; font-size: 9px; flex: 0 0 auto; }
+    .andon-role-panel__actions strong { font-size: 12px; line-height: 1; }
+    .andon-role-panel__actions span { display: none; }
+    .andon-role-panel__actions .andon-role-action__head{margin-bottom:0;position:static}
+    .andon-role-panel__actions .andon-role-action__head i{width:24px;height:24px;top:50%;right:10px;transform:translateY(-50%);opacity:.1}
+    .andon-role-panel__actions .andon-role-action__head i svg{width:18px;height:18px}
+    .andon-role-panel__actions a:hover { transform: translateY(-1px); }
     .andon-tile { flex-basis: 100% !important; border-right: 0; border-bottom: 1px solid var(--andon-line); }
     .andon-tile:last-child { border-bottom: 0; }
     .andon-tile__value { font-size: 26px; }
@@ -209,3 +430,62 @@
 @media (max-width: 380px) {
     .andon-quick, .andon-quick--staff { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── Background per role — penuhi 1 panel penuh + blur tipis biar teks fokus ── */
+.andon-role-panel.andon-role-panel--admin,
+.andon-role-panel.andon-role-panel--staff,
+.andon-role-panel.andon-role-panel--pimpinan { background: var(--andon-panel); overflow: hidden; }
+.andon-role-panel.andon-role-panel--admin::after { content: ''; position: absolute; inset: 0 !important; top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important; height: auto !important; border-radius: inherit; background: url('/images/adminbg.jpg') center center / cover no-repeat; filter: blur(3px); transform: scale(1.02); pointer-events: none; z-index: 0; }
+.andon-role-panel.andon-role-panel--staff::after { content: ''; position: absolute; inset: 0 !important; top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important; height: auto !important; border-radius: inherit; background: url('/images/staffbg.jpg') center center / cover no-repeat; filter: blur(3px); transform: scale(1.02); pointer-events: none; z-index: 0; }
+.andon-role-panel.andon-role-panel--pimpinan::after { content: ''; position: absolute; inset: 0 !important; top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important; height: auto !important; border-radius: inherit; background: url('/images/pimpinanbg.jpg') center center / cover no-repeat; filter: blur(3px); transform: scale(1.02); pointer-events: none; z-index: 0; }
+.andon-role-panel.andon-role-panel--admin::before,
+.andon-role-panel.andon-role-panel--staff::before,
+.andon-role-panel.andon-role-panel--pimpinan::before { z-index: 2; }
+.andon-role-panel.andon-role-panel--admin .andon-role-panel__copy,
+.andon-role-panel.andon-role-panel--staff .andon-role-panel__copy,
+.andon-role-panel.andon-role-panel--pimpinan .andon-role-panel__copy { background: transparent; position: relative; z-index: 1; overflow: visible; }
+.andon-role-panel.andon-role-panel--admin .andon-role-panel__copy::before,
+.andon-role-panel.andon-role-panel--staff .andon-role-panel__copy::before,
+.andon-role-panel.andon-role-panel--pimpinan .andon-role-panel__copy::before {
+    content: ''; position: absolute; inset: -18px 0 -18px -18px;
+    border-radius: var(--andon-radius) 0 0 var(--andon-radius);
+    background: linear-gradient(to right, #fff 0 28%, rgba(255,255,255,.92) 36%, rgba(255,255,255,.55) 48%, rgba(255,255,255,0) 68%);
+    pointer-events: none; z-index: 1;
+}
+.andon-role-panel.andon-role-panel--admin .andon-role-panel__actions,
+.andon-role-panel.andon-role-panel--staff .andon-role-panel__actions,
+.andon-role-panel.andon-role-panel--pimpinan .andon-role-panel__actions { position: relative; z-index: 1; }
+.andon-role-panel.andon-role-panel--admin .andon-role-panel__copy h1,
+.andon-role-panel.andon-role-panel--staff .andon-role-panel__copy h1,
+.andon-role-panel.andon-role-panel--pimpinan .andon-role-panel__copy h1,
+.andon-role-panel.andon-role-panel--admin .andon-role-panel__copy p,
+.andon-role-panel.andon-role-panel--staff .andon-role-panel__copy p,
+.andon-role-panel.andon-role-panel--pimpinan .andon-role-panel__copy p {
+    position: relative; z-index: 2;
+    text-shadow: 0 1px 8px rgba(255,255,255,.85), 0 0 16px rgba(255,255,255,.55);
+}
+.andon-role-panel.andon-role-panel--admin .andon-role-panel__copy p,
+.andon-role-panel.andon-role-panel--staff .andon-role-panel__copy p,
+.andon-role-panel.andon-role-panel--pimpinan .andon-role-panel__copy p {
+    color: var(--andon-ink);
+}
+@media (max-width: 980px) {
+    .andon-role-panel.andon-role-panel--admin .andon-role-panel__copy::before,
+    .andon-role-panel.andon-role-panel--staff .andon-role-panel__copy::before,
+    .andon-role-panel.andon-role-panel--pimpinan .andon-role-panel__copy::before {
+        inset: -18px -18px 0 -18px;
+        border-radius: var(--andon-radius) var(--andon-radius) 0 0;
+        background: linear-gradient(to bottom, #fff 0 42%, rgba(255,255,255,.88) 52%, rgba(255,255,255,0) 78%);
+    }
+}
+@media (max-width: 560px) {
+    .andon-role-panel.andon-role-panel--admin .andon-role-panel__copy::before,
+    .andon-role-panel.andon-role-panel--staff .andon-role-panel__copy::before,
+    .andon-role-panel.andon-role-panel--pimpinan .andon-role-panel__copy::before {
+        inset: -12px -12px 0 -12px;
+    }
+}
+
+
+
+

@@ -3,7 +3,7 @@
 @section('content')
 <style>
     .rack-page{max-width:1120px;margin:0 auto}
-    .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+    .page-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
     .page-head h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.03em;color:var(--andon-ink);line-height:1}
     .page-head p{margin:6px 0 0;font-size:12px;color:var(--andon-muted);line-height:1.4}
     .eyebrow{color:var(--andon-faint);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
@@ -38,21 +38,21 @@
 </style>
 
 <div class="rack-page">
-    <a class="back-link" href="{{ request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('denah-gudang') }}" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
     <div class="page-head">
-        <div><h1>Kelola Lokasi Rak</h1></div>
+        <a class="back-link" href="{{ request('from') === 'dashboard' ? (auth()->user()->isAdmin() ? route('dashboard.admin') : route('dashboard.staff')) : route('denah-gudang') }}" aria-label="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></a>
+        <h1>Kelola Lokasi Rak</h1>
     </div>
 
     @if(session('sukses'))<div class="alert alert-success">{{ session('sukses') }}</div>@endif
     @if($errors->any())<div class="alert alert-error">{{ $errors->first() }}</div>@endif
 
-    @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
+    @if(auth()->user()->isAdmin())
         <form class="create-panel" method="POST" action="{{ route('rak.store') }}">
             @csrf
-            <div><label for="kode_rak">Kode Rak</label><input class="andon-control" id="kode_rak" type="text" name="kode_rak" placeholder="Contoh: R-01" required></div>
-            <div><label for="nama_lokasi">Nama Lokasi</label><input class="andon-control" id="nama_lokasi" type="text" name="nama_lokasi" placeholder="Contoh: Area ATK" required></div>
+            <div><label for="kode_rak">Kode Rak</label><input class="andon-control" id="kode_rak" type="text" name="kode_rak" placeholder="Contoh: R-01" required autocomplete="off"></div>
+            <div><label for="nama_lokasi">Nama Lokasi</label><input class="andon-control" id="nama_lokasi" type="text" name="nama_lokasi" placeholder="Contoh: Area ATK" required autocomplete="off"></div>
             <div><label for="kapasitas">Kapasitas (unit)</label><input class="andon-control" id="kapasitas" type="number" name="kapasitas" min="0" placeholder="Opsional"></div>
-            <button class="btn btn--primary" type="submit">+ Tambah Rak</button>
+            <button class="btn btn--primary" type="submit" style="min-height:44px">+ Tambah Rak</button>
         </form>
     @endif
 
@@ -64,12 +64,12 @@
             <div class="table-wrap"><table><thead><tr><th>Kode Rak</th><th>Lokasi</th><th>Kapasitas</th><th>Jenis Barang</th><th>Total Stok</th><th>Aksi</th></tr></thead><tbody>
                 @foreach($dataRak as $rak)
                     <tr>
-                        <td data-label="Kode Rak" class="rack-code">{{ $rak->kode_rak }}</td>
-                        <td data-label="Lokasi">{{ $rak->nama_lokasi }}</td>
-                        <td data-label="Kapasitas">{{ $rak->kapasitas ? number_format($rak->kapasitas, 0, ',', '.') . ' unit' : 'Belum ditentukan' }}</td>
-                        <td data-label="Jenis Barang">{{ $rak->barang_count }} jenis</td>
-                        <td data-label="Total Stok" class="stock">{{ number_format((int) ($rak->barang_sum_stok ?? 0), 0, ',', '.') }} unit</td>
-                        <td data-label="Aksi"><div class="actions"><a href="{{ route('rak.show', ['rak' => $rak, 'from' => 'kelola-rak', 'return_from' => request('from')]) }}">Lihat isi rak</a>@if(auth()->user()->isAdmin())<form method="POST" action="{{ route('rak.destroy', $rak) }}" onsubmit="return confirm('Hapus lokasi rak ini?')">@csrf @method('DELETE')<button class="btn btn--ghost" type="submit" style="min-height:32px;padding:0 10px;font-size:12px;color:var(--andon-red);border-color:#FECACA">Hapus</button></form>@endif</div></td>
+                        <td data-label="Kode Rak" class="rack-code" style="font-weight:800">{{ $rak->kode_rak }}</td>
+                        <td data-label="Lokasi" style="font-weight:600">{{ $rak->nama_lokasi }}</td>
+                        <td data-label="Kapasitas" style="font-weight:600">{{ $rak->kapasitas ? number_format($rak->kapasitas, 0, ',', '.') . ' unit' : 'Belum ditentukan' }}</td>
+                        <td data-label="Jenis Barang" style="font-weight:600">{{ $rak->barang_count }} jenis</td>
+                        <td data-label="Total Stok" class="stock" style="font-weight:800">{{ number_format((int) ($rak->barang_sum_stok ?? 0), 0, ',', '.') }} unit</td>
+                        <td data-label="Aksi"><div class="actions"><a href="{{ route('rak.show', ['rak' => $rak, 'from' => 'kelola-rak', 'return_from' => request('from')]) }}" class="btn btn--ghost" style="min-height:44px;padding:0 14px;font-size:13px">Lihat isi rak</a>@if(auth()->user()->isAdmin())<form method="POST" action="{{ route('rak.destroy', $rak) }}" onsubmit="return confirm('Hapus lokasi rak ini?')">@csrf @method('DELETE')<button class="btn btn--ghost" type="submit" style="min-height:44px;padding:0 14px;font-size:13px;color:var(--andon-red);border-color:#FECACA">Hapus</button></form>@endif</div></td>
                     </tr>
                 @endforeach
             </tbody></table></div>

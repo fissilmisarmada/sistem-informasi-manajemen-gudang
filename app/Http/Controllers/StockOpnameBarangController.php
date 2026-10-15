@@ -11,7 +11,7 @@ class StockOpnameBarangController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::with(['kategori', 'rak', 'stockOpname' => function ($q) {
+        $barangs = Barang::with(['kategori', 'rak', 'denahArea', 'stockOpname' => function ($q) {
             $q->latest('tanggal')->limit(1);
         }])->orderBy('nama')->get();
 

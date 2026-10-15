@@ -10,10 +10,23 @@ class Barang extends Model
     use HasFactory;
 
     protected $table = 'barang';
+    // ponytail: kolom stok_minimum dipertahankan (no drop) agar histori valid; jika butuh per-kategori beda → pindah ke kategori.stok_minimum
+    public const STOK_MINIMUM_DEFAULT = 10;
+    public const STOK_MINIMUM_FURNITURE = 0;
+
+    protected $casts = [
+        'keterangan' => 'array',
+    ];
+
     protected $fillable = [
         'kode_barang', 'nama', 'kategori_id', 'satuan',
         'stok', 'stok_minimum', 'rak_id', 'denah_area_id', 'gambar', 'keterangan',
     ];
+
+    public static function stokMinimumForKategori(?string $kodeKategori): int
+    {
+        return $kodeKategori === 'FRN' ? self::STOK_MINIMUM_FURNITURE : self::STOK_MINIMUM_DEFAULT;
+    }
 
     public function kategori()
     {
