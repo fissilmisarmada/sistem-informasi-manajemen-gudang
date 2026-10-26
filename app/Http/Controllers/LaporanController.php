@@ -33,28 +33,33 @@ class LaporanController extends Controller
     public function export()
     {
         $fileName = 'laporan' . now()->format('Y-m-d-His') . '.csv';
-        $barangs = Barang::with(['kategori', 'rak'])->orderBy('nama')->cursor();
+        $barangs = Barang::with(['kategori', 'rak'])->orderBy('nama')->get();
 
-        return response()->streamDownload(function () use ($barangs) {
-            $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['kode_barang', 'nama', 'kode_kategori', 'kategori', 'satuan', 'stok', 'stok_minimum', 'kode_rak', 'keterangan']);
+        $handle = fopen('php://temp', 'r+');
+        fputcsv($handle, ['kode_barang', 'nama', 'kode_kategori', 'kategori', 'satuan', 'stok', 'stok_minimum', 'kode_rak', 'keterangan']);
 
-            foreach ($barangs as $barang) {
-                fputcsv($handle, [
-                    $barang->kode_barang,
-                    $barang->nama,
-                    $barang->kategori?->kode_kategori,
-                    $barang->kategori?->nama,
-                    $barang->satuan,
-                    $barang->stok,
-                    $barang->stok_minimum,
-                    $barang->rak?->kode_rak,
-                    $barang->keterangan,
-                ]);
-            }
+        foreach ($barangs as $barang) {
+            fputcsv($handle, [
+                $barang->kode_barang,
+                $barang->nama,
+                $barang->kategori?->kode_kategori,
+                $barang->kategori?->nama,
+                $barang->satuan,
+                $barang->stok,
+                $barang->stok_minimum,
+                $barang->rak?->kode_rak,
+                is_array($barang->keterangan) ? json_encode($barang->keterangan) : $barang->keterangan,
+            ]);
+        }
 
-            fclose($handle);
-        }, $fileName, ['Content-Type' => 'text/csv; charset=UTF-8']);
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+
+        return response($csv, 200, [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 
     public function import(Request $request)
