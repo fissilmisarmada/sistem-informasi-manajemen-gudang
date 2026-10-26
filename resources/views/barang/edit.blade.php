@@ -21,6 +21,13 @@
     .book-fieldset{border:1px solid #E8EAF0;border-radius:14px;padding:14px 14px 2px;margin:0 0 16px;background:#FBFBFD}
     .book-fieldset legend{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--andon-muted);padding:0 6px}
     .current-img{width:120px;height:90px;object-fit:cover;border-radius:10px;margin-bottom:8px;display:block;border:1px solid var(--andon-line)}
+    .current-img-wrap{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+    .current-img-wrap .current-img{margin-bottom:0}
+    .img-remove{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 14px;margin:0;border:1px solid #FECACA;border-radius:12px;background:#FEF2F2;color:#991B1B;font-size:12px;font-weight:700;letter-spacing:0;cursor:pointer;transition:background .16s,border-color .16s}
+    .img-remove:hover{background:#FEE2E2;border-color:#FCA5A5}
+    .img-remove input{width:16px;height:16px;accent-color:#C24132;cursor:pointer;margin:0}
+    .img-remove:has(input:checked){background:#991B1B;color:#fff;border-color:#991B1B}
+    .img-remove:has(input:checked) input{accent-color:#fff}
     @media(max-width:600px){.form-row{grid-template-columns:1fr;gap:0}}
     @media(max-width:420px){.form-actions{flex-direction:column-reverse}.form-actions .btn{width:100%;justify-content:center}}
 </style>
@@ -85,8 +92,14 @@
         <div class="form-group">
             <label>Gambar Barang</label>
             @if($barang->gambar)
-                <img src="{{ Storage::url($barang->gambar) }}" alt="{{ $barang->nama }}" class="current-img">
-                <p class="hint">Upload gambar baru untuk mengganti yang sekarang.</p>
+                <div class="current-img-wrap">
+                    <img src="{{ Storage::url($barang->gambar) }}" alt="{{ $barang->nama }}" class="current-img">
+                    <label class="img-remove">
+                        <input type="checkbox" name="hapus_gambar" value="1" {{ old('hapus_gambar') ? 'checked' : '' }}>
+                        <span>Hapus foto ini</span>
+                    </label>
+                </div>
+                <p class="hint">Upload gambar baru untuk mengganti, atau centang "Hapus foto ini" untuk mengosongkan.</p>
             @endif
             <input class="andon-control" type="file" name="gambar" accept="image/*">
         </div>

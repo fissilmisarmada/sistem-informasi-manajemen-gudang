@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\MutasiBarang;
+use App\Notifications\StokMenipisWebPush;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,41 +32,50 @@ class MutasiBarangController extends Controller
     public function create()
     {
         $barangs = Barang::with('kategori')->orderBy('nama')->get();
+
         return view('mutasi-barang.create', compact('barangs'));
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'barang_id'  => 'required|exists:barang,id',
-        'jenis'      => 'required|in:masuk,keluar',
-        'jumlah'     => 'required|integer|min:1',
-        'keterangan' => 'nullable|string|max:255',
-    ]);
+    {
+        $request->validate([
+            'barang_id' => 'required|exists:barang,id',
+            'jenis' => 'required|in:masuk,keluar',
+            'jumlah' => 'required|integer|min:1',
+            'keterangan' => 'nullable|string|max:255',
+        ]);
 
-    $barang = Barang::findOrFail($request->barang_id);
+        $barang = Barang::findOrFail($request->barang_id);
 
-    if ($request->jenis === 'keluar' && $barang->stok < $request->jumlah) {
-        return back()->withErrors(['jumlah' => 'Stok tidak mencukupi. Stok saat ini: ' . $barang->stok])->withInput();
-    }
+        if ($request->jenis === 'keluar' && $barang->stok < $request->jumlah) {
+            return back()->withErrors(['jumlah' => 'Stok tidak mencukupi. Stok saat ini: '.$barang->stok])->withInput();
+        }
 
-    DB::transaction(function () use ($request, $barang) {
-        MutasiBarang::catat(
-            $barang,
-            Auth::user(),
-            $request->jenis,
-            $request->jumlah,
-            $request->keterangan
-        );
-    });
+        $menipisSebelum = $barang->isStokMenipis();
 
-    // REDIRECT BERDASARKAN BARANG_ID (SIMPLIFY)
-    if ($request->filled('barang_id')) {
-        return redirect()->route('barang.show', $request->barang_id)
+        DB::transaction(function () use ($request, $barang) {
+            MutasiBarang::catat(
+                $barang,
+                Auth::user(),
+                $request->jenis,
+                $request->jumlah,
+                $request->keterangan
+            );
+        });
+
+        // Notifikasi web push saat stok menyeberang ke kondisi menipis (transisi, bukan tiap mutasi)
+        $barang->refresh();
+        if (! $menipisSebelum && $barang->isStokMenipis()) {
+            StokMenipisWebPush::kirim($barang);
+        }
+
+        // REDIRECT BERDASARKAN BARANG_ID (SIMPLIFY)
+        if ($request->filled('barang_id')) {
+            return redirect()->route('barang.show', $request->barang_id)
+                ->with('success', 'Mutasi barang berhasil dicatat.');
+        }
+
+        return redirect()->route('mutasi-barang.index')
             ->with('success', 'Mutasi barang berhasil dicatat.');
-    }
-
-    return redirect()->route('mutasi-barang.index')
-        ->with('success', 'Mutasi barang berhasil dicatat.');
     }
 }

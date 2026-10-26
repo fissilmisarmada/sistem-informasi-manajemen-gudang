@@ -16,6 +16,7 @@ class RakController extends Controller
 
         return view('rak.index', [
             'dataRak' => $dataRak,
+            'denahAreas' => DenahArea::orderBy('kode_area')->get(),
         ]);
     }
 
@@ -73,6 +74,7 @@ class RakController extends Controller
         return view('rak.show', [
             'rak'  => $rak,
             'barang' => $barangDiRakIni,
+            'denahAreas' => DenahArea::orderBy('kode_area')->get(),
         ]);
     }
 

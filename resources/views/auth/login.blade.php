@@ -75,15 +75,16 @@
 
     .andon-input {
         position: relative; display: flex; align-items: center;
+        padding: 0 !important; border: 0 none !important; background: transparent !important;
     }
     .andon-input__icon {
-        position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+        position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
         width: 16px; height: 16px; color: var(--andon-faint); pointer-events: none; z-index: 2;
     }
     .andon-control {
         width: 100%; box-sizing: border-box;
         height: 46px; line-height: 20px;
-        padding-left: 22px !important; /* Memberikan ruang ekstra dari ikon */
+        padding-left: 40px !important; /* ruang ikon 14px + lebar 16px + jarak 10px */
         padding-right: 16px;
         font-size: 13px; font-weight: 600;
         color: var(--andon-ink);

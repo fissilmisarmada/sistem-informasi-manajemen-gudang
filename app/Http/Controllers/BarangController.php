@@ -113,13 +113,14 @@ class BarangController extends Controller
             'satuan'        => 'required|string|max:50',
             'rak_id'        => 'nullable|exists:rak,id',
             'gambar'        => 'nullable|image|max:2048',
+            'hapus_gambar'  => 'nullable|boolean',
             'keterangan'    => 'nullable|string|max:2000',
             'isbn'          => 'nullable|string|max:30',
             'jumlah_halaman'=> 'nullable|integer|min:1|max:99999',
             'kategori_asli' => 'nullable|string|max:100',
         ]);
 
-        $data = $request->except(['gambar', 'stok_minimum', 'isbn', 'jumlah_halaman', 'kategori_asli']);
+        $data = $request->except(['gambar', 'hapus_gambar', 'stok_minimum', 'isbn', 'jumlah_halaman', 'kategori_asli']);
         $ket = array_filter([
             'isbn' => trim((string) $request->isbn),
             'kategori_asli' => trim((string) $request->kategori_asli),
@@ -130,7 +131,10 @@ class BarangController extends Controller
         $kat = Kategori::find($request->kategori_id);
         $data['stok_minimum'] = Barang::stokMinimumForKategori($kat?->kode_kategori);
 
-        if ($request->hasFile('gambar')) {
+        if ($request->boolean('hapus_gambar') && $barang->gambar) {
+            Storage::disk('public')->delete($barang->gambar);
+            $data['gambar'] = null;
+        } elseif ($request->hasFile('gambar')) {
             if ($barang->gambar) {
                 Storage::disk('public')->delete($barang->gambar);
             }

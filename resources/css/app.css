@@ -225,6 +225,24 @@ button, input, select, textarea { font: inherit; }
     margin: 4px 0;
 }
 .side-nav__item--scan svg { width: 20px; height: 20px; }
+/* Admin: tombol scan desktop = lingkar amber, meniru bottom-nav mobile */
+.side-nav--admin { justify-content: space-evenly; }
+.side-nav--admin .side-nav__item { padding: 8px 4px; }
+.side-nav--admin .side-nav__item--scan {
+    width: 58px;
+    min-height: 58px;
+    margin: 0;
+    border-radius: 999px;
+    background: var(--andon-amber);
+    color: var(--andon-amber-ink);
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 6px 20px rgba(45,49,66,.20);
+    padding: 2px;
+    gap: 0;
+}
+.side-nav--admin .side-nav__item--scan:hover { background: var(--andon-amber); filter: brightness(.96); }
+.side-nav--admin .side-nav__item--scan svg { width: 24px; height: 24px; }
+.side-nav--admin .side-nav__item--scan span { font-size: 10px; font-weight: 800; }
 .side-nav__item--scan.side-nav__item--active {
     background: var(--andon-amber);
     color: var(--andon-amber-ink);

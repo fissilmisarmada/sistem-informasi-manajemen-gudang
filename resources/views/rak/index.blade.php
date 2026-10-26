@@ -33,8 +33,16 @@
     .actions a{color:var(--andon-navy);font-weight:700;text-decoration:none;font-size:12px}
     .actions a:hover{color:var(--andon-ink);text-decoration:underline}
     .empty{padding:40px 18px;color:var(--andon-muted);text-align:center;font-size:13px;font-weight:600}
-    @media(max-width:760px){.page-head{display:block} .create-panel{grid-template-columns:1fr 1fr} .create-panel .btn{grid-column:1/-1}}
-    @media(max-width:500px){.create-panel{grid-template-columns:1fr} .page-head h1{font-size:20px}}
+    .edit-toggle{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;font-size:13px;font-weight:700;color:var(--andon-navy);background:#fff;border:1px solid var(--andon-line-strong);border-radius:10px;cursor:pointer;font-family:inherit}
+    .edit-toggle:hover{border-color:var(--andon-ink);color:var(--andon-ink)}
+    .edit-row>td{padding:0;border-top:none;background:#F8FAFC}
+    .edit-row[hidden]{display:none}
+    .edit-form{display:grid;grid-template-columns:1fr 1.4fr .8fr 1.1fr auto auto;gap:12px;align-items:end;padding:16px 14px;border-top:1px solid var(--andon-line)}
+    .edit-form label{display:block;margin-bottom:8px;color:var(--andon-muted);font-size:11px;font-weight:700;letter-spacing:.06em}
+    .edit-form .btn,.edit-form .edit-toggle{min-height:44px}
+    .edit-form select.andon-control{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:36px}
+    @media(max-width:760px){.page-head{display:block} .create-panel{grid-template-columns:1fr 1fr} .create-panel .btn{grid-column:1/-1} .edit-form{grid-template-columns:1fr 1fr} .edit-form .btn,.edit-form .edit-toggle{grid-column:auto}}
+    @media(max-width:500px){.create-panel{grid-template-columns:1fr} .edit-form{grid-template-columns:1fr} .edit-form .btn,.edit-form .edit-toggle{grid-column:1/-1} .page-head h1{font-size:20px}}
 </style>
 
 <div class="rack-page">
@@ -69,11 +77,46 @@
                         <td data-label="Kapasitas" style="font-weight:600">{{ $rak->kapasitas ? number_format($rak->kapasitas, 0, ',', '.') . ' unit' : 'Belum ditentukan' }}</td>
                         <td data-label="Jenis Barang" style="font-weight:600">{{ $rak->barang_count }} jenis</td>
                         <td data-label="Total Stok" class="stock" style="font-weight:800">{{ number_format((int) ($rak->barang_sum_stok ?? 0), 0, ',', '.') }} unit</td>
-                        <td data-label="Aksi"><div class="actions"><a href="{{ route('rak.show', ['rak' => $rak, 'from' => 'kelola-rak', 'return_from' => request('from')]) }}" class="btn btn--ghost" style="min-height:44px;padding:0 14px;font-size:13px">Lihat isi rak</a>@if(auth()->user()->isAdmin())<form method="POST" action="{{ route('rak.destroy', $rak) }}" onsubmit="return confirm('Hapus lokasi rak ini?')">@csrf @method('DELETE')<button class="btn btn--ghost" type="submit" style="min-height:44px;padding:0 14px;font-size:13px;color:var(--andon-red);border-color:#FECACA">Hapus</button></form>@endif</div></td>
+                        <td data-label="Aksi"><div class="actions"><a href="{{ route('rak.show', ['rak' => $rak, 'from' => 'kelola-rak', 'return_from' => request('from')]) }}" class="btn btn--ghost" style="min-height:44px;padding:0 14px;font-size:13px">Lihat isi rak</a>@if(auth()->user()->isAdmin())<button type="button" class="edit-toggle" data-rak-toggle="{{ $rak->id }}" aria-expanded="false" aria-controls="edit-rak-{{ $rak->id }}">Edit</button><form method="POST" action="{{ route('rak.destroy', $rak) }}" onsubmit="return confirm('Hapus lokasi rak ini?')">@csrf @method('DELETE')<button class="btn btn--ghost" type="submit" style="min-height:44px;padding:0 14px;font-size:13px;color:var(--andon-red);border-color:#FECACA">Hapus</button></form>@endif</div></td>
                     </tr>
+                    @if(auth()->user()->isAdmin())
+                    <tr class="edit-row" id="edit-rak-{{ $rak->id }}" hidden>
+                        <td colspan="6">
+                            <form class="edit-form" method="POST" action="{{ route('rak.update', $rak) }}">
+                                @csrf @method('PUT')
+                                <div><label for="e-kode-{{ $rak->id }}">Kode Rak</label><input class="andon-control" id="e-kode-{{ $rak->id }}" type="text" name="kode_rak" value="{{ $rak->kode_rak }}" required autocomplete="off"></div>
+                                <div><label for="e-lokasi-{{ $rak->id }}">Nama Lokasi</label><input class="andon-control" id="e-lokasi-{{ $rak->id }}" type="text" name="nama_lokasi" value="{{ $rak->nama_lokasi }}" required autocomplete="off"></div>
+                                <div><label for="e-kapasitas-{{ $rak->id }}">Kapasitas (unit)</label><input class="andon-control" id="e-kapasitas-{{ $rak->id }}" type="number" name="kapasitas" min="0" value="{{ $rak->kapasitas }}" placeholder="Opsional"></div>
+                                <div><label for="e-area-{{ $rak->id }}">Area Denah</label><select class="andon-control" id="e-area-{{ $rak->id }}" name="denah_area_id"><option value="">— Tanpa area —</option>@foreach($denahAreas as $area)<option value="{{ $area->id }}" {{ (int) $rak->denah_area_id === $area->id ? 'selected' : '' }}>{{ $area->kode_area }} — {{ $area->nama }}</option>@endforeach</select></div>
+                                <button class="btn btn--primary" type="submit" style="padding:0 18px;font-size:13px">Simpan</button>
+                                <button class="edit-toggle" type="button" data-rak-toggle="{{ $rak->id }}">Batal</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endif
                 @endforeach
             </tbody></table></div>
         @endif
     </section>
 </div>
+
+@if(auth()->user()->isAdmin())
+<script>
+    document.querySelectorAll('[data-rak-toggle]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var row = document.getElementById('edit-rak-' + btn.dataset.rakToggle);
+            if (!row) return;
+            var buka = row.hidden;
+            row.hidden = !buka;
+            document.querySelectorAll('[data-rak-toggle="' + btn.dataset.rakToggle + '"]').forEach(function (b) {
+                if (b.getAttribute('aria-expanded') !== null) b.setAttribute('aria-expanded', String(buka));
+            });
+            if (buka) {
+                var input = row.querySelector('input[name="kapasitas"]');
+                if (input) input.focus();
+            }
+        });
+    });
+</script>
+@endif
 @endsection

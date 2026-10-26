@@ -2,17 +2,18 @@
 
 @section('content')
 <style>
-    body { overflow: hidden; }
+    body { background: var(--andon-bg); overflow: hidden; }
     .site-header { display: none !important; }
     .site-main { max-width: none !important; width: 100%; margin-left: 0 !important; padding: 0 !important; }
     .andon-auth {
-        min-height: 100vh;
+        min-height: 100dvh;
         display: grid;
         place-items: center;
         padding: 24px 16px;
         background:
             radial-gradient(900px 420px at 18% 12%, rgba(239,131,84,.16) 0%, transparent 62%),
-            linear-gradient(180deg, #FDFBF6 0%, var(--andon-bg) 100%);
+            linear-gradient(180deg, rgba(253,251,246,.74) 0%, rgba(246,241,232,.82) 100%),
+            url('{{ asset('images/UT1.jpg') }}') center/cover no-repeat;
         position: relative;
     }
     .andon-auth::before {
@@ -40,10 +41,10 @@
     .andon-alert--err { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
     .andon-field { margin-bottom: 14px; }
     .andon-field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--andon-muted); margin-bottom: 8px; }
-    .andon-input { position: relative; display: flex; align-items: center; }
-    .andon-input__icon { position: absolute; left: 12px; width: 16px; height: 16px; color: var(--andon-faint); pointer-events: none; }
+    .andon-input { position: relative; display: flex; align-items: center; padding: 0 !important; border: 0 none !important; background: transparent !important; }
+    .andon-input__icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--andon-faint); pointer-events: none; }
     .andon-control {
-        width: 100%; padding: 12px 14px 12px 36px;
+        width: 100%; padding-left: 40px !important;
         font-size: 13px; font-weight: 600; color: var(--andon-ink);
         background: #FBFBFD; border: 1px solid #E8EAF0; border-radius: 14px;
         transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;

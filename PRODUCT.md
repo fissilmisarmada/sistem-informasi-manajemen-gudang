@@ -36,6 +36,7 @@ Beda dari inventaris generik: **penempatan berbasis denah & rak visual + barcode
 - Autentikasi & manajemen user (role admin/staff/pimpinan), lupa/reset password.
 - Master barang, kategori, rak, denah area (CRUD + assign barang ke lokasi + update posisi).
 - Denah gudang visual, pencarian & input barang (lookup barcode + input manual), mutasi barang, stock opname per barang + riwayat, laporan export/import.
+- Notifikasi push ke HP via Web Push (PWA + VAPID, **tanpa Firebase**; MySQL tetap satu sumber kebenaran): toggle di menu profil khusus admin/pimpinan; pemicu stok menipis → admin+pimpinan, selisih opname → admin; pengiriman lewat queue database.
 
 **Batasan & keputusan yang mengikat:**
 - Data & migrasi existing (barang/rak/kategori) wajib dipertahankan — tidak boleh ada penghapusan atau perubahan skema yang menghilangkan data.

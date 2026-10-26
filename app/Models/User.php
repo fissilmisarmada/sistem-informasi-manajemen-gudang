@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 
 class User extends Authenticatable implements CanResetPasswordContract
 {
-    use CanResetPasswordTrait, HasFactory, Notifiable;
+    use CanResetPasswordTrait, HasFactory, HasPushSubscriptions, Notifiable;
 
     protected $fillable = [
         'name',
@@ -30,8 +30,6 @@ class User extends Authenticatable implements CanResetPasswordContract
         'password' => 'hashed',
     ];
 
-    
-    
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

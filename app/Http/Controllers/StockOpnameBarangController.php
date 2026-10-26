@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\StockOpnameBarang;
+use App\Notifications\OpnameSelisihWebPush;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,6 +23,7 @@ class StockOpnameBarangController extends Controller
     {
         $barang->load('kategori', 'rak');
         $riwayat = $barang->stockOpname()->with('staff')->latest('tanggal')->take(5)->get();
+
         return view('stock-opname-barang.create', compact('barang', 'riwayat'));
     }
 
@@ -29,15 +31,19 @@ class StockOpnameBarangController extends Controller
     {
         $request->validate([
             'jumlah_fisik' => 'required|integer|min:0',
-            'keterangan'   => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
         ]);
 
-        StockOpnameBarang::lakukanOpname(
+        $opname = StockOpnameBarang::lakukanOpname(
             $barang,
             Auth::user(),
             $request->jumlah_fisik,
             $request->keterangan
         );
+
+        if ((int) $opname->selisih !== 0) {
+            OpnameSelisihWebPush::kirim($barang, $opname);
+        }
 
         return redirect()->route('stock-opname-barang.index')
             ->with('success', "Opname untuk barang '{$barang->nama}' berhasil dicatat.");
@@ -47,6 +53,7 @@ class StockOpnameBarangController extends Controller
     {
         $barang->load('kategori');
         $riwayat = $barang->stockOpname()->with('staff')->latest('tanggal')->paginate(15);
+
         return view('stock-opname-barang.riwayat', compact('barang', 'riwayat'));
     }
 }

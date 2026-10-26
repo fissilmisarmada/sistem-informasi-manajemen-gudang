@@ -15,6 +15,7 @@ class DenahAreaController extends Controller
         if (request()->wantsJson()) {
             return response()->json($areas);
         }
+
         return view('denah-area.index', ['areas' => $areas]);
     }
 
@@ -24,6 +25,7 @@ class DenahAreaController extends Controller
         if (request()->wantsJson()) {
             return response()->json($denahArea);
         }
+
         return view('denah-area.show', ['area' => $denahArea]);
     }
 
@@ -38,7 +40,8 @@ class DenahAreaController extends Controller
         if ($request->wantsJson()) {
             return response()->json($denahArea->fresh());
         }
-        return back()->with('success', 'Denah ' . $denahArea->nama . ' berhasil diperbarui.');
+
+        return back()->with('success', 'Denah '.$denahArea->nama.' berhasil diperbarui.');
     }
 
     public function hapusDenah(Request $request, DenahArea $denahArea)
@@ -50,7 +53,8 @@ class DenahAreaController extends Controller
         if ($request->wantsJson()) {
             return response()->json(['ok' => true]);
         }
-        return back()->with('success', 'Denah ' . $denahArea->nama . ' dihapus.');
+
+        return back()->with('success', 'Denah '.$denahArea->nama.' dihapus.');
     }
 
     public function store(Request $request)
@@ -59,20 +63,24 @@ class DenahAreaController extends Controller
             'kode_area' => 'required|string|max:20|unique:denah_area,kode_area',
             'nama' => 'required|string|max:100',
             'keterangan' => 'nullable|string',
-            'x' => 'required|numeric|min:0|max:90',
-            'y' => 'required|numeric|min:0|max:90',
-            'w' => 'required|numeric|min:5|max:90',
-            'h' => 'required|numeric|min:5|max:90',
+            'x' => 'nullable|numeric|min:0|max:90',
+            'y' => 'nullable|numeric|min:0|max:90',
+            'w' => 'nullable|numeric|min:5|max:90',
+            'h' => 'nullable|numeric|min:5|max:90',
             'warna' => 'nullable|string|max:20',
         ]);
-        $area = DenahArea::create($d);
-        return response()->json($area, 201);
+        $area = DenahArea::create(array_filter($d, fn ($v) => $v !== null));
+        if ($request->wantsJson()) {
+            return response()->json($area, 201);
+        }
+
+        return back()->with('success', 'Ruangan '.$area->nama.' ditambahkan.');
     }
 
     public function update(Request $request, DenahArea $denahArea)
     {
         $d = $request->validate([
-            'kode_area' => 'required|string|max:20|unique:denah_area,kode_area,' . $denahArea->id,
+            'kode_area' => 'required|string|max:20|unique:denah_area,kode_area,'.$denahArea->id,
             'nama' => 'required|string|max:100',
             'keterangan' => 'nullable|string',
             'x' => 'required|numeric|min:0|max:90',
@@ -82,13 +90,18 @@ class DenahAreaController extends Controller
             'warna' => 'nullable|string|max:20',
         ]);
         $denahArea->update($d);
-        return response()->json($denahArea);
+        if ($request->wantsJson()) {
+            return response()->json($denahArea);
+        }
+
+        return back()->with('success', 'Ruangan '.$denahArea->nama.' diperbarui.');
     }
 
     public function destroy(DenahArea $denahArea)
     {
         Barang::where('denah_area_id', $denahArea->id)->update(['denah_area_id' => null]);
         $denahArea->delete();
+
         return response()->json(['ok' => true]);
     }
 
@@ -96,6 +109,7 @@ class DenahAreaController extends Controller
     {
         $d = $request->validate(['barang_id' => 'required|exists:barang,id', 'denah_area_id' => 'required|exists:denah_area,id']);
         Barang::whereKey($d['barang_id'])->update(['denah_area_id' => $d['denah_area_id'], 'rak_id' => null]);
+
         return response()->json(['ok' => true]);
     }
 
@@ -103,6 +117,10 @@ class DenahAreaController extends Controller
     {
         $d = $request->validate(['x' => 'required|numeric|min:0|max:90', 'y' => 'required|numeric|min:0|max:90', 'w' => 'required|numeric|min:5|max:90', 'h' => 'required|numeric|min:5|max:90']);
         $denahArea->update($d);
-        return response()->json($denahArea);
+        if ($request->wantsJson()) {
+            return response()->json($denahArea);
+        }
+
+        return back();
     }
 }

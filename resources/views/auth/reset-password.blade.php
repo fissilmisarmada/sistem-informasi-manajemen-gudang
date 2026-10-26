@@ -2,17 +2,18 @@
 
 @section('content')
 <style>
-    body { overflow: hidden; }
+    body { background: var(--andon-bg); overflow: hidden; }
     .site-header { display: none !important; }
     .site-main { max-width: none !important; width: 100%; margin-left: 0 !important; padding: 0 !important; }
     .andon-auth {
-        min-height: 100vh;
+        min-height: 100dvh;
         display: grid;
         place-items: center;
         padding: 24px 16px;
         background:
             radial-gradient(900px 420px at 18% 12%, rgba(239,131,84,.16) 0%, transparent 62%),
-            linear-gradient(180deg, #FDFBF6 0%, var(--andon-bg) 100%);
+            linear-gradient(180deg, rgba(253,251,246,.74) 0%, rgba(246,241,232,.82) 100%),
+            url('{{ asset('images/UT1.jpg') }}') center/cover no-repeat;
         position: relative;
     }
     .andon-auth::before {

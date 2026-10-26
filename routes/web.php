@@ -3,15 +3,16 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DenahAreaController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MutasiBarangController;
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PencarianController;
 use App\Http\Controllers\RakController;
-use App\Http\Controllers\DenahAreaController;
 use App\Http\Controllers\StockOpnameBarangController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoiceController;
-use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -36,7 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/staff', [DashboardController::class, 'staff'])->middleware('role:staff')->name('dashboard.staff');
     Route::get('/dashboard/pimpinan', [DashboardController::class, 'pimpinan'])->middleware('role:pimpinan')->name('dashboard.pimpinan');
 
-    Route::get('/denah-gudang', function () { return redirect()->route('denah-area.index'); })
+    Route::get('/denah-gudang', function () {
+        return redirect()->route('denah-area.index');
+    })
         ->middleware('role:admin,staff,pimpinan')
         ->name('denah-gudang');
 
@@ -48,12 +51,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/denah-area/{denahArea}', [DenahAreaController::class, 'show'])->middleware('role:admin,staff,pimpinan')->name('denah-area.show');
     Route::post('/denah-area/{denahArea}/denah', [DenahAreaController::class, 'uploadDenah'])->middleware('role:admin,staff')->name('denah-area.upload');
     Route::delete('/denah-area/{denahArea}/denah', [DenahAreaController::class, 'hapusDenah'])->middleware('role:admin,staff')->name('denah-area.hapus-denah');
+    // Ruangan (denah_area): tulis hanya admin
+    Route::post('/denah-area', [DenahAreaController::class, 'store'])->middleware('role:admin')->name('denah-area.store');
+    Route::put('/denah-area/{denahArea}', [DenahAreaController::class, 'update'])->middleware('role:admin')->name('denah-area.update');
+    Route::patch('/denah-area/{denahArea}/posisi', [DenahAreaController::class, 'updatePosisi'])->middleware('role:admin')->name('denah-area.posisi');
     Route::prefix('denah-area')->name('denah-area.')->middleware('role:admin,staff')->group(function () {
-        Route::post('/', [DenahAreaController::class, 'store'])->name('store');
-        Route::put('/{denahArea}', [DenahAreaController::class, 'update'])->name('update');
         Route::delete('/{denahArea}', [DenahAreaController::class, 'destroy'])->name('destroy');
         Route::post('/assign', [DenahAreaController::class, 'assignBarang'])->name('assign');
-        Route::patch('/{denahArea}/posisi', [DenahAreaController::class, 'updatePosisi'])->name('posisi');
     });
 
     Route::middleware('role:admin')->group(function () {
@@ -127,6 +131,12 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::post('/voice/transcribe', [VoiceController::class, 'transcribe'])->middleware('role:admin,staff')->name('voice.transcribe');
+
+    // Web Push subscription — hanya penerima notifikasi (admin + pimpinan)
+    Route::middleware('role:admin,pimpinan')->group(function () {
+        Route::post('/notifikasi/subscribe', [NotifikasiController::class, 'subscribe'])->name('notifikasi.subscribe');
+        Route::delete('/notifikasi/unsubscribe', [NotifikasiController::class, 'unsubscribe'])->name('notifikasi.unsubscribe');
+    });
 
     // Mutasi barang (masuk/keluar)
     Route::prefix('mutasi-barang')->name('mutasi-barang.')->middleware('role:admin,staff,pimpinan')->group(function () {
