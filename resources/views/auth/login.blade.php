@@ -62,10 +62,24 @@
         margin: 3px 0 0; font-size: 11px; color: var(--andon-muted); line-height: 1.4;
     }
     .andon-kicker--login { justify-content: center; margin-bottom: 10px; }
-    .andon-alert { padding: 10px 14px; border-radius: 12px; font-size: 12px; margin-bottom: 14px; font-weight: 600; line-height: 1.4; }
+    .andon-alert {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        font-size: 12px;
+        margin-bottom: 14px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+    .andon-alert svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
     .andon-alert--ok { background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46; }
     .andon-alert--err { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
-    .andon-alert--err ul { margin: 6px 0 0; padding-left: 18px; }
     .andon-field { margin-bottom: 14px; }
     .andon-field label { display: block; font-size: 10px; font-weight: 800; letter-spacing: .12em; color: var(--andon-faint); margin-bottom: 6px; }
     .andon-field__head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:6px; }
@@ -73,46 +87,61 @@
     .andon-forgot--inline { display:inline; margin:0; font-size:11px; font-weight:700; color:var(--andon-navy); white-space:nowrap; }
     .andon-forgot--inline:hover { text-decoration:underline; }
 
-    .andon-input {
-        position: relative; display: flex; align-items: center;
-        padding: 0 !important; border: 0 none !important; background: transparent !important;
+
+
+    .andon-login .andon-input {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
     }
-    .andon-input__icon {
-        position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-        width: 16px; height: 16px; color: var(--andon-faint); pointer-events: none; z-index: 2;
+
+    .andon-login .andon-input__icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        color: var(--andon-faint);
+        pointer-events: none;
+        z-index: 2;
     }
-    .andon-control {
-        width: 100%; box-sizing: border-box;
-        height: 46px; line-height: 20px;
-        padding-left: 40px !important; /* ruang ikon 14px + lebar 16px + jarak 10px */
+
+    .andon-login input.andon-control,
+    .andon-login .andon-control {
+        width: 100%;
+        box-sizing: border-box;
+        height: 46px;
+        line-height: 20px;
+        padding-left: 42px !important;
         padding-right: 16px;
-        font-size: 13px; font-weight: 600;
+        font-size: 13px;
+        font-weight: 600;
         color: var(--andon-ink);
         background: #FBFBFD;
         border: 1px solid #E8EAF0;
         border-radius: 14px;
         transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
         font-family: inherit;
-        appearance: none; -webkit-appearance: none;
+        appearance: none;
+        -webkit-appearance: none;
     }
-    .andon-control:focus {
+    .andon-login input.andon-control:focus,
+    .andon-login .andon-control:focus {
         outline: none;
         background: #fff;
         border-color: var(--andon-ink);
         box-shadow: 0 0 0 3px rgba(15,23,42,.06);
     }
 
-    /* KHUSUS UNTUK DROPDOWN SELECT */
-    .andon-control--select {
-        padding-right: 16px !important;
-        cursor: pointer;
-        /* Trik khusus browser agar teks pilihan tidak menempel pada ikon */
-        text-indent: 1px;
-        text-overflow: '';
-    }
-
     .andon-toggle {
-        position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+        position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
         width: 32px; height: 32px; border-radius: 8px;
         border: 1px solid transparent; background: transparent; color: var(--andon-faint);
         display: grid; place-items: center; cursor: pointer; z-index: 2;
@@ -160,16 +189,15 @@
             </header>
 
             @if(session('status'))
-                <div class="andon-alert andon-alert--ok">{{ session('status') }}</div>
+                <div class="andon-alert andon-alert--ok">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span>{{ session('status') }}</span>
+                </div>
             @endif
             @if($errors->any())
                 <div class="andon-alert andon-alert--err">
-                    Terjadi kesalahan:
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span>{{ $errors->first() }}</span>
                 </div>
             @endif
 
@@ -177,19 +205,12 @@
                 @csrf
                 <div class="andon-field">
                     <div class="andon-field__head">
-                        <label for="email">PILIH ROLE</label>
+                        <label for="email">EMAIL / GMAIL</label>
                         <a class="andon-forgot--inline" href="{{ route('password.request') }}">Lupa password?</a>
                     </div>
                     <div class="andon-input">
-                        <svg class="andon-input__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <select id="email" name="email" data-testid="select-role" class="andon-control andon-control--select" required onchange="document.getElementById('password').focus();">
-                            <option value="" disabled selected hidden>Pilih role Anda</option>
-                            @foreach($demoUsers as $du)
-                                <option value="{{ $du->email }}" @selected(old('email') === $du->email)>
-                                    {{ ucfirst($du->role) }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <svg class="andon-input__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <input type="email" id="email" name="email" data-testid="input-email" class="andon-control" value="{{ old('email') }}" placeholder="nama@gmail.com" required autofocus>
                     </div>
                 </div>
 

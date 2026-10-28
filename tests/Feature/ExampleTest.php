@@ -2,11 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\Barang;
-use App\Models\Kategori;
 
 class ExampleTest extends TestCase
 {
@@ -44,5 +42,53 @@ class ExampleTest extends TestCase
         $this->actingAs($admin)
             ->get(route('users'))
             ->assertStatus(200);
+    }
+
+    public function test_user_can_login_with_email_and_password_and_redirects_to_role_dashboard(): void
+    {
+        $password = 'password123';
+        $admin = User::factory()->create(['email' => 'admin.test@gmail.com', 'role' => 'admin', 'password' => bcrypt($password)]);
+        $staff = User::factory()->create(['email' => 'staff.test@gmail.com', 'role' => 'staff', 'password' => bcrypt($password)]);
+        $pimpinan = User::factory()->create(['email' => 'pimpinan.test@gmail.com', 'role' => 'pimpinan', 'password' => bcrypt($password)]);
+
+        $resAdmin = $this->post(route('login.perform'), [
+            'email' => 'admin.test@gmail.com',
+            'password' => $password,
+        ]);
+        $resAdmin->assertRedirect(route('dashboard.admin'));
+        $this->assertAuthenticatedAs($admin);
+        $this->post(route('logout'));
+
+        $resStaff = $this->post(route('login.perform'), [
+            'email' => 'staff.test@gmail.com',
+            'password' => $password,
+        ]);
+        $resStaff->assertRedirect(route('dashboard.staff'));
+        $this->assertAuthenticatedAs($staff);
+        $this->post(route('logout'));
+
+        $resPimpinan = $this->post(route('login.perform'), [
+            'email' => 'pimpinan.test@gmail.com',
+            'password' => $password,
+        ]);
+        $resPimpinan->assertRedirect(route('dashboard.pimpinan'));
+        $this->assertAuthenticatedAs($pimpinan);
+    }
+
+    public function test_login_fails_with_invalid_credentials(): void
+    {
+        User::factory()->create([
+            'email' => 'admin.test@gmail.com',
+            'password' => bcrypt('correct-password'),
+        ]);
+
+        $response = $this->from(route('login'))->post(route('login.perform'), [
+            'email' => 'admin.test@gmail.com',
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
     }
 }

@@ -9,8 +9,8 @@ const authFile = path.join(__dirname, '../playwright/.auth/user.json');
 setup('authenticate as admin', async ({ page }) => {
   await page.goto('/login');
   
-  // Pilih role Admin via select-role
-  await page.getByTestId('select-role').selectOption('admin@gmail.com');
+  // Isi email Admin
+  await page.getByTestId('input-email').fill('admin@gmail.com');
   
   // Isi password
   await page.getByTestId('input-password').fill('admin123');

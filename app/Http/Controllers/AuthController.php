@@ -18,12 +18,7 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        $demoUsers = User::query()
-            ->select(['name', 'email', 'role'])
-            ->orderBy('name')
-            ->get();
-
-        return view('auth.login', compact('demoUsers'));
+        return view('auth.login');
     }
 
     /**
@@ -35,7 +30,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
@@ -131,7 +126,7 @@ class AuthController extends Controller
 
         // Jika tidak ada user (shouldn't happen right after successful login,
         // tapi aman untuk menangani kasus ini) kembalikan ke dashboard admin.
-        if (!$user) {
+        if (! $user) {
             return route('dashboard.admin');
         }
 

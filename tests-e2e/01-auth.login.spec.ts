@@ -5,8 +5,8 @@ test.describe('Journey 1: Autentikasi & Session Handling', () => {
   test('Happy Path: Admin bisa login dan logout dengan sukses', async ({ page }) => {
     await page.goto('/login');
 
-    // Select role Admin via data-testid / role
-    await page.getByTestId('select-role').selectOption('admin@gmail.com');
+    // Isi email Admin
+    await page.getByTestId('input-email').fill('admin@gmail.com');
     await page.getByTestId('input-password').fill('admin123');
     await page.getByTestId('button-submit').click();
 
@@ -22,7 +22,7 @@ test.describe('Journey 1: Autentikasi & Session Handling', () => {
   test('Failure State: Password salah menampilkan error alert', async ({ page }) => {
     await page.goto('/login');
 
-    await page.getByTestId('select-role').selectOption('admin@gmail.com');
+    await page.getByTestId('input-email').fill('admin@gmail.com');
     await page.getByTestId('input-password').fill('wrongpassword123');
     await page.getByTestId('button-submit').click();
 
