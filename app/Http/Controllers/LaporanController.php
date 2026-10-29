@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LaporanBarangExport;
+use App\Imports\LaporanBarangImport;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\MutasiBarang;
 use App\Models\Rak;
 use App\Models\StockOpnameBarang;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LaporanController extends Controller
 {
@@ -16,23 +21,24 @@ class LaporanController extends Controller
     {
         $barangs = Barang::with(['kategori', 'rak'])->orderBy('nama')->get();
         $mutasiTerbaru = MutasiBarang::with(['barang', 'staff'])->latest('created_at')->take(8)->get();
-        $ringkasan = [
-            'total_item' => $barangs->count(),
-            'total_stok' => $barangs->sum('stok'),
-            'stok_menipis' => $barangs->filter->isStokMenipis()->count(),
-            'ditempatkan' => $barangs->whereNotNull('rak_id')->count(),
-            'kategori' => Kategori::count(),
-            'rak' => Rak::count(),
-            'mutasi' => MutasiBarang::count(),
-            'opname' => StockOpnameBarang::count(),
-        ];
 
-        return view('laporan.index', compact('barangs', 'mutasiTerbaru', 'ringkasan'));
+        return view('laporan.index', [
+            'barangs' => $barangs,
+            'mutasiTerbaru' => $mutasiTerbaru,
+            'ringkasan' => $this->ringkasan($barangs),
+        ]);
     }
 
-    public function export()
+    public function export(): BinaryFileResponse
     {
-        $fileName = 'laporan' . now()->format('Y-m-d-His') . '.csv';
+        $barangs = Barang::with(['kategori', 'rak'])->orderBy('nama')->get();
+
+        return (new LaporanBarangExport($barangs, $this->ringkasan($barangs)))->download();
+    }
+
+    public function exportCsv(): Response
+    {
+        $fileName = 'laporan'.now()->format('Y-m-d-His').'.csv';
         $barangs = Barang::with(['kategori', 'rak'])->orderBy('nama')->get();
 
         $handle = fopen('php://temp', 'r+');
@@ -57,87 +63,52 @@ class LaporanController extends Controller
         fclose($handle);
 
         return response($csv, 200, [
-            'Content-Type'        => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
         ]);
     }
 
-    public function import(Request $request)
+    public function import(Request $request, LaporanBarangImport $importer): RedirectResponse
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt|max:5120',
+            'file' => 'required|file|max:5120|extensions:csv,txt,xlsx',
         ]);
 
-        $handle = fopen($request->file('file')->getRealPath(), 'r');
-        $headers = fgetcsv($handle);
-        $expectedHeaders = ['kode_barang', 'nama', 'kode_kategori', 'kategori', 'satuan', 'stok', 'stok_minimum', 'kode_rak', 'keterangan'];
+        $result = $importer->import($request->file('file'));
 
-        if ($headers !== $expectedHeaders) {
-            fclose($handle);
+        $msg = "Import selesai. {$result['imported']} data barang baru ditambahkan.";
 
-            return back()->withErrors([
-                'file' => 'Format CSV tidak sesuai. Gunakan file hasil export laporan.',
-            ]);
-        }
-
-        $imported = 0;
-        $conflicts = 0;
-        $invalidRows = 0;
-
-        DB::transaction(function () use ($handle, &$imported, &$conflicts, &$invalidRows) {
-            while (($row = fgetcsv($handle)) !== false) {
-                if (count($row) < 9 || trim((string) $row[0]) === '') {
-                    $invalidRows++;
-                    continue;
-                }
-
-                $kodeBarang = trim((string) $row[0]);
-
-                // Opsi 1: Menandai konflik dan menolak update jika kode_barang sudah ada
-                if (Barang::where('kode_barang', $kodeBarang)->exists()) {
-                    $conflicts++;
-                    continue;
-                }
-
-                $kategori = Kategori::where('kode_kategori', trim((string) $row[2]))->first();
-                if (!$kategori) {
-                    $invalidRows++;
-                    continue;
-                }
-
-                $rak = trim((string) $row[7]) !== ''
-                    ? Rak::where('kode_rak', trim((string) $row[7]))->first()
-                    : null;
-
-                Barang::create([
-                    'kode_barang'  => $kodeBarang,
-                    'nama'         => trim((string) $row[1]),
-                    'kategori_id'  => $kategori->id,
-                    'satuan'       => trim((string) $row[4]) !== '' ? trim((string) $row[4]) : 'pcs',
-                    'stok'         => is_numeric($row[5]) ? max(0, (int) $row[5]) : 0,
-                    'stok_minimum' => Barang::stokMinimumForKategori($kategori->kode_kategori),
-                    'rak_id'       => $rak?->id,
-                    'keterangan'   => trim((string) $row[8]) !== '' ? trim((string) $row[8]) : null,
-                ]);
-
-                $imported++;
-            }
-        });
-
-        fclose($handle);
-
-        $msg = "Import selesai. {$imported} data barang baru ditambahkan.";
-        if ($conflicts > 0 || $invalidRows > 0) {
+        if ($result['conflicts'] > 0 || $result['invalid'] > 0) {
             $details = [];
-            if ($conflicts > 0) {
-                $details[] = "{$conflicts} data ditolak karena konflik (kode_barang sudah ada)";
+
+            if ($result['conflicts'] > 0) {
+                $details[] = "{$result['conflicts']} data ditolak karena konflik (kode_barang sudah ada)";
             }
-            if ($invalidRows > 0) {
-                $details[] = "{$invalidRows} baris ditolak (kategori/format tidak valid)";
+
+            if ($result['invalid'] > 0) {
+                $details[] = "{$result['invalid']} baris ditolak (kategori/format tidak valid)";
             }
-            $msg .= ' (' . implode(', ', $details) . ').';
+
+            $msg .= ' ('.implode(', ', $details).').';
         }
 
         return redirect()->route('laporan.index')->with('sukses', $msg);
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private function ringkasan(Collection $barangs): array
+    {
+        return [
+            'total_item' => $barangs->count(),
+            'total_stok' => (int) $barangs->sum('stok'),
+            'stok_menipis' => $barangs->filter(fn (Barang $barang) => $barang->isStokMenipis())->count(),
+            'ditempatkan' => $barangs->whereNotNull('rak_id')->count(),
+            'kategori' => Kategori::count(),
+            'rak' => Rak::count(),
+            'mutasi' => MutasiBarang::count(),
+            'opname' => StockOpnameBarang::count(),
+        ];
     }
 }

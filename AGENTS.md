@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Stack & Entrypoints
-- Laravel 12 + Vite 7 + Tailwind 4 + Blade. `vite.config.js` entrypoints are `resources/css/app.css`, `resources/css/dashboard.css`, `resources/js/app.js` — all three must be in the `@vite` array in layouts.
+- Laravel 12 + PHP 8.5 + Vite 7 + Tailwind 4 + Blade. `vite.config.js` entrypoints are `resources/css/app.css`, `resources/css/dashboard.css`, `resources/js/app.js` — all three must be in the `@vite` array in layouts.
 - Roles via `CheckRole` middleware (`role:admin`, `role:staff`, `role:pimpinan`). Dashboards are role-specific: `dashboard/admin|staff|pimpinan`.
 - Views are under `resources/views/{dashboard,barang,kategori,rak,denah-area,mutasi-barang,stock-opname-barang,pencarian,laporan,users,auth}`. Most pages embed `<style>` blocks — changes there won't show in `resources/css/*.css` alone.
 

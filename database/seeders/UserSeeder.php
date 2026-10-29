@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
         abort_if(app()->environment('production'), 403, 'Seeder tidak boleh dijalankan di production.');
 
         foreach ([
-            ['name' => 'Administrator', 'email' => 'admin_utbjm@gmail.com', 'role' => 'admin', 'password' => 'admin123'],
+            ['name' => 'Administrator', 'email' => 'admin@gmail.com', 'role' => 'admin', 'password' => 'admin123'],
             ['name' => 'Staff', 'email' => 'staff@gmail.com', 'role' => 'staff', 'password' => 'staff123'],
             ['name' => 'Pimpinan', 'email' => 'pimpinan@gmail.com', 'role' => 'pimpinan', 'password' => 'pimpinan123'],
         ] as $u) {

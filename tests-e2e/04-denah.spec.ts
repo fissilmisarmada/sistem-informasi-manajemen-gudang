@@ -4,7 +4,8 @@ test.describe('Journey 4: Denah Gudang & Penempatan Rak', () => {
 
   test('Happy Path: Membuka denah gudang dan daftar rak', async ({ page }) => {
     await page.goto('/denah-gudang');
-    await expect(page).toHaveURL('/denah-gudang');
+    // /denah-gudang adalah alias lama yang redirect ke /denah-area
+    await expect(page).toHaveURL('/denah-area');
     await expect(page.locator('body')).toContainText(/Denah Gudang/i);
 
     // Buka kelola rak

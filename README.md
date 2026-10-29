@@ -6,7 +6,7 @@ Berbeda dari inventaris generik, sistem ini memetakan setiap barang ke **lokasi 
 
 ## Fitur
 
-- **Autentikasi berbasis role**: login, lupa/reset password, dan dashboard terpisah untuk Admin, Staff, dan Pimpinan.
+- **Autentikasi berbasis role**: login dengan email dan password, lupa/reset password, dan dashboard terpisah untuk Admin, Staff, dan Pimpinan. Role ditentukan otomatis dari akun, bukan dipilih di form login.
 - **Master data**: barang (dengan foto, satuan, stok, dan stok minimum), kategori, rak, dan denah area.
 - **Denah gudang visual**: lihat rak beserta status isinya, tempatkan barang ke rak, serta kelola area pada denah (posisi, ukuran, warna, gambar denah per area) dan pindahkan barang ke area. Posisi area bisa digeser (drag & drop via `PATCH /denah-area/{id}/posisi`), upload/hapus gambar denah, dan assign barang ke area (otomatis lepas dari rak).
 - **Input & pencarian barang**:
@@ -17,7 +17,7 @@ Berbeda dari inventaris generik, sistem ini memetakan setiap barang ke **lokasi 
 - **Stock opname**: bandingkan jumlah tercatat dengan jumlah fisik per barang, lengkap dengan riwayatnya. Opname hanya mencatat selisih (tercatat dikurangi fisik) dan tidak mengubah stok barang secara otomatis; koreksi stok dilakukan lewat mutasi.
 - **Peringatan stok menipis**: barang dengan stok di bawah atau sama dengan stok minimum ditampilkan di dashboard dan halaman khusus.
 - **Notifikasi push ke HP (Web Push)**: admin dan pimpinan yang mengaktifkannya dari menu profil akan menerima notifikasi begitu stok menyeberang ke kondisi menipis (nama barang, sisa stok vs minimum, lokasi rak), dan admin menerima notifikasi saat stock opname menghasilkan selisih. Pengiriman lewat antrian (`queue`), jadi tidak memperlambat penyimpanan mutasi/opname.
-- **Laporan**: ringkasan stok dan aktivitas terbaru, ekspor data barang ke CSV, dan impor barang baru dari CSV.
+- **Laporan**: ringkasan stok dan aktivitas terbaru, ekspor data barang ke Excel (`.xlsx`, dua sheet) atau CSV, dan impor barang baru dari Excel maupun CSV.
 - **Manajemen user** (khusus Admin): tambah dan hapus user beserta rolenya.
 
 ## Hak Akses per Role
@@ -33,8 +33,8 @@ Berbeda dari inventaris generik, sistem ini memetakan setiap barang ke **lokasi 
 | Input barang (scan barcode / manual / suara) | ✅ | ✅ | ❌ |
 | Catat mutasi barang | ✅ | ✅ | ❌ |
 | Stock opname | ✅ | ✅ | ❌ |
-| Ekspor laporan CSV | ✅ | ✅ | ✅ |
-| Impor laporan CSV | ✅ | ❌ | ❌ |
+| Ekspor laporan Excel/CSV | ✅ | ✅ | ✅ |
+| Impor laporan Excel/CSV | ✅ | ❌ | ❌ |
 | Kelola user | ✅ | ❌ | ❌ |
 | Aktifkan notifikasi push (menu profil) | ✅ | ❌ | ✅ |
 | Terima notifikasi stok menipis | ✅ | ❌ | ✅ |
@@ -44,7 +44,7 @@ Pembatasan akses dilakukan lewat middleware `role:*` (`app/Http/Middleware/Check
 
 ## Teknologi
 
-- **Backend**: PHP ^8.2, Laravel 12
+- **Backend**: PHP ^8.5, Laravel 12
 - **Frontend**: Blade, Vite 7, Tailwind CSS 4
 - **Database**: SQLite (default di `.env.example`); MySQL bisa dipakai dengan mengubah konfigurasi `DB_*`
 - **Scanner barcode**: `BarcodeDetector` bawaan browser, dengan fallback `html5-qrcode` (dimuat dari CDN)
@@ -72,9 +72,11 @@ Data buku dari versi sebelumnya sudah dimigrasikan menjadi `barang` dengan kateg
 
 ### Prasyarat
 
-- PHP 8.2 atau lebih baru (ekstensi umum Laravel, termasuk `pdo_sqlite` bila memakai SQLite)
+- PHP 8.5 atau lebih baru (ekstensi umum Laravel, termasuk `pdo_sqlite` bila memakai SQLite)
 - Composer
 - Node.js 20 atau lebih baru dan npm
+
+> **Windows + XAMPP:** CLI (artisan/composer) memakai PHP 8.5 di `C:\php\php85`, sedangkan Apache XAMPP tetap memakai PHP 8.2 di `C:\xampp\php`. Pastikan `C:\php\php85` berada di depan `PATH` sistem, buka terminal baru, lalu cek dengan `php -v`.
 
 ### Langkah-langkah
 
@@ -116,11 +118,13 @@ Data buku dari versi sebelumnya sudah dimigrasikan menjadi `barang` dengan kateg
 
    > **Jangan ganti kunci VAPID setelah dipakai.** Semua langganan browser lama akan langsung mati dan penerima harus mengaktifkan notifikasi lagi. Kalau perlu generate ulang, hapus isi tabel `push_subscriptions` sekalian.
 
-   > **Windows + XAMPP:** kalau muncul error `Unable to create the key`, PHP tidak menemukan `openssl.cnf`. Jalankan dengan menunjuk file bawaan XAMPP:
+   > **Windows + XAMPP:** kalau muncul error `Unable to create the key`, PHP tidak menemukan `openssl.cnf`. Jalankan dengan menunjuk file bawaan XAMPP (atau salinannya di instalasi PHP 8.5):
    >
    > ```powershell
-   > $env:OPENSSL_CONF='C:\xampp\php\extras\ssl\openssl.cnf'; php artisan webpush:vapid
+   > $env:OPENSSL_CONF='C:\php\php85\extras\ssl\openssl.cnf'; php artisan webpush:vapid
    > ```
+   >
+   > Jika perintah dijalankan dengan PHP 8.2 (Apache XAMPP), pakai `C:\xampp\php\extras\ssl\openssl.cnf`.
 
    Catatan: `composer setup` tidak menjalankan langkah ini — jalankan manual saat pertama kali setup.
 
@@ -140,6 +144,8 @@ Data buku dari versi sebelumnya sudah dimigrasikan menjadi `barang` dengan kateg
 
 ### Akun demo (hanya untuk pengembangan)
 
+Login memakai **email dan password** yang diketik langsung di form — tidak ada pilihan role. Dashboard yang terbuka mengikuti `role` pada akun tersebut.
+
 | Role | Email | Password |
 | --- | --- | --- |
 | Admin | `admin@gmail.com` | `admin123` |
@@ -155,9 +161,41 @@ Data buku dari versi sebelumnya sudah dimigrasikan menjadi `barang` dengan kateg
 - Jika browser tidak mendukung `BarcodeDetector`, scanner memakai `html5-qrcode` yang dimuat dari CDN, sehingga butuh koneksi internet.
 - Kode sumber scanner ada di `resources/js/barcode-scanner.js`.
 
-## Ekspor dan Impor CSV
+### Tunnel HTTPS untuk menguji dari HP (ngrok)
 
-Ekspor laporan menghasilkan CSV dengan kolom berikut:
+Prasyarat: `ngrok` ada di PATH dan authtoken sudah terdaftar (`ngrok config add-authtoken <TOKEN>`).
+
+1. Build aset produksi, lalu jalankan server tanpa Vite:
+
+   ```bash
+   npm run build
+   php artisan serve
+   ```
+
+   Jangan pakai `composer dev` saat menguji lewat tunnel: proses Vite menulis `public/hot` berisi `localhost:5173`, sehingga CSS/JS tidak termuat di HP.
+
+2. Buka tunnel ke port 8000:
+
+   ```bash
+   ngrok http 8000
+   ```
+
+   URL `https://*.ngrok-free.app` yang muncul dipakai untuk membuka aplikasi di HP. Panel inspeksi request ada di `http://127.0.0.1:4040`.
+
+3. Catatan saat memakai domain ngrok:
+
+   - Halaman peringatan ngrok (paket gratis) muncul sekali di browser. Untuk request `fetch()` yang mengharapkan JSON, kirim header `ngrok-skip-browser-warning: true`.
+   - Notifikasi push memakai `APP_URL`, bukan host request. Saat menguji push lewat tunnel, set `APP_URL=https://<domain>.ngrok-free.app` di `.env`, jalankan `php artisan config:clear`, lalu restart queue worker.
+   - Langganan push yang dibuat di `localhost:8000` tidak berlaku di origin tunnel; lakukan subscribe ulang dari HP.
+
+## Ekspor dan Impor (Excel & CSV)
+
+Ada dua format ekspor laporan:
+
+- **Excel** — `GET /laporan/export` menghasilkan `.xlsx` dengan dua sheet:
+  - **Laporan Barang**: tabel barang lengkap (kode, nama, kategori, rak, stok, minimum, status, ISBN, kategori asli, jumlah halaman, catatan), header berwarna, angka asli yang bisa di-SUM, autofilter, dan header cetak berulang.
+  - **Ringkasan**: metrik gudang dan tabel jumlah barang/total stok per kategori.
+- **CSV** — `GET /laporan/export-csv` mempertahankan format lama dengan kolom berikut:
 
 ```
 kode_barang, nama, kode_kategori, kategori, satuan, stok, stok_minimum, kode_rak, keterangan
@@ -165,11 +203,13 @@ kode_barang, nama, kode_kategori, kategori, satuan, stok, stok_minimum, kode_rak
 
 Aturan impor (hanya Admin, `POST /laporan/import`):
 
-- Header file harus sama persis dengan hasil ekspor, dan ukuran maksimum 5 MB.
+- Menerima file **`.xlsx` dan `.csv`** (maksimum 5 MB). File CSV boleh memakai pemisah koma, titik koma, atau tab.
+- Baris header dicari otomatis dalam 15 baris pertama. Nama kolom tidak peka huruf besar/kecil, spasi, atau garis bawah (`Kode Barang` = `kode_barang`). Kolom wajib: **Kode Barang**, **Nama Barang**, dan **Kode Kategori** (atau **Kategori**).
 - Impor hanya **menambah barang baru**. Baris dengan `kode_barang` yang sudah ada ditolak sebagai konflik, dan data lama tidak diubah.
 - `kode_kategori` harus sudah terdaftar. Jika `kode_rak` diisi, kode tersebut harus cocok dengan rak yang ada, dan jika dikosongkan barang masuk tanpa lokasi.
-- Kolom `stok_minimum` di CSV **diabaikan** — sistem hitung ulang otomatis via `Barang::stokMinimumForKategori` (FRN/furniture = 0, lainnya = 10).
-- Seluruh impor berjalan dalam satu transaksi dan menampilkan ringkasan jumlah data masuk, konflik, dan baris tidak valid. Ekspor (`GET /laporan/export`) boleh untuk Admin, Staff, dan Pimpinan.
+- Kolom `stok_minimum` **diabaikan** — sistem hitung ulang otomatis via `Barang::stokMinimumForKategori` (FRN/furniture = 0, lainnya = 10).
+- Kolom `ISBN`, `Kategori Asli`, `Jumlah Halaman`, dan `Catatan` disimpan kembali ke `barang.keterangan`.
+- Seluruh impor berjalan dalam satu transaksi dan menampilkan ringkasan jumlah data masuk, konflik, dan baris tidak valid. Ekspor boleh untuk Admin, Staff, dan Pimpinan.
 
 ## Notifikasi Web Push
 

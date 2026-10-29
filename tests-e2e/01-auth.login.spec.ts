@@ -14,7 +14,8 @@ test.describe('Journey 1: Autentikasi & Session Handling', () => {
     await expect(page).toHaveURL('/dashboard/admin');
     await expect(page.locator('body')).toContainText(/ADMINISTRATOR|ADMIN|Beranda/i);
 
-    // Logout
+    // Logout (tombol Keluar ada di dropdown profil)
+    await page.locator('#profile-menu-btn').click();
     await page.getByRole('button', { name: /Keluar/i }).click();
     await expect(page).toHaveURL('/login');
   });

@@ -30,7 +30,7 @@ test.describe('Journey 2: Manajemen Barang & Stok Menipis', () => {
     await page.locator('select[name="kategori_id"]').selectOption({ index: 1 });
     await page.locator('input[name="satuan"]').fill('pcs');
     await page.locator('input[name="stok"]').fill('50');
-    await page.locator('input[name="stok_minimum"]').fill('5');
+    // stok_minimum tidak diisi manual: dihitung otomatis oleh Barang::stokMinimumForKategori()
 
     await page.getByRole('button', { name: /Simpan Barang/i }).click();
 

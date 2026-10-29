@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Journey 5: Pelaporan & Export/Import CSV', () => {
+test.describe('Journey 5: Pelaporan & Export/Import Excel', () => {
 
-  test('Happy Path: Membuka laporan dan mendownload CSV', async ({ page, request }) => {
+  test('Happy Path: Membuka laporan dan mendownload Excel', async ({ page, request }) => {
     await page.goto('/laporan');
     await expect(page).toHaveURL('/laporan');
     await expect(page.getByRole('heading', { name: /Laporan Gudang/i })).toBeVisible();
 
-    // Export CSV via direct request (reuse authenticated session cookies)
+    // Export Excel via direct request (reuse authenticated session cookies)
     const cookies = await page.context().cookies();
     const cookieHeader = cookies.map(c => `${c.name}=${c.value}`).join('; ');
     const xsrf = cookies.find(c => c.name === 'XSRF-TOKEN')?.value ?? '';
@@ -20,12 +20,13 @@ test.describe('Journey 5: Pelaporan & Export/Import CSV', () => {
     });
 
     expect(response.status()).toBe(200);
-    expect(response.headers()['content-disposition']).toMatch(/attachment.*laporan.*\.csv/);
-    const body = await response.text();
-    expect(body).toContain('kode_barang');
+    expect(response.headers()['content-disposition']).toMatch(/attachment.*laporan.*\.xlsx/);
+    expect(response.headers()['content-type']).toContain('spreadsheetml.sheet');
+    const body = await response.body();
+    expect(body.subarray(0, 2).toString()).toBe('PK');
   });
 
-  test('Failure State: Import CSV dengan format header salah', async ({ page }) => {
+  test('Failure State: Import file dengan header salah', async ({ page }) => {
     await page.goto('/laporan');
 
     // Upload file CSV palsu dengan header salah
@@ -36,12 +37,12 @@ test.describe('Journey 5: Pelaporan & Export/Import CSV', () => {
     };
 
     await page.locator('input[type="file"]').setInputFiles(filePayload);
-    await page.getByRole('button', { name: /Import CSV/i }).click();
+    await page.getByRole('button', { name: 'Import Data', exact: true }).click();
 
     // Harusnya dapat pesan error
     const alert = page.getByRole('alert');
     await expect(alert).toBeVisible();
-    await expect(alert).toContainText(/Format CSV tidak sesuai/i);
+    await expect(alert).toContainText(/Format file tidak sesuai/i);
   });
 
 });

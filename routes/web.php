@@ -73,6 +73,8 @@ Route::middleware('auth')->group(function () {
         ->middleware('role:admin,staff,pimpinan')->name('laporan.index');
     Route::get('/laporan/export', [LaporanController::class, 'export'])
         ->middleware('role:admin,staff,pimpinan')->name('laporan.export');
+    Route::get('/laporan/export-csv', [LaporanController::class, 'exportCsv'])
+        ->middleware('role:admin,staff,pimpinan')->name('laporan.export.csv');
     Route::post('/laporan/import', [LaporanController::class, 'import'])
         ->middleware('role:admin')->name('laporan.import');
 
