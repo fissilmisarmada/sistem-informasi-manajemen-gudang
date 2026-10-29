@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
@@ -16,7 +17,9 @@ class GoogleLoginController extends Controller
      */
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')
+            ->redirectUrl($this->getRedirectUrl())
+            ->redirect();
     }
 
     /**
@@ -25,10 +28,17 @@ class GoogleLoginController extends Controller
     public function handleGoogleCallback(Request $request)
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')
+                ->redirectUrl($this->getRedirectUrl())
+                ->stateless()
+                ->user();
         } catch (Throwable $e) {
+            Log::error('Google OAuth login failed: '.$e->getMessage(), [
+                'exception' => $e,
+            ]);
+
             return redirect()->route('login')->withErrors([
-                'email' => 'Gagal melakukan login dengan Google. Silakan coba lagi.',
+                'email' => 'Gagal melakukan login dengan Google: '.$e->getMessage(),
             ]);
         }
 
@@ -79,5 +89,12 @@ class GoogleLoginController extends Controller
 
         return route('dashboard.admin');
     }
-}
 
+    /**
+     * Tentukan callback URI yang sesuai dengan host yang sedang dibuka oleh user (localhost vs 127.0.0.1).
+     */
+    protected function getRedirectUrl(): string
+    {
+        return route('auth.google.callback');
+    }
+}

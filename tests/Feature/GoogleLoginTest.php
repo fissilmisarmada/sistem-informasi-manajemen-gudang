@@ -22,6 +22,7 @@ class GoogleLoginTest extends TestCase
     public function test_redirect_to_google_works(): void
     {
         $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('redirectUrl')->andReturnSelf();
         $provider->shouldReceive('redirect')
             ->once()
             ->andReturn(redirect('https://accounts.google.com/o/oauth2/auth'));
@@ -59,6 +60,8 @@ class GoogleLoginTest extends TestCase
         $socialiteUser->shouldReceive('getName')->andReturn('Existing User');
 
         $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('redirectUrl')->andReturnSelf();
+        $provider->shouldReceive('stateless')->andReturnSelf();
         $provider->shouldReceive('user')->once()->andReturn($socialiteUser);
 
         Socialite::shouldReceive('driver')
@@ -82,6 +85,8 @@ class GoogleLoginTest extends TestCase
         $socialiteUser->shouldReceive('getNickname')->andReturn(null);
 
         $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('redirectUrl')->andReturnSelf();
+        $provider->shouldReceive('stateless')->andReturnSelf();
         $provider->shouldReceive('user')->once()->andReturn($socialiteUser);
 
         Socialite::shouldReceive('driver')
