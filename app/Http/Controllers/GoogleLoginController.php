@@ -67,7 +67,7 @@ class GoogleLoginController extends Controller
         Auth::login($user, true);
         $request->session()->regenerate();
 
-        return redirect()->intended($this->dashboardUntukRole($user));
+        return redirect()->to($this->dashboardUntukRole($user));
     }
 
     /**

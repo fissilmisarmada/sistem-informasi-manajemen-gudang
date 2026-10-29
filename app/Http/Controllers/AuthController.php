@@ -29,10 +29,15 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
+
+        $credentials = [
+            'email' => strtolower(trim((string) $request->input('email'))),
+            'password' => (string) $request->input('password'),
+        ];
 
         // Auth::attempt() ini yang mewakili method User::findByEmail() +
         // pengecekan password di sequence diagram (pesan 5-8) sekaligus --
@@ -43,7 +48,7 @@ class AuthController extends Controller
 
             // --- Kondisi [email & password valid] ---
             // Arahkan ke dashboard sesuai role (pesan 9-11)
-            return redirect()->intended($this->dashboardUntukRole());
+            return redirect()->to($this->dashboardUntukRole());
         }
 
         // --- Kondisi [kredensial tidak valid] ---
