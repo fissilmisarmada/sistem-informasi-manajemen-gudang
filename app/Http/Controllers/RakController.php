@@ -25,11 +25,11 @@ class RakController extends Controller
     {
         $validated = $request->validate([
             'kode_rak'    => 'required|string|max:20|unique:rak,kode_rak',
-            'nama_lokasi' => 'required|string|max:100',
             'kapasitas'   => 'nullable|integer|min:0',
-            'denah_area_id' => 'nullable|exists:denah_area,id',
+            'denah_area_id' => 'required|exists:denah_area,id',
         ]);
 
+        $validated['nama_lokasi'] = DenahArea::findOrFail($validated['denah_area_id'])->nama;
 
         Rak::create($validated);
 

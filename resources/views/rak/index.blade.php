@@ -10,7 +10,7 @@
     .alert{padding:12px 14px;border-radius:12px;margin-bottom:16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px}
     .alert-success{background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0}
     .alert-error{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA}
-    .create-panel{display:grid;grid-template-columns:1fr 1.4fr .75fr 1.1fr auto;gap:12px;align-items:end;margin-bottom:18px;padding:20px;background:var(--andon-panel);border:1px solid #EDEEF2;border-radius:20px;box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);position:relative;overflow:hidden;transition:box-shadow .22s cubic-bezier(.16,1,.3,1),border-color .22s ease}
+    .create-panel{display:grid;grid-template-columns:1fr .75fr 1.1fr auto;gap:12px;align-items:end;margin-bottom:18px;padding:20px;background:var(--andon-panel);border:1px solid #EDEEF2;border-radius:20px;box-shadow:0 6px 24px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);position:relative;overflow:hidden;transition:box-shadow .22s cubic-bezier(.16,1,.3,1),border-color .22s ease}
     .create-panel:hover{box-shadow:0 10px 28px rgba(15,23,42,.08),0 2px 6px rgba(15,23,42,.05)}
     .create-panel::before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:var(--andon-navy)}
     label{display:block;margin-bottom:8px;color:var(--andon-muted);font-size:11px;font-weight:700;letter-spacing:.06em}
@@ -58,9 +58,8 @@
         <form class="create-panel" method="POST" action="{{ route('rak.store') }}">
             @csrf
             <div><label for="kode_rak">Kode Rak</label><input class="andon-control" id="kode_rak" type="text" name="kode_rak" placeholder="Contoh: R-01" required autocomplete="off"></div>
-            <div><label for="nama_lokasi">Nama Lokasi</label><input class="andon-control" id="nama_lokasi" type="text" name="nama_lokasi" placeholder="Contoh: Area ATK" required autocomplete="off"></div>
             <div><label for="kapasitas">Kapasitas (unit)</label><input class="andon-control" id="kapasitas" type="number" name="kapasitas" min="0" placeholder="Opsional"></div>
-            <div><label for="denah_area_id">Ruangan</label><select class="andon-control" id="denah_area_id" name="denah_area_id"><option value="">— Pilih ruangan —</option>@foreach($denahAreas as $area)<option value="{{ $area->id }}">{{ $area->kode_area }} — {{ $area->nama }}</option>@endforeach</select></div>
+            <div><label for="denah_area_id">Ruangan</label><select class="andon-control" id="denah_area_id" name="denah_area_id" required><option value="">— Pilih ruangan —</option>@foreach($denahAreas as $area)<option value="{{ $area->id }}">{{ $area->kode_area }} — {{ $area->nama }}</option>@endforeach</select></div>
             <button class="btn btn--primary" type="submit" style="min-height:44px">+ Tambah Rak</button>
         </form>
     @endif
