@@ -16,6 +16,13 @@
 .card-head span{color:var(--andon-faint);font-size:11px;font-weight:700}
 .denah-wrap{padding:16px}
 .denah-wrap img{width:100%;height:auto;display:block;border-radius:14px;border:1px solid var(--andon-line);background:#F8FAFC}
+.denah-wrap img.zoomable{cursor:zoom-in}
+.zoom-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(15,23,42,.82);padding:24px;align-items:center;justify-content:center}
+.zoom-modal.active{display:flex}
+.zoom-modal img{max-width:100%;max-height:calc(100dvh - 110px);object-fit:contain;transform-origin:center;cursor:grab}
+.zoom-modal img:active{cursor:grabbing}
+.zoom-tools{position:absolute;top:16px;right:16px;display:flex;gap:8px}
+.zoom-tools button{width:40px;height:40px;border:1px solid rgba(255,255,255,.35);border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer}
 .upload{padding:12px 16px 16px;border-top:1px solid #F1F5F9;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .upload .andon-control{flex:1;min-width:180px}
 .rak-grid{padding:12px 16px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
@@ -57,7 +64,7 @@
         <div class="card-head"><h2>Denah {{ $area->nama }}</h2><span>1 gambar per ruangan</span></div>
         <div class="denah-wrap">
             @if($area->denah_image)
-                <img src="{{ Storage::url($area->denah_image) }}" alt="Denah {{ $area->nama }}">
+                <img class="zoomable" src="{{ Storage::url($area->denah_image) }}" alt="Denah {{ $area->nama }}" data-zoom-image>
             @else
                 <div class="empty">Belum ada denah — upload gambar denah ruangan ini di bawah.</div>
             @endif
@@ -106,4 +113,14 @@
         </div>
     </div>
 </div>
+@if($area->denah_image)
+<div class="zoom-modal" data-zoom-modal role="dialog" aria-label="Perbesar denah {{ $area->nama }}" aria-modal="true">
+    <div class="zoom-tools"><button type="button" data-zoom-out aria-label="Perkecil">−</button><button type="button" data-zoom-reset aria-label="Reset zoom">↺</button><button type="button" data-zoom-in aria-label="Perbesar">+</button><button type="button" data-zoom-close aria-label="Tutup">×</button></div>
+    <img src="{{ Storage::url($area->denah_image) }}" alt="Denah {{ $area->nama }}" data-zoom-target>
+</div>
+<script>
+(() => { const modal=document.querySelector('[data-zoom-modal]'), source=document.querySelector('[data-zoom-image]'), target=modal?.querySelector('[data-zoom-target]'); if(!modal||!source||!target)return; let scale=1;
+const render=()=>target.style.transform=`scale(${scale})`; source.addEventListener('click',()=>{modal.classList.add('active');scale=1;render()}); modal.querySelector('[data-zoom-in]').onclick=()=>{scale=Math.min(4,scale+.25);render()}; modal.querySelector('[data-zoom-out]').onclick=()=>{scale=Math.max(1,scale-.25);render()}; modal.querySelector('[data-zoom-reset]').onclick=()=>{scale=1;render()}; const close=()=>modal.classList.remove('active'); modal.querySelector('[data-zoom-close]').onclick=close; modal.onclick=e=>{if(e.target===modal)close()}; document.addEventListener('keydown',e=>{if(e.key==='Escape')close()}); modal.addEventListener('wheel',e=>{e.preventDefault();scale=Math.max(1,Math.min(4,scale+(e.deltaY<0?.25:-.25)));render()},{passive:false}); })();
+</script>
+@endif
 @endsection
