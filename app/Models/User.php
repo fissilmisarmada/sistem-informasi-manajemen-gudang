@@ -18,6 +18,7 @@ class User extends Authenticatable implements CanResetPasswordContract
         'email',
         'password',
         'role',
+        'google_id',
     ];
 
     protected $hidden = [
